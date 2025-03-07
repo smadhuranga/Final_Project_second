@@ -4,7 +4,29 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7d0cb35a-e289-4ed1-ab5f-4653a28529df" name="Changes" comment="front end 75% completed" />
+    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="frontend 75% and backend dto , entity completed">
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/AdminRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/ChatMessageRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/CoordinatorRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/CustomerRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/PaymentRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/RatingRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/SellerRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/ServiceCategoryRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/ServiceRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/SkillRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/UserRepo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/VarList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -14,12 +36,15 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Enum" />
+        <option value="HTML File" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -47,6 +72,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -92,7 +118,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="7d0cb35a-e289-4ed1-ab5f-4653a28529df" name="Changes" comment="" />
+      <changelist id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="frontend 75% and backend dto , entity completed" />
       <created>1741175865333</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -104,6 +130,9 @@
       <workItem from="1741337345512" duration="14000" />
       <workItem from="1741352026379" duration="17000" />
       <workItem from="1741352135235" duration="74000" />
+      <workItem from="1741754736392" duration="6422000" />
+      <workItem from="1741770699513" duration="1642000" />
+      <workItem from="1741840617550" duration="6687000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -122,6 +151,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="dto and entity create complete" />
     <MESSAGE value="front end 75% completed" />
-    <option name="LAST_COMMIT_MESSAGE" value="front end 75% completed" />
+    <MESSAGE value="frontend 75% and backend dto , entity completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="frontend 75% and backend dto , entity completed" />
   </component>
 </project>

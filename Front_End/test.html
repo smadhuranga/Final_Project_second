@@ -3,621 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - DarkFreelance</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --bg-black: #000000;
-            --text-white: #FFFFFF;
-            --accent-yellow: #FFD700;
-            --accent-green: #00FF00;
-            --danger-red: #ff4444;
         }
 
         body {
-            background: linear-gradient(-45deg, 
-                rgba(0,0,0,0.95), 
-                rgba(20,20,20,0.95),
-                rgba(40,40,40,0.95));
-            color: var(--text-white);
             font-family: 'Poppins', sans-serif;
             min-height: 100vh;
         }
 
-        .admin-sidebar {
-            background: rgba(0, 0, 0, 0.9);
-            width: 250px;
-            min-height: 100vh;
-            position: fixed;
-            backdrop-filter: blur(10px);
-            border-right: 2px solid var(--accent-yellow);
-        }
-
-        .admin-main {
-            margin-left: 250px;
-            padding: 2rem;
-        }
-
-        .admin-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--accent-yellow);
+            background: rgba(255,255,255,0.05);
             border-radius: 15px;
             backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
         }
 
-        .admin-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
         }
 
-        .table-custom {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
             overflow: hidden;
         }
 
-        .table-custom th {
-            background: rgba(255, 215, 0, 0.1);
-            color: var(--accent-yellow);
-        }
-
-        .table-custom td, .table-custom th {
-            border-color: rgba(255, 255, 255, 0.1);
-            vertical-align: middle;
-        }
-
         .status-badge {
-            padding: 5px 15px;
             border-radius: 20px;
-            font-size: 0.8rem;
         }
 
-        .active-status {
-            background: rgba(0, 255, 0, 0.1);
-            color: var(--accent-green);
-        }
 
-        .blocked-status {
-            background: rgba(255, 68, 68, 0.1);
-            color: var(--danger-red);
-        }
-
-        .btn-admin {
-            padding: 8px 20px;
-            border-radius: 25px;
             transition: all 0.3s ease;
         }
 
-        .btn-edit {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--accent-yellow);
-            color: var(--accent-yellow);
         }
 
-        .btn-delete {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid var(--danger-red);
-            color: var(--danger-red);
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
             width: 60px;
-            height: 34px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255, 68, 68, 0.3);
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
             border-radius: 50%;
         }
 
-        input:checked + .slider {
-            background-color: rgba(0, 255, 0, 0.3);
         }
 
-        input:checked + .slider:before {
-            transform: translateX(26px);
         }
 
-        .modal-content {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid var(--accent-yellow);
+            background: rgba(255,255,255,0.05);
         }
 
-        .form-control {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            color: white;
-        }
-
-        .form-control:focus {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-yellow);
-            box-shadow: none;
-            color: white;
         }
     </style>
 </head>
 <body>
-    <!-- Admin Sidebar -->
-    <div class="admin-sidebar p-3">
-        <h3 class="text-center mb-4" style="color: var(--accent-yellow);">Admin Panel</h3>
-        <div class="list-group">
-            <a href="#users" class="list-group-item list-group-item-action bg-transparent text-white border-0">
-                <i class="fas fa-users me-2"></i>Manage Users
-            </a>
-            <a href="#coordinators" class="list-group-item list-group-item-action bg-transparent text-white border-0">
-                <i class="fas fa-user-tie me-2"></i>Coordinators
-            </a>
-            <a href="#payments" class="list-group-item list-group-item-action bg-transparent text-white border-0">
-                <i class="fas fa-credit-card me-2"></i>Payment Gateways
-            </a>
-            <a href="#categories" class="list-group-item list-group-item-action bg-transparent text-white border-0">
-                <i class="fas fa-layer-group me-2"></i>Categories
-            </a>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="admin-main">
-        <!-- Users Section -->
-        <section id="users" class="admin-section">
-            <div class="admin-card p-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-yellow">Manage Users</h3>
-                    <button class="btn btn-admin btn-edit" onclick="openUserEditModal()">
-                        <i class="fas fa-plus me-2"></i>Add New User
-                    </button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-custom table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Coordinators Section -->
-        <section id="coordinators" class="admin-section d-none">
-            <div class="admin-card p-4 mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-yellow">Manage Coordinators</h3>
-                    <button class="btn btn-admin btn-edit" onclick="openCoordinatorModal()">
-                        <i class="fas fa-plus me-2"></i>Add Coordinator
-                    </button>
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-custom table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="coordinatorsTableBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-        <!-- Payment Gateways Section -->
-        <section id="payments" class="admin-section d-none">
-            <div class="admin-card p-4 mb-4">
-                <h3 class="text-yellow mb-4">Payment Gateways</h3>
-                <div class="row g-4" id="paymentGateways">
-                    <!-- Payment gateways will be loaded here -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Categories Section -->
-        <section id="categories" class="admin-section d-none">
-            <div class="admin-card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="text-yellow">Manage Categories</h3>
-                    <button class="btn btn-admin btn-edit" onclick="openCategoryModal()">
-                        <i class="fas fa-plus me-2"></i>New Category
-                    </button>
-                </div>
-                <div class="row g-4" id="categoriesContainer">
-                    <!-- Categories will be loaded here -->
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <!-- Modals -->
-    <!-- User Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content admin-card">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-yellow">Manage User</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="userForm">
-                        <input type="hidden" id="userId">
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="userName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="userEmail" required>
-                        </div>
-                        <button type="submit" class="btn btn-admin btn-edit w-100">Save User</button>
-                    </form>
-                </div>
+<!-- Main Content -->
+                    </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Coordinator Modal -->
-    <div class="modal fade" id="coordinatorModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content admin-card">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-yellow" id="coordinatorModalTitle">Add Coordinator</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="coordinatorForm">
-                        <input type="hidden" id="coordinatorId">
-                        <div class="mb-3">
-                            <label class="form-label">Full Name</label>
-                            <input type="text" class="form-control" id="coordinatorName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" id="coordinatorEmail" required>
-                        </div>
-                        <button type="submit" class="btn btn-admin btn-edit w-100">Save Coordinator</button>
-                    </form>
-                </div>
-            </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            </button>
         </div>
-    </div>
-
-    <!-- Category Modal -->
-    <div class="modal fade" id="categoryModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content admin-card">
-                <div class="modal-header border-0">
-                    <h5 class="modal-title text-yellow">Manage Category</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="categoryForm">
-                        <input type="hidden" id="categoryId">
-                        <div class="mb-3">
-                            <label class="form-label">Category Name</label>
-                            <input type="text" class="form-control" id="categoryName" required>
-                        </div>
-                        <button type="submit" class="btn btn-admin btn-edit w-100">Save Category</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Data Stores
-        let users = [
-            { id: 1, name: "John Doe", email: "john@example.com", status: "active" }
-        ];
-
-        let coordinators = [
-            { id: 1, name: "Alice Smith", email: "alice@example.com", status: "active" }
-        ];
-
-        let categories = [
-            { id: 1, name: "Web Development" }
-        ];
-
-        let paymentGateways = [
-            { id: 1, name: "PayPal", status: true },
-            { id: 2, name: "Stripe", status: false }
-        ];
-
-        // User Functions
-        function renderUsers() {
-            const tbody = document.getElementById('usersTableBody');
-            tbody.innerHTML = users.map(user => `
+                <thead>
                 <tr>
-                    <td>${user.id}</td>
-                    <td>${user.name}</td>
-                    <td>${user.email}</td>
-                    <td>
-                        <span class="status-badge ${user.status === 'active' ? 'active-status' : 'blocked-status'}">
-                            ${user.status}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-admin btn-edit me-2" onclick="openUserModal(${user.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-admin btn-delete me-2" onclick="toggleStatus('user', ${user.id})">
-                            <i class="fas fa-ban"></i>
-                        </button>
-                        <button class="btn btn-admin btn-delete" onclick="deleteItem('user', ${user.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
+                    <th>Status</th>
+                    <th>Actions</th>
                 </tr>
-            `).join('');
-        }
+                </thead>
+                </tbody>
+            </table>
+        </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</div>
+    </div>
+</div>
 
-        function openUserModal(id = null) {
-            const modal = new bootstrap.Modal(document.getElementById('userModal'));
-            if(id) {
-                const user = users.find(u => u.id === id);
-                document.getElementById('userId').value = user.id;
-                document.getElementById('userName').value = user.name;
-                document.getElementById('userEmail').value = user.email;
-            } else {
-                document.getElementById('userForm').reset();
-            }
-            modal.show();
-        }
+<!-- Modals -->
+    <div class="modal-dialog modal-dialog-centered">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                    </div>
+                    <div class="mb-3">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-        document.getElementById('userForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = document.getElementById('userId').value;
-            const name = document.getElementById('userName').value;
-            const email = document.getElementById('userEmail').value;
-
-            if(id) {
-                const user = users.find(u => u.id == id);
-                user.name = name;
-                user.email = email;
-            } else {
-                users.push({
-                    id: users.length + 1,
-                    name,
-                    email,
-                    status: 'active'
-                });
-            }
-            renderUsers();
-            new bootstrap.Modal(document.getElementById('userModal')).hide();
-        });
-
-        // Coordinator Functions
-        function renderCoordinators() {
-            const tbody = document.getElementById('coordinatorsTableBody');
-            tbody.innerHTML = coordinators.map(coord => `
-                <tr>
-                    <td>${coord.id}</td>
-                    <td>${coord.name}</td>
-                    <td>${coord.email}</td>
-                    <td>
-                        <span class="status-badge ${coord.status === 'active' ? 'active-status' : 'blocked-status'}">
-                            ${coord.status}
-                        </span>
-                    </td>
-                    <td>
-                        <button class="btn btn-admin btn-edit me-2" onclick="openCoordinatorModal(${coord.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-admin btn-delete me-2" onclick="toggleStatus('coordinator', ${coord.id})">
-                            <i class="fas fa-ban"></i>
-                        </button>
-                        <button class="btn btn-admin btn-delete" onclick="deleteItem('coordinator', ${coord.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function openCoordinatorModal(id = null) {
-            const modal = new bootstrap.Modal(document.getElementById('coordinatorModal'));
-            if(id) {
-                const coord = coordinators.find(c => c.id === id);
-                document.getElementById('coordinatorId').value = coord.id;
-                document.getElementById('coordinatorName').value = coord.name;
-                document.getElementById('coordinatorEmail').value = coord.email;
-                document.getElementById('coordinatorModalTitle').textContent = 'Edit Coordinator';
-            } else {
-                document.getElementById('coordinatorForm').reset();
-                document.getElementById('coordinatorModalTitle').textContent = 'Add Coordinator';
-            }
-            modal.show();
-        }
-
-        document.getElementById('coordinatorForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = document.getElementById('coordinatorId').value;
-            const name = document.getElementById('coordinatorName').value;
-            const email = document.getElementById('coordinatorEmail').value;
-
-            if(id) {
-                const coord = coordinators.find(c => c.id == id);
-                coord.name = name;
-                coord.email = email;
-            } else {
-                coordinators.push({
-                    id: coordinators.length + 1,
-                    name,
-                    email,
-                    status: 'active'
-                });
-            }
-            renderCoordinators();
-            new bootstrap.Modal(document.getElementById('coordinatorModal')).hide();
-        });
-
-        // Category Functions
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-            container.innerHTML = categories.map(cat => `
-                <div class="col-md-4">
-                    <div class="admin-card p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">${cat.name}</h5>
-                            <div>
-                                <button class="btn btn-admin btn-edit me-2" onclick="openCategoryModal(${cat.id})">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="btn btn-admin btn-delete" onclick="deleteItem('category', ${cat.id})">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </div>
+    <div class="modal-dialog modal-dialog-centered">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                    </div>
+                    <div class="mb-3">
+                    </div>
+                    </div>
                     </div>
                 </div>
-            `).join('');
-        }
-
-        function openCategoryModal(id = null) {
-            const modal = new bootstrap.Modal(document.getElementById('categoryModal'));
-            if(id) {
-                const cat = categories.find(c => c.id === id);
-                document.getElementById('categoryId').value = cat.id;
-                document.getElementById('categoryName').value = cat.name;
-            } else {
-                document.getElementById('categoryForm').reset();
-            }
-            modal.show();
-        }
-
-        document.getElementById('categoryForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const id = document.getElementById('categoryId').value;
-            const name = document.getElementById('categoryName').value;
-
-            if(id) {
-                const cat = categories.find(c => c.id == id);
-                cat.name = name;
-            } else {
-                categories.push({
-                    id: categories.length + 1,
-                    name
-                });
-            }
-            renderCategories();
-            new bootstrap.Modal(document.getElementById('categoryModal')).hide();
-        });
-
-        // Payment Gateway Functions
-        function renderPaymentGateways() {
-            const container = document.getElementById('paymentGateways');
-            container.innerHTML = paymentGateways.map(gateway => `
-                <div class="col-md-6">
-                    <div class="admin-card p-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h5 class="text-yellow">${gateway.name}</h5>
-                                <p class="mb-0">Status: 
-                                    <span class="${gateway.status ? 'text-success' : 'text-danger'}">
-                                        ${gateway.status ? 'Active' : 'Inactive'}
-                                    </span>
-                                </p>
-                            </div>
-                            <label class="switch">
-                                <input type="checkbox" ${gateway.status ? 'checked' : ''} 
-                                    onchange="togglePaymentGateway(${gateway.id})">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
                 </div>
-            `).join('');
-        }
+            </form>
+        </div>
+    </div>
+</div>
 
-        function togglePaymentGateway(id) {
-            const gateway = paymentGateways.find(g => g.id === id);
-            gateway.status = !gateway.status;
-            renderPaymentGateways();
-        }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+        ];
 
-        // General Functions
-        function toggleStatus(type, id) {
-            const collection = type === 'user' ? users : coordinators;
-            const item = collection.find(i => i.id === id);
-            item.status = item.status === 'active' ? 'blocked' : 'active';
-            type === 'user' ? renderUsers() : renderCoordinators();
-        }
+        ];
 
-        function deleteItem(type, id) {
-            switch(type) {
-                case 'user':
-                    users = users.filter(u => u.id !== id);
-                    renderUsers();
-                    break;
-                case 'coordinator':
-                    coordinators = coordinators.filter(c => c.id !== id);
-                    renderCoordinators();
-                    break;
-                case 'category':
-                    categories = categories.filter(c => c.id !== id);
-                    renderCategories();
-                    break;
-            }
-        }
 
-        // Initialization
-        document.addEventListener('DOMContentLoaded', () => {
-            renderUsers();
-            renderCoordinators();
-            renderCategories();
-            renderPaymentGateways();
-            
-            // Tab Switching
-            document.querySelectorAll('.admin-sidebar a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.admin-section').forEach(section => {
-                        section.classList.add('d-none');
-                    });
-                    document.querySelector(this.getAttribute('href')).classList.remove('d-none');
-                });
+
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                            <i class="fas fa-trash"></i>
+                                        </button>
             });
+        }
+
+                        <tr>
+                            <td>
+                                </span>
+                            </td>
+                            <td>
+                                </button>
+                            </td>
+            });
+        }
+
+            e.preventDefault();
         });
-    </script>
+
+
+            e.preventDefault();
+        });
+        });
+        });
+        });
+</script>
 </body>
 </html>
