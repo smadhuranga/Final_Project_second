@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freelance Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-black: #000000;
+            --text-white: #FFFFFF;
+            --accent-yellow: #FFD700;
+            --accent-green: #00FF00;
+            --danger-red: #ff4444;
+            --sidebar-bg: rgba(10, 10, 10, 0.95);
+            --sidebar-hover: rgba(255, 215, 0, 0.1);
+        }
+
+        body {
+            background: linear-gradient(-45deg,
+            rgba(0, 0, 0, 0.95),
+            rgba(20, 20, 20, 0.95),
+            rgba(40, 40, 40, 0.95));
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+
+
+        .admin-sidebar {
+            background: var(--sidebar-bg);
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            backdrop-filter: blur(10px);
+            border-right: 2px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .admin-sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .admin-sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--accent-yellow);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .admin-sidebar .nav-link:hover {
+            background: var(--sidebar-hover);
+            color: var(--accent-yellow);
+            transform: translateX(8px);
+        }
+
+        .admin-sidebar .nav-link:hover::before {
+            transform: scaleY(1);
+        }
+
+        .admin-sidebar .nav-link.active {
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--accent-yellow);
+            transform: translateX(8px);
+        }
+
+        .admin-sidebar .nav-link.active::before {
+            transform: scaleY(1);
+        }
+
+
+        .admin-main {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .table-custom {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table-custom th {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--accent-yellow);
+        }
+
+        .table-custom td, .table-custom th {
+            border-color: rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .active-status {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--accent-green);
+        }
+
+        .blocked-status {
+            background: rgba(255, 68, 68, 0.1);
+            color: var(--danger-red);
+        }
+
+        .btn-admin {
+            padding: 8px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .btn-delete {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--danger-red);
+            color: var(--danger-red);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 68, 68, 0.3);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(0, 255, 0, 0.3);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: white;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-yellow);
+            box-shadow: none;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+<div class="admin-sidebar">
+    <div class="p-4">
+        <h3 class="text-center mb-4" style="color: var(--accent-yellow);">Admin Panel</h3>
+        <nav class="nav flex-column">
+            <a class="nav-link active" href="#dashboard" data-section="dashboard">
+                <i class="fas fa-home me-2"></i> Dashboard
+            </a>
+            <a class="nav-link" href="#users" data-section="users">
+                <i class="fas fa-users me-2"></i> User Management
+            </a>
+            <a class="nav-link" href="#payments" data-section="payments">
+                <i class="fas fa-wallet me-2"></i> Payment Management
+            </a>
+            <a class="nav-link" href="#projects" data-section="projects">
+                <i class="fas fa-tasks me-2"></i> Project Management
+            </a>
+            <a class="nav-link" href="#analytics" data-section="analytics">
+                <i class="fas fa-chart-line me-2"></i> Analytics
+            </a>
+        </nav>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="admin-main">
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="content-section">
+        <h2 class="mb-4">Dashboard Overview</h2>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="admin-card p-3">
+                    <h5>Total Earnings</h5>
+                    <h2 class="text-success">$45,230</h2>
+                    <small class="text-muted">+12% from last month</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="admin-card p-3">
+                    <h5>Active Freelancers</h5>
+                    <h2 class="text-primary">1,234</h2>
+                    <small class="text-muted">+5% from last month</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="admin-card p-3">
+                    <h5>Total Projects</h5>
+                    <h2 class="text-warning">890</h2>
+                    <small class="text-muted">+23 ongoing projects</small>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="admin-card p-3">
+                    <h5>Pending Payments</h5>
+                    <h2 class="text-danger">$12,450</h2>
+                    <small class="text-muted">15 unpaid invoices</small>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Management Section -->
+    <section id="users" class="content-section d-none">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>User Management</h2>
+            <button class="btn btn-admin btn-edit" data-bs-toggle="modal" data-bs-target="#userModal">
+                <i class="fas fa-plus me-2"></i>Add User
+            </button>
+        </div>
+        <table class="table table-custom table-hover" id="usersTable">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Updated Sample Data with data-id -->
+            <tr data-id="1">
+                <td>John Doe</td>
+                <td>john@example.com</td>
+                <td>Freelancer</td>
+                <td><span class="status-badge active-status">Active</span></td>
+                <td>
+                    <button class="btn btn-admin btn-edit me-2" data-id="1"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-admin btn-delete" data-id="1"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+            <tr data-id="2">
+                <td>Jane Smith</td>
+                <td>jane@example.com</td>
+                <td>Client</td>
+                <td><span class="status-badge active-status">Active</span></td>
+                <td>
+                    <button class="btn btn-admin btn-edit me-2" data-id="2"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-admin btn-delete" data-id="2"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Payment Management Section -->
+    <section id="payments" class="content-section d-none">
+        <h2 class="mb-4">Payment Management</h2>
+        <table class="table table-custom table-hover" id="paymentsTable">
+            <thead>
+            <tr>
+                <th>Transaction ID</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>#TX98564</td>
+                <td>$450</td>
+                <td><span class="status-badge active-status">Paid</span></td>
+                <td>2023-09-15</td>
+                <td>
+                    <button class="btn btn-admin btn-edit">Mark Paid</button>
+                </td>
+            </tr>
+            <!-- More rows... -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Project Management Section -->
+    <section id="projects" class="content-section d-none">
+        <h2 class="mb-4">Project Management</h2>
+        <table class="table table-custom table-hover" id="projectsTable">
+            <thead>
+            <tr>
+                <th>Project Name</th>
+                <th>Client</th>
+                <th>Freelancer</th>
+                <th>Status</th>
+                <th>Budget</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Website Redesign</td>
+                <td>Acme Corp</td>
+                <td>Jane Smith</td>
+                <td><span class="status-badge active-status">Ongoing</span></td>
+                <td>$5,000</td>
+                <td>
+                    <button class="btn btn-admin btn-edit me-2"><i class="fas fa-edit"></i></button>
+                    <button class="btn btn-admin btn-delete"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>
+            <!-- More rows... -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Analytics Section -->
+    <section id="analytics" class="content-section d-none">
+        <h2 class="mb-4">Analytics</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="admin-card p-3">
+                    <canvas id="earningsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="admin-card p-3">
+                    <canvas id="projectStats"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Modals -->
+<div class="modal fade" id="userModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="userForm">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="userName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="userEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="userStatus">
+                            <option>Active</option>
+                            <option>Blocked</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-admin btn-edit" id="saveUser">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        // Initialize DataTables
+        $('table').DataTable({
+            responsive: true,
+            ordering: true,
+            searching: true
+        });
+
+        // Section switching
+        $('.nav-link').click(function (e) {
+            e.preventDefault();
+            $('.content-section').addClass('d-none');
+            $($(this).attr('href')).removeClass('d-none');
+            $('.nav-link').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        // Chart initialization
+        const earningsChart = new Chart(document.getElementById('earningsChart'), {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Monthly Earnings',
+                    data: [6500, 5900, 8000, 8100, 5600, 5500],
+                    borderColor: '#FFD700',
+                    tension: 0.4
+                }]
+            }
+        });
+
+        const projectStatsChart = new Chart(document.getElementById('projectStats'), {
+            type: 'bar',
+            data: {
+                labels: ['Ongoing', 'Completed', 'Pending'],
+                datasets: [{
+                    label: 'Project Status',
+                    data: [45, 32, 12],
+                    backgroundColor: ['#FFD700', '#00FF00', '#ff4444']
+                }]
+            }
+        });
+
+        // AJAX configuration
+        $.ajaxSetup({
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+            },
+            dataType: 'json'
+        });
+
+        // User Management
+        $('#saveUser').click(function () {
+            const formData = {
+                name: $('#userName').val(),
+                email: $('#userEmail').val(),
+                status: $('#userStatus').val()
+            };
+
+            $.ajax({
+                url: '/api/users',
+                method: 'POST',
+                data: JSON.stringify(formData),
+                success: function (response) {
+                    $('#userModal').modal('hide');
+                    $('#userForm')[0].reset();
+                    showAlert('User saved successfully!', 'success');
+                    $('#usersTable').DataTable().ajax.reload();
+                },
+                error: function (xhr) {
+                    showAlert(xhr.responseJSON.message, 'danger');
+                }
+            });
+        });
+
+        $(document).on('click', '.btn-delete', function () {
+            const userId = $(this).data('id');
+            if (confirm('Are you sure you want to delete this user?')) {
+                $.ajax({
+                    url: `/api/users/${userId}`,
+                    method: 'DELETE',
+                    success: function () {
+                        showAlert('User deleted successfully!', 'success');
+                        $('#usersTable').DataTable().row($(this).closest('tr')).remove().draw();
+                    }.bind(this)
+                });
+            }
+        });
+
+        $(document).on('click', '.btn-edit', function () {
+            const userId = $(this).data('id');
+            $.ajax({
+                url: `/api/users/${userId}`,
+                method: 'GET',
+                success: function (user) {
+                    $('#userName').val(user.name);
+                    $('#userEmail').val(user.email);
+                    $('#userStatus').val(user.status);
+                    $('#userModal').modal('show');
+                }
+            });
+        });
+
+        // Payment Management
+        $(document).on('click', '.mark-paid', function () {
+            const paymentId = $(this).data('id');
+            $.ajax({
+                url: `/api/payments/${paymentId}/complete`,
+                method: 'PUT',
+                success: function () {
+                    $(this).closest('tr').find('.status-badge')
+                        .removeClass('blocked-status')
+                        .addClass('active-status')
+                        .text('Paid');
+                    showAlert('Payment marked as paid!', 'success');
+                }.bind(this)
+            });
+        });
+
+        // Data Loading
+        function loadInitialData() {
+            ['/api/users', '/api/payments', '/api/projects'].forEach(url => {
+                $.ajax({
+                    url,
+                    method: 'GET',
+                    success: function (response) {
+                        $(`#${url.split('/')[2]}Table`).DataTable().clear().rows.add(response.data).draw();
+                    }
+                });
+            });
+        }
+
+        function loadAnalytics() {
+            $.ajax({
+                url: '/api/analytics',
+                method: 'GET',
+                success: function (response) {
+                    updateCharts(response.data);
+                }
+            });
+        }
+
+        // Alert System
+        function showAlert(message, type = 'success') {
+            const alert = $(`
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `);
+            $('.admin-main').prepend(alert);
+            setTimeout(() => alert.alert('close'), 3000);
+        }
+
+        // Initial Load
+        loadInitialData();
+        loadAnalytics();
+    });
+</script>
+</body>
+</html>

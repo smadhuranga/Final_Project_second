@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UNI Freelancers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+         :root {
+            --bg-black: #0a0a0a;
+            --text-white: #FFFFFF;
+            --accent-yellow: #FFD700;
+            --accent-green: #25D366; /* WhatsApp Green */
+            --fb-blue: #1877F2; /* Facebook Blue */
+            --danger-red: #dc3545;
+            --section-spacing: 100px;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .navbar-scrolled {
+            background-color: rgba(0, 0, 0, 0.8) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .main-content {
+            flex: 1;
+            padding-top: 80px;
+        }
+
+        .section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                        url('https://source.unsplash.com/random/1920x1080/?freelance') center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-accent {
+            background-color: var(--accent-green);
+            color: var(--bg-black);
+            padding: 12px 20px;
+            border-radius: 30px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            font-weight: 600;
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 255, 0, 0.2);
+            background-color: transparent;
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 255, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-cards-container {
+            position: relative;
+            min-height: 500px;
+            overflow: hidden;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent-yellow);
+            border-radius: 20px;
+            padding: 2.5rem;
+            backdrop-filter: blur(10px);
+            position: absolute;
+            width: 100%;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .auth-card.login {
+            left: 0;
+            opacity: 1;
+        }
+
+        .auth-card.register {
+            left: 100%;
+            opacity: 0;
+        }
+
+        .auth-card.slide-out {
+            left: -100%;
+            opacity: 0;
+        }
+
+        .auth-card.slide-in {
+            left: 0;
+            opacity: 1;
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-white);
+            padding: 12px 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+        }
+
+        .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 0 3px var(--accent-yellow);
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-yellow);
+            color: var(--text-white);
+            border-radius: 30px;
+            padding: 12px 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--accent-yellow);
+            cursor: pointer;
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+            /* Dynamic Background Animation */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    #services {
+        background: linear-gradient(-45deg, 
+            rgba(0,0,0,0.9), 
+            rgba(20,20,20,0.9),
+            rgba(40,40,40,0.9),
+            rgba(60,60,60,0.9));
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        padding: 4rem 0;
+    }
+
+    .service-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--accent-yellow);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin: 1rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(0);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 215, 0, 0.1),
+            transparent
+        );
+        transition: 0.5s;
+    }
+
+    .service-card:hover::before {
+        left: 100%;
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+    }
+
+    .service-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        transform: scale(0.95);
+        transition: transform 0.2s ease-out;
+    }
+
+    .service-card:hover .service-image {
+        transform: scale(1);
+    }
+
+    .price-tag {
+        border: 2px solid #1877F2;
+        color: var(--bg-white);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .service-card:hover .price-tag {
+        transform: scale(1.05);
+        box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+    }
+
+    @keyframes cardEntrance {
+        from {
+            opacity: 0;
+            transform: translateY(50px) rotateX(90deg);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) rotateX(0);
+        }
+    }
+
+    .service-card {
+        animation: cardEntrance 0.6s ease forwards;
+        opacity: 0;
+    }
+
+    .service-card:nth-child(1) { animation-delay: 0.2s; }
+    .service-card:nth-child(2) { animation-delay: 0.4s; }
+    .service-card:nth-child(3) { animation-delay: 0.6s; }
+    .service-card:nth-child(4) { animation-delay: 0.8s; }
+    .service-card:nth-child(5) { animation-delay: 1.0s; }
+    .service-card:nth-child(6) { animation-delay: 1.2s; }
+
+
+
+
+
+
+
+       /* Add these new styles */
+       .contact-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--accent-yellow);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .team-member-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .team-member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 1rem;
+            border: 2px solid var(--accent-yellow);
+        }
+
+
+
+
+
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Hover effects */
+        .carousel-item img:hover {
+            transform: scale(1.02);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            #mainCarousel {
+                margin: -20px auto;
+            }
+            .carousel-control-prev, .carousel-control-next {
+                width: 40px;
+                height: 40px;
+                margin: 0 10px;
+            }
+            .carousel-indicators {
+                bottom: 10px;
+            }
+        }
+        
+        
+        
+        
+        
+        
+      
+
+       
+
+             /* Add these new styles */
+             .profile-container {
+            background: linear-gradient(135deg, 
+                rgba(20,20,20,0.95),
+                rgba(40,40,40,0.95));
+            border-radius: 20px;
+            border: 2px solid var(--accent-yellow);
+            box-shadow: 0 0 40px rgba(255,215,0,0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .profile-header {
+            position: relative;
+            padding: 3rem;
+            background: linear-gradient(45deg, 
+                rgba(255,215,0,0.1),
+                transparent);
+        }
+
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-yellow);
+            object-fit: cover;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 25px var(--accent-yellow);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,215,0,0.1);
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-tab {
+            padding: 1rem 2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-white);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .profile-tab.active {
+            color: var(--accent-yellow);
+        }
+
+        .profile-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent-yellow);
+            animation: tabUnderline 0.3s ease;
+        }
+
+        @keyframes tabUnderline {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .skill-badge {
+            background: rgba(255,215,0,0.1);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 20px;
+            padding: 0.5rem 1.2rem;
+            margin: 0.3rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .skill-badge:hover {
+            background: var(--accent-yellow);
+            color: var(--bg-black);
+        }
+
+        .security-card {
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid var(--accent-green);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1rem 0;
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 8;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .profile-completeness {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#home" onclick="showSection('home')"><img src="/images/LOg.png" alt="logo" style="height: 4rem;"></a>
+            
+            <div class="d-none d-lg-block flex-grow-1 mx-4">
+                <form class="search-container">
+                    <input type="text" class="search-input" placeholder="Search services..." id="searchInput">
+                    <button type="button" class="btn-search">
+                        <i class="fas fa-search"></i>
+                    </button>   
+                </form>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="d-lg-none my-3">
+                    <form class="search-container">
+                        <input type="text" class="search-input" placeholder="Search...">
+                        <button type="button" class="btn-search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home" onclick="showSection('home')">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services" onclick="showSection('services')">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact" onclick="showSection('contact')">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about" onclick="showSection('about')">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#profile" onclick="showSection('profile')">Profile</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero-section">
+                <div class="container text-center floating">
+                    <img src="/images/mainScreen.png" alt="robo image" class="img-fluid" style="max-width: 500px;">
+                    <h1 class="display-4 mb-4 animate-on-scroll">Find Premium Services</h1>
+                    <p class="lead mb-4 animate-on-scroll">Connect with Global Professionals</p>
+                    <button class="btn btn-accent animate-on-scroll" onclick="showSection('services')">Get Started</button>
+                </div>
+            </div>
+
+            <section class="py-5">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4 animate-on-scroll">
+                            <div class="service-card card p-4 text-center">
+                                <i class="fas fa-user-tie fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                                <h3>Hire Experts</h3>
+                                <p>Find Verified Professionals</p>
+                            </div>
+                        </div>
+                        <!-- Add more feature cards -->
+                    </div>
+                </div>
+            </section>
+        </section>
+     
+
+      <!-- Services Section -->
+        <section id="services" class="section">
+
+            <div id="mainCarousel" class="carousel slide" style="margin: -34px auto; max-width: 1400px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <!-- Carousel Indicators with custom styling
+                <div class="carousel-indicators" style="bottom: 30px;">
+                    <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active" 
+                        style="width: 12px; height: 12px; border-radius: 50%; background-color: #fff; opacity: 0.8; margin: 0 8px; border: none; transition: all 0.3s ease;"
+                        aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1" 
+                        style="width: 12px; height: 12px; border-radius: 50%; background-color: #fff; opacity: 0.8; margin: 0 8px; border: none; transition: all 0.3s ease;"
+                        aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2" 
+                        style="width: 12px; height: 12px; border-radius: 50%; background-color: #fff; opacity: 0.8; margin: 0 8px; border: none; transition: all 0.3s ease;"
+                        aria-label="Slide 3"></button>
+                </div> -->
+            
+                <!-- Carousel Inner -->
+                <div class="carousel-inner" style="border-radius: 15px; overflow: hidden;">
+                    <!-- First Slide -->
+                    <div class="carousel-item active" style="background-color: #000;">
+                        <img src="/images/carousal_Image.jpeg" class="d-block" alt="Freelance Workforce" 
+                            style="height: min(30rem, 80vh); width: 100%; object-fit: cover; opacity: 0.8; transition: transform 0.3s ease;">
+                        <div class="carousel-caption" 
+                            style="bottom: 50%; transform: translateY(50%); padding: 0 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.6);">
+                            <h2 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                                font-weight: 700; font-size: clamp(1.5rem, 4vw, 3rem); 
+                                margin-bottom: 20px; animation: fadeInUp 0.5s ease-out;">
+                                Scale your professional workforce with freelancers
+                            </h2>
+                            <p style="font-size: clamp(1rem, 2vw, 1.2rem); max-width: 800px; margin: 0 auto; 
+                                opacity: 0; animation: fadeInUp 0.5s ease-out 0.2s forwards;">
+                                Connect with top talent worldwide and grow your business
+                            </p>
+                        </div>
+                    </div>
+            
+                    <!-- Second Slide -->
+                    <div class="carousel-item" style="background-color: #000;">
+                        <img src="/images/carousal_Image.jpeg" class="d-block" alt="Talent Pool" 
+                            style="height: min(30rem, 80vh); width: 100%; object-fit: cover; opacity: 0.8; transition: transform 0.3s ease;">
+                        <div class="carousel-caption" 
+                            style="bottom: 50%; transform: translateY(50%); padding: 0 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.6);">
+                            <h2 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                                font-weight: 700; font-size: clamp(1.5rem, 4vw, 3rem); 
+                                margin-bottom: 20px; animation: fadeInUp 0.5s ease-out;">
+                                Access Global Talent Pool
+                            </h2>
+                            <p style="font-size: clamp(1rem, 2vw, 1.2rem); max-width: 800px; margin: 0 auto; 
+                                opacity: 0; animation: fadeInUp 0.5s ease-out 0.2s forwards;">
+                                Find the perfect match for your project needs
+                            </p>
+                        </div>
+                    </div>
+            
+                    <!-- Third Slide -->
+                    <div class="carousel-item" style="background-color: #000;">
+                        <img src="/images/carousal_Image.jpeg" class="d-block" alt="Project Success" 
+                            style="height: min(30rem, 80vh); width: 100%; object-fit: cover; opacity: 0.8; transition: transform 0.3s ease;">
+                        <div class="carousel-caption" 
+                            style="bottom: 50%; transform: translateY(50%); padding: 0 20px; text-shadow: 2px 2px 8px rgba(0,0,0,0.6);">
+                            <h2 style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+                                font-weight: 700; font-size: clamp(1.5rem, 4vw, 3rem); 
+                                margin-bottom: 20px; animation: fadeInUp 0.5s ease-out;">
+                                Achieve Project Success
+                            </h2>
+                            <p style="font-size: clamp(1rem, 2vw, 1.2rem); max-width: 800px; margin: 0 auto; 
+                                opacity: 0; animation: fadeInUp 0.5s ease-out 0.2s forwards;">
+                                Deliver exceptional results with our talented freelancers
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Custom Navigation Buttons -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev" 
+                    style="width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; top: 17%; transform: translateY(-50%); margin-left: 20px;">
+                    <span class="carousel-control-prev-icon" aria-hidden="true" 
+                        style="width: 24px; height: 24px;"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next" 
+                    style="width: 50px; height: 50px; background: rgba(0,0,0,0.5); border-radius: 50%; top: 17%; transform: translateY(-50%); margin-right: 20px;">
+                    <span class="carousel-control-next-icon" aria-hidden="true" 
+                        style="width: 24px; height: 24px;"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+
+
+<br>
+        <h2 class="text-center mb-5 display-4 animate-on-scroll">Our Services</h2>
+        
+        <div class="row g-4">
+            <!-- Web Design Service -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <img src="/images/web-de.jpg" class="service-image" alt="Web Design">
+                    <h3 class="text-yellow">Web Design</h3>
+                    <p>Custom website design and development with responsive layouts.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">$500 - $2000</span>
+                        <a href="/pages/webDevelopmentService.html" class="btn btn-accent">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graphic Design Service -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <img src="/images/graphic des.jpg" class="service-image" alt="Graphic Design">
+                    <h3 class="text-yellow">Graphic Design</h3>
+                    <p>Professional branding, logo design, and marketing materials.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">$300 - $1500</span>
+                        <a href="/pages/graphicDesignServiceHome.html" class="btn btn-accent">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile App Development -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <img src="/images/mobile app.jpg" class="service-image" alt="Mobile App">
+                    <h3 class="text-yellow">Mobile Apps</h3>
+                    <p>Native and cross-platform mobile application development.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">$200 - $1000</span>
+                        <a href="/pages/mobileAppDeveleopmentService.html" class="btn btn-accent">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Services -->
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <img src="/images/SEO.png" class="service-image" alt="SEO">
+                    <h3 class="text-yellow">SEO Optimization</h3>
+                    <p>Search engine optimization and digital marketing strategies.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">$200 - $1000</span>
+                        <a href="/pages/seoOptimizationService.html" class="btn btn-accent">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <img src="/images/writing.jpg" class="service-image" alt="Content Writing">
+                    <h3 class="text-yellow">Content Writing</h3>
+                    <p>Professional content creation and copywriting services.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">$0.10/word</span>
+                        <a href="/pages/contentWritingService.html" class="btn btn-accent">View Details</a>  
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="service-card">
+                    <img src="/images/video editing.jpg" class="service-image" alt="Video Editing">
+                    <h3 class="text-yellow">Video Editing</h3>
+                    <p>Professional video editing and post-production services.</p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="price-tag">$50 - $300</span>
+                        <a href="/pages/videoEditingService.html" class="btn btn-accent">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+     <!-- Contact Section -->
+     <section id="contact" class="section">
+        <div class="container py-5">
+            <h2 class="text-center mb-5 display-4 animate-on-scroll">Contact Us</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="contact-card">
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <h3 class="text-yellow mb-4">Get in Touch</h3>
+                                <div class="mb-4">
+                                    <i class="fas fa-envelope me-2"></i>contact@darkfreelance.com
+                                </div>
+                                <div class="social-links">
+                                    <a href="#" class="text-decoration-none me-3">
+                                        <i class="fab fa-twitter fa-2x"></i>
+                                    </a>
+                                    <a href="#" class="text-decoration-none me-3">
+                                        <i class="fab fa-linkedin fa-2x"></i>
+                                    </a>
+                                    <a href="#" class="text-decoration-none">
+                                        <i class="fab fa-github fa-2x"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <form id="contactForm">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" placeholder="Your Name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" placeholder="Your Email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <textarea class="form-control" rows="4" placeholder="Your Message" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-accent w-100">Send Message</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container py-5">
+            <h2 class="text-center mb-5 display-4 animate-on-scroll">About Us</h2>
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6">
+                    <div class="team-member-card text-center">
+                        <img src="https://source.unsplash.com/random/600x600/?person" class="team-photo" alt="CEO">
+                        <h3 class="text-yellow mt-3">Alex Smith</h3>
+                        <p class="text-muted">CEO & Founder</p>
+                        <p>Visionary leader with 10+ years in tech industry</p>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="team-member-card text-center">
+                        <img src="https://source.unsplash.com/random/600x600/?woman" class="team-photo" alt="CTO">
+                        <h3 class="text-yellow mt-3">Sarah Johnson</h3>
+                        <p class="text-muted">Chief Technology Officer</p>
+                        <p>Tech enthusiast and innovation driver</p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="service-card p-4">
+                        <h3 class="text-yellow">Our Mission</h3>
+                        <p>At DarkFreelance, we're revolutionizing the freelance marketplace by connecting top-tier professionals with clients who demand excellence. Our platform combines cutting-edge technology with human expertise to deliver unmatched results.</p>
+                        <h3 class="text-yellow mt-4">Why Choose Us?</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>Vetted professionals</li>
+                            <li class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>Secure transactions</li>
+                            <li class="mb-3"><i class="fas fa-check-circle me-2 text-success"></i>24/7 support</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <div class="container py-5">
+                <div class="profile-container">
+                    <!-- Profile Header -->
+                    <div class="profile-header text-center">
+                        <div class="position-relative">
+                            <img src="https://source.unsplash.com/random/300x300/?avatar" 
+                                class="profile-avatar floating"
+                                alt="Profile Picture"
+                                id="profileAvatar">
+                            <button class="btn btn-accent position-absolute bottom-0 end-0 rounded-pill"
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#avatarModal">
+                                <i class="fas fa-camera"></i>
+                            </button>
+                        </div>
+                        <h1 class="text-yellow mt-3" id="profileName">John Doe</h1>
+                        <p class="text-muted" id="profileEmail">john@example.com</p>
+                        <div class="mt-4">
+                            <button class="btn btn-accent me-3" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                                <i class="fas fa-edit me-2"></i>Edit Profile
+                            </button>
+                            <button class="btn btn-accent" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                <i class="fas fa-lock me-2"></i>Change Password
+                            </button>
+                        </div>
+                    </div>
+    
+                    <!-- Profile Stats -->
+                    <div class="profile-stats">
+                        <div class="stat-card">
+                            <h4 class="text-yellow">85%</h4>
+                            <p>Profile Complete</p>
+                            <div class="progress-ring">
+                                <svg class="progress-ring">
+                                    <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" 
+                                        r="52" cx="60" cy="60"/>
+                                    <circle class="ring-progress" stroke="#FFD700" stroke-width="8" 
+                                        stroke-dasharray="326.56" stroke-dashoffset="48.984" 
+                                        r="52" cx="60" cy="60"/>
+                                </svg>
+                                <div class="profile-completeness">
+                                    <h4 class="text-yellow mb-0">85%</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <h4 class="text-yellow">4.9</h4>
+                            <p>Average Rating</p>
+                            <div class="stars">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <h4 class="text-yellow">127</h4>
+                            <p>Projects Completed</p>
+                            <i class="fas fa-tasks fa-2x text-muted"></i>
+                        </div>
+                    </div>
+    
+                    <!-- Profile Tabs -->
+                    <div class="profile-tabs justify-content-center">
+                        <button class="profile-tab active" onclick="showProfileTab('overview')">Overview</button>
+                        <button class="profile-tab" onclick="showProfileTab('services')">My Services</button>
+                        <button class="profile-tab" onclick="showProfileTab('security')">Security</button>
+                    </div>
+    
+                    <!-- Tab Content -->
+                    <div class="tab-content p-4">
+                        <!-- Overview Tab -->
+                        <div id="overviewTab" class="tab-pane active">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4 class="text-yellow mb-3"><i class="fas fa-info-circle me-2"></i>About Me</h4>
+                                    <p id="profileBio" class="text-muted">Full-stack developer with 5+ years experience</p>
+                                    <h4 class="text-yellow mt-4"><i class="fas fa-map-marker-alt me-2"></i>Address</h4>
+                                    <p id="profileAddress" class="text-muted">New York, USA</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="text-yellow mb-3"><i class="fas fa-tools me-2"></i>Skills</h4>
+                                    <div id="profileSkills" class="d-flex flex-wrap gap-2">
+                                        <span class="skill-badge">JavaScript</span>
+                                        <span class="skill-badge">React</span>
+                                        <span class="skill-badge">Node.js</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <!-- Services Tab -->
+                        <div id="servicesTab" class="tab-pane">
+                            <div class="row" id="userServices">
+                                <!-- Services will be loaded dynamically -->
+                            </div>
+                        </div>
+    
+                        <!-- Security Tab -->
+                        <div id="securityTab" class="tab-pane">
+                            <div class="security-card">
+                                <h5 class="text-yellow"><i class="fas fa-shield-alt me-2"></i>Account Security</h5>
+                                <p class="text-muted">Last login: <span id="lastLogin">2 hours ago</span></p>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                                    <label class="form-check-label" for="twoFactorAuth">
+                                        Two-Factor Authentication
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Edit Profile Modal -->
+        <div class="modal fade" id="editProfileModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-yellow">Edit Profile</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="editProfileForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="editName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" id="editEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Bio</label>
+                                <textarea class="form-control" id="editBio" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Address</label>
+                                <input type="text" class="form-control" id="editAddress" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Skills (comma separated)</label>
+                                <input type="text" class="form-control" id="editSkills" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-accent">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-yellow">Change Password</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form id="changePasswordForm">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Current Password</label>
+                                <input type="password" class="form-control" id="currentPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                                <div class="password-strength mt-2">
+                                    <div class="progress" style="height: 4px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-accent">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Section Management
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            setTimeout(() => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 50);
+
+            const navbarCollapse = document.getElementById('navbarNav');
+            if (navbarCollapse.classList.contains('show')) {
+                new bootstrap.Collapse(navbarCollapse).hide();
+            }
+        }
+
+       
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+
+        // Navbar Scroll Effect
+        window.addEventListener('scroll', () => {
+            document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);
+        });
+
+        // Search Functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            document.querySelectorAll('.service-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+            });
+        });
+
+        // Form Submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add login logic here
+            alert('Login functionality coming soon!');
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Add registration logic here
+            alert('Registration functionality coming soon!');
+        });
+
+        // Initialize default section
+        showSection('home');
+
+            // Add parallax effect to service images
+  // In the parallax effect section, modify the speed and division factor
+document.addEventListener('mousemove', (e) => {
+    document.querySelectorAll('.service-image').forEach(img => {
+        const speed = 2; // Reduced from 5
+        const x = (window.innerWidth - e.pageX * speed) / 150; // Changed divisor from 100 to 150
+        const y = (window.innerHeight - e.pageY * speed) / 150; // Changed divisor from 100 to 150
+        img.style.transform = `translate(${x}px, ${y}px) scale(1.02)`; // Reduced scale from 1.05
+    });
+});
+
+    // Add hover sound effect (make sure to add audio file)
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            new Audio('hover-sound.mp3').play().catch(() => {});
+        });
+    });
+
+    // Initialize service card animations
+    const serviceCards = document.querySelectorAll('.service-card');
+    const serviceObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animationPlayState = 'running';
+            }
+        });
+    }, { threshold: 0.1 });
+
+    serviceCards.forEach(card => serviceObserver.observe(card));
+
+
+
+
+     // Add contact form submission handler
+     document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your message! We will respond shortly.');
+            this.reset();
+        });
+
+
+
+
+
+
+
+               // Profile Tab Management
+               function showProfileTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(`${tabId}Tab`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Profile AJAX Operations
+        $(document).ready(function() {
+            // Load profile data
+            function loadProfileData() {
+                $.ajax({
+                    url: '/api/profile',
+                    method: 'GET',
+                    success: function(response) {
+                        $('#profileName').text(response.name);
+                        $('#profileEmail').text(response.email);
+                        $('#profileBio').text(response.bio);
+                        $('#profileAddress').text(response.address);
+                        $('#profileSkills').html(
+                            response.skills.map(skill => 
+                                `<span class="skill-badge">${skill}</span>`
+                            ).join('')
+                        );
+                        
+                        // Populate edit form
+                        $('#editName').val(response.name);
+                        $('#editEmail').val(response.email);
+                        $('#editBio').val(response.bio);
+                        $('#editAddress').val(response.address);
+                        $('#editSkills').val(response.skills.join(', '));
+                    },
+                    error: function() {
+                        showAlert('Error loading profile data', 'danger');
+                    }
+                });
+            }
+
+            // Handle profile update
+            $('#editProfileForm').submit(function(e) {
+                e.preventDefault();
+                
+                const formData = {
+                    name: $('#editName').val(),
+                    email: $('#editEmail').val(),
+                    bio: $('#editBio').val(),
+                    address: $('#editAddress').val(),
+                    skills: $('#editSkills').val().split(',').map(s => s.trim())
+                };
+
+                $.ajax({
+                    url: '/api/profile/update',
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        loadProfileData();
+                        $('#editProfileModal').modal('hide');
+                        showAlert('Profile updated successfully!', 'success');
+                    },
+                    error: function() {
+                        showAlert('Error updating profile', 'danger');
+                    }
+                });
+            });
+
+            // Handle password change
+            $('#changePasswordForm').submit(function(e) {
+                e.preventDefault();
+                
+                const currentPassword = $('#currentPassword').val();
+                const newPassword = $('#newPassword').val();
+                const confirmPassword = $('#confirmPassword').val();
+
+                if(newPassword !== confirmPassword) {
+                    showAlert('Passwords do not match!', 'danger');
+                    return;
+                }
+
+                $.ajax({
+                    url: '/api/change-password',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    }),
+                    success: function(response) {
+                        $('#changePasswordModal').modal('hide');
+                        $('#changePasswordForm')[0].reset();
+                        showAlert('Password changed successfully!', 'success');
+                    },
+                    error: function(xhr) {
+                        showAlert(xhr.responseJSON.message || 'Error changing password', 'danger');
+                    }
+                });
+            });
+
+            // Password strength indicator
+            $('#newPassword').on('input', function() {
+                const strength = calculatePasswordStrength($(this).val());
+                $('.progress-bar').css('width', strength + '%');
+            });
+
+            function calculatePasswordStrength(password) {
+                let strength = 0;
+                if (password.length >= 8) strength += 25;
+                if (/[A-Z]/.test(password)) strength += 25;
+                if (/[0-9]/.test(password)) strength += 25;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+                return Math.min(strength, 100);
+            }
+
+            function showAlert(message, type) {
+                const alert = $(`
+                    <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                `);
+                $('body').append(alert);
+                setTimeout(() => alert.alert('close'), 3000);
+            }
+
+            // Initial load
+            loadProfileData();
+        });
+    </script>
+</body>
+</html>

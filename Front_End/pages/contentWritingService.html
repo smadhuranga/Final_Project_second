@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Writing Services | UNI Freelancers</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-black: #000000;
+            --text-white: #FFFFFF;
+            --accent-yellow: #FFD700;
+            --accent-green: #00FF00;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+        }
+
+       
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.95) !important;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .search-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-yellow);
+            color: var(--text-white);
+            border-radius: 30px;
+            padding: 12px 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--accent-yellow);
+            cursor: pointer;
+        }
+
+
+        .service-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)),
+                        url('https://source.unsplash.com/random/1920x1080/?content-writing') center/cover;
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .service-highlight-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-highlight-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+        }
+
+        .seller-table-section {
+            padding: 5rem 0;
+        }
+
+        .filter-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .filter-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--accent-yellow);
+            color: white;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .seller-table {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        .seller-table thead {
+            background: linear-gradient(45deg, var(--accent-yellow), var(--accent-green));
+        }
+
+        .seller-table th {
+            padding: 1.5rem;
+            font-weight: 600;
+            color: var(--bg-black);
+        }
+
+        .seller-table td {
+            padding: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+        }
+
+        .seller-table tbody tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .seller-table tbody tr:hover {
+            background: rgba(255, 215, 0, 0.05);
+            transform: translateX(10px);
+        }
+
+        .seller-badge {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--accent-green);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        @keyframes float {
+ 0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        .design-process-step {
+            position: relative;
+            padding: 2rem;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin: 2rem 0;
+            border: 1px solid var(--accent-yellow);
+        }
+
+        .process-number {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 40px;
+            height: 40px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--bg-black);
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#"><img src="/images/LOg.png" alt="UNI Freelancers" style="height: 4rem;"></a>
+            
+            <div class="d-none d-lg-block flex-grow-1 mx-4">
+                <form class="search-container">
+                    <input type="text" class="search-input" placeholder="Search specialists..." id="searchInput">
+                    <button type="button" class="btn-search">
+                        <i class="fas fa-search"></i>
+                    </button>   
+                </form>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="d-lg-none my-3">
+                    <form class="search-container">
+                        <input type="text" class="search-input" placeholder="Search...">
+                        <button type="button" class="btn-search">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#login">Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="service-hero">
+        <div class="container text-center floating">
+            <h1 class="display-3 mb-4 animate-on-scroll">Content Writing Services</h1>
+            <p class="lead animate-on-scroll">Engage Your Audience with Compelling Content</p>
+        </div>
+    </section>
+
+    <!-- Service Highlights -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4 animate-on-scroll">
+                    <div class="service-highlight-card">
+                        <i class="fas fa-file-alt fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                        <h3>Blog Writing</h3>
+                        <ul class="list-unstyled">
+                            <li>✓ SEO-Optimized Content</li>
+                            <li>✓ Engaging and Informative</li>
+                            <li>✓ Regular Updates</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-on-scroll">
+                    <div class="service-highlight-card">
+                        <i class="fas fa-newspaper fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                        <h3>Article Writing</h3>
+                        <ul class="list-unstyled">
+                            <li>✓ In-Depth Research</li>
+                            <li>✓ Unique Perspectives</li>
+                            <li>✓ Tailored to Your Audience</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-4 animate-on-scroll">
+                    <div class="service-highlight-card">
+                        <i class="fas fa-pen-fancy fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                        <h3>Copywriting</h3>
+                        <ul class="list-unstyled">
+                            <li>✓ Persuasive and Impactful</li>
+                            <li>✓ Brand Voice Consistency</li>
+                            <li>✓ Call-to-Action Focused</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seller Table Section -->
+    <section class="seller-table-section" id="developers">
+        <div class="container">
+            <h2 class="text-center mb-5 display-4 animate-on-scroll">Top Content Writers</h2>
+            
+            <!-- Filters -->
+            <div class="filter-container animate-on-scroll">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="number" class="filter-input" placeholder="Min Experience (years)" id="minExp">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="filter-input" placeholder="Max Hourly Rate ($)" id="maxRate">
+                    </div>
+                    <div ```html
+                    <div class="col-md-4">
+                        <input type="number" class="filter-input" placeholder="Min Projects" id="minProjects">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive animate-on-scroll">
+                <table class="seller-table">
+                    <thead>
+                        <tr>
+                            <th>Writer</th>
+                            <th>Experience</th>
+                            <th>Rate/Hour</th>
+                            <th>Projects</th>
+                            <th>Skills</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sellersBody">
+                        <!-- Data loaded via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Writing Process -->
+    <section class="py-5 design-process">
+        <div class="container">
+            <h2 class="text-center mb-5 display-4 animate-on-scroll">Our Writing Process</h2>
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="design-process-step animate-on-scroll">
+                        <div class="process-number">1</div>
+                        <h4 class="text-yellow">Research & Planning</h4>
+                        <p>Understanding your needs and target audience.</p>
+                    </div>
+                    <div class="design-process-step animate-on-scroll">
+                        <div class="process-number">2</div>
+                        <h4 class="text-yellow">Content Creation</h4>
+                        <p>Writing engaging and informative content.</p>
+                    </div>
+                    <div class="design-process-step animate-on-scroll">
+                        <div class="process-number">3</div>
+                        <h4 class="text-yellow">Editing & Proofreading</h4>
+                        <p>Ensuring quality and clarity in the final draft.</p>
+                    </div>
+                    <div class="design-process-step animate-on-scroll">
+                        <div class="process-number">4</div>
+                        <h4 class="text-yellow">Delivery & Feedback</h4>
+                        <p>Delivering the content and incorporating your feedback.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // AJAX Data Fetching (Simulated)
+        async function fetchSellers() {
+            try {
+                // Simulated delay for API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Simulated response data
+                return [
+                    {
+                        name: "Design Masters",
+                        experience: 8,
+                        rate: 85,
+                        projects: 42,
+                        skills: ["Logo Design", "Branding", "Illustration"]
+                    },
+                    {
+                        name: "Creative Studio",
+                        experience: 5,
+                        rate: 65,
+                        projects: 28,
+                        skills: ["Print Design", "Packaging"]
+                    },
+                    {
+                        name: "Pixel Perfect",
+                        experience: 10,
+                        rate: 120,
+                        projects: 67,
+                        skills: ["UI/UX", "Social Media"]
+                    }
+                ];
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return [];
+            }
+        }
+
+        // Render Table
+        function renderSellers(sellers) {
+            const tbody = document.getElementById('sellersBody');
+            tbody.innerHTML = sellers.map(seller => `
+                <tr class="glow-on-hover">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
+                            <div>
+                                <h5 class="mb-0">${seller.name}</h5>
+                                <small class="text-muted">${seller.experience}+ years experience</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${seller.experience} years</td>
+                    <td>$${seller.rate}/hr</td>
+                    <td>${seller.projects}+</td>
+                    <td>
+                        ${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-accent">View Portfolio</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Filter Functionality
+        function filterSellers(sellers) {
+            const minExp = parseInt(document.getElementById('minExp').value) || 0;
+            const maxRate = parseInt(document.getElementById('maxRate').value) || Infinity;
+            const minProjects = parseInt (document.getElementById('minProjects').value) || 0;
+
+            return sellers.filter(seller => 
+                seller.experience >= minExp &&
+                seller.rate <= maxRate &&
+                seller.projects >= minProjects
+            );
+        }
+
+        // Initial Load
+        (async () => {
+            const data = await fetchSellers();
+            renderSellers(data);
+            
+            // Add event listeners for filters
+            document.querySelectorAll('.filter-input').forEach(input => {
+                input.addEventListener('input', () => {
+                    renderSellers(filterSellers(data));
+                });
+            });
+        })();
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>

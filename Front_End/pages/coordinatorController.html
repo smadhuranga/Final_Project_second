@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coordinator Controller - DarkFreelance</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-black: #000000;
+            --text-white: #FFFFFF;
+            --accent-yellow: #FFD700;
+            --accent-green: #00FF00;
+            --danger-red: #ff4444;
+            --info-blue: #2196F3;
+        }
+
+        body {
+            background: linear-gradient(-45deg, 
+                rgba(0,0,0,0.95), 
+                rgba(20,20,20,0.95),
+                rgba(40,40,40,0.95));
+            color: var(--text-white);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+
+        .admin-sidebar {
+            background: rgba(0, 0, 0, 0.9);
+            width: 250px;
+            min-height: 100vh;
+            position: fixed;
+            backdrop-filter: blur(10px);
+            border-right: 2px solid var(--accent-yellow);
+        }
+
+        .admin-main {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .admin-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chat-container {
+            height: 60vh;
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .chat-messages {
+            height: calc(100% - 60px);
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .message {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            margin: 10px;
+            padding: 10px;
+            max-width: 70%;
+        }
+
+        .customer-message {
+            background: rgba(0, 255, 0, 0.1);
+            margin-left: auto;
+        }
+
+        .seller-message {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .payment-filter {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .table-custom {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .active-status {
+            background: rgba(0, 255, 0, 0.1);
+            color: var(--accent-green);
+        }
+
+        .blocked-status {
+            background: rgba(255, 68, 68, 0.1);
+            color: var(--danger-red);
+        }
+
+        .btn-admin {
+            padding: 8px 20px;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent-yellow);
+            color: var(--accent-yellow);
+        }
+
+        .btn-delete {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--danger-red);
+            color: var(--danger-red);
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="admin-sidebar p-3">
+        <h3 class="text-center mb-4" style="color: var(--accent-yellow);">Coordinator Panel</h3>
+        <div class="list-group">
+            <a href="#customers" class="list-group-item list-group-item-action bg-transparent text-white border-0">
+                <i class="fas fa-users me-2"></i>Customer Management
+            </a>
+            <a href="#chats" class="list-group-item list-group-item-action bg-transparent text-white border-0">
+                <i class="fas fa-comments me-2"></i>Customer Chats
+            </a>
+            <a href="#sellers" class="list-group-item list-group-item-action bg-transparent text-white border-0">
+                <i class="fas fa-store me-2"></i>Seller Management
+            </a>
+            <a href="#payments" class="list-group-item list-group-item-action bg-transparent text-white border-0">
+                <i class="fas fa-receipt me-2"></i>Payments & Receipts
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+        <!-- Customer Management -->
+        <section id="customers" class="admin-section">
+            <div class="admin-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-yellow">Customer Management</h3>
+                    <button class="btn btn-admin btn-edit" onclick="openCustomerModal()">
+                        <i class="fas fa-plus me-2"></i>Add Customer
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customer Chats -->
+        <section id="chats" class="admin-section d-none">
+            <div class="admin-card">
+                <h3 class="text-yellow mb-4">Customer Chats</h3>
+                <div class="chat-container">
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Chat messages will be loaded here -->
+                    </div>
+                    <div class="p-3 bg-dark">
+                        <div class="input-group">
+                            <input type="text" class="form-control bg-dark text-white" 
+                                   placeholder="Type message...">
+                            <button class="btn btn-admin btn-edit">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seller Management -->
+        <section id="sellers" class="admin-section d-none">
+            <div class="admin-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-yellow">Seller Management</h3>
+                    <button class="btn btn-admin btn-edit" onclick="openSellerModal()">
+                        <i class="fas fa-plus me-2"></i>Add Seller
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Store Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sellersTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payments & Receipts -->
+        <section id="payments" class="admin-section d-none">
+            <div class="admin-card">
+                <h3 class="text-yellow mb-4">Payments & Receipts</h3>
+                <div class="payment-filter">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <input type="date" class="form-control bg-dark text-white">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select bg-dark text-white">
+                                <option>All Statuses</option>
+                                <option>Completed</option>
+                                <option>Pending</option>
+                                <option>Failed</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <button class="btn btn-admin btn-edit w-100">Filter</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-custom table-hover">
+                        <thead>
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTable">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modals -->
+    <!-- Customer Modal -->
+    <div class="modal fade" id="customerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content admin-card">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-yellow">Manage Customer</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="customerForm">
+                        <input type="hidden" id="customerId">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control bg-dark text-white" id="customerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control bg-dark text-white" id="customerEmail" required>
+                        </div>
+                        <button type="submit" class="btn btn-admin btn-edit w-100">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Seller Modal -->
+    <div class="modal fade" id="sellerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content admin-card">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title text-yellow">Manage Seller</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="sellerForm">
+                        <input type="hidden" id="sellerId">
+                        <div class="mb-3">
+                            <label class="form-label">Store Name</label>
+                            <input type="text" class="form-control bg-dark text-white" id="storeName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control bg-dark text-white" id="sellerEmail" required>
+                        </div>
+                        <button type="submit" class="btn btn-admin btn-edit w-100">Save</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Sample Data
+        let customers = [
+            { id: 1, name: "John Doe", email: "john@example.com", status: "active" }
+        ];
+
+        let sellers = [
+            { id: 1, store: "Tech Store", email: "tech@example.com", status: "active" }
+        ];
+
+        let payments = [
+            { id: "TX001", date: "2023-07-20", amount: "$150", status: "Completed" }
+        ];
+
+        let chats = [
+            { sender: "customer", message: "When will my order arrive?", time: "10:00 AM" },
+            { sender: "seller", message: "Your order is shipping today", time: "10:15 AM" }
+        ];
+
+        // Customer Functions
+        function renderCustomers() {
+            const tbody = document.getElementById('customersTable');
+            tbody.innerHTML = customers.map(customer => `
+                <tr>
+                    <td>${customer.id}</td>
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>
+                        <span class="status-badge ${customer.status === 'active' ? 'active-status' : 'blocked-status'}">
+                            ${customer.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-admin btn-edit me-2" onclick="openCustomerModal(${customer.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-admin btn-delete me-2" 
+                            onclick="toggleStatus('customer', ${customer.id})">
+                            <i class="fas fa-ban"></i>
+                        </button>
+                        <button class="btn btn-admin btn-delete" 
+                            onclick="deleteItem('customer', ${customer.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openCustomerModal(id = null) {
+            const modal = new bootstrap.Modal(document.getElementById('customerModal'));
+            if(id) {
+                const customer = customers.find(c => c.id === id);
+                document.getElementById('customerId').value = customer.id;
+                document.getElementById('customerName').value = customer.name;
+                document.getElementById('customerEmail').value = customer.email;
+            } else {
+                document.getElementById('customerForm').reset();
+            }
+            modal.show();
+        }
+
+        // Seller Functions
+        function renderSellers() {
+            const tbody = document.getElementById('sellersTable');
+            tbody.innerHTML = sellers.map(seller => `
+                <tr>
+                    <td>${seller.id}</td>
+                    <td>${seller.store}</td>
+                    <td>${seller.email}</td>
+                    <td>
+                        <span class="status-badge ${seller.status === 'active' ? 'active-status' : 'blocked-status'}">
+                            ${seller.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-admin btn-edit me-2" onclick="openSellerModal(${seller.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-admin btn-delete me-2" 
+                            onclick="toggleStatus('seller', ${seller.id})">
+                            <i class="fas fa-ban"></i>
+                        </button>
+                        <button class="btn btn-admin btn-delete" 
+                            onclick="deleteItem('seller', ${seller.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openSellerModal(id = null) {
+            const modal = new bootstrap.Modal(document.getElementById('sellerModal'));
+            if(id) {
+                const seller = sellers.find(s => s.id === id);
+                document.getElementById('sellerId').value = seller.id;
+                document.getElementById('storeName').value = seller.store;
+                document.getElementById('sellerEmail').value = seller.email;
+            } else {
+                document.getElementById('sellerForm').reset();
+            }
+            modal.show();
+        }
+
+        // Chat Functions
+        function renderChat() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = chats.map(msg => `
+                <div class="message ${msg.sender === 'customer' ? 'customer-message' : 'seller-message'}">
+                    <div class="message-sender">${msg.sender.charAt(0).toUpperCase() + msg.sender.slice(1)}</div>
+                    <div class="message-text">${msg.message}</div>
+                    <div class="text-end small text-muted">${msg.time}</div>
+                </div>
+            `).join('');
+        }
+
+        // Payment Functions
+        function renderPayments() {
+            const tbody = document.getElementById('paymentsTable');
+            tbody.innerHTML = payments.map(payment => `
+                <tr>
+                    <td>${payment.id}</td>
+                    <td>${payment.date}</td>
+                    <td>${payment.amount}</td>
+                    <td>
+                        <span class="status-badge ${payment.status === 'Completed' ? 'active-status' : 
+                            payment.status === 'Pending' ? 'text-warning' : 'blocked-status'}">
+                            ${payment.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-admin btn-edit">
+                            <i class="fas fa-receipt"></i> View Receipt
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // General Functions
+        function toggleStatus(type, id) {
+            const collection = type === 'customer' ? customers : sellers;
+            const item = collection.find(i => i.id === id);
+            item.status = item.status === 'active' ? 'blocked' : 'active';
+            type === 'customer' ? renderCustomers() : renderSellers();
+        }
+
+        function deleteItem(type, id) {
+            switch(type) {
+                case 'customer':
+                    customers = customers.filter(c => c.id !== id);
+                    renderCustomers();
+                    break;
+                case 'seller':
+                    sellers = sellers.filter(s => s.id !== id);
+                    renderSellers();
+                    break;
+            }
+        }
+
+        // Event Listeners
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('customerId').value;
+            const name = document.getElementById('customerName').value;
+            const email = document.getElementById('customerEmail').value;
+
+            if(id) {
+                const customer = customers.find(c => c.id == id);
+                customer.name = name;
+                customer.email = email;
+            } else {
+                customers.push({
+                    id: customers.length + 1,
+                    name,
+                    email,
+                    status: 'active'
+                });
+            }
+            renderCustomers();
+            new bootstrap.Modal(document.getElementById('customerModal')).hide();
+        });
+
+        document.getElementById('sellerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const id = document.getElementById('sellerId').value;
+            const store = document.getElementById('storeName').value;
+            const email = document.getElementById('sellerEmail').value;
+
+            if(id) {
+                const seller = sellers.find(s => s.id == id);
+                seller.store = store;
+                seller.email = email;
+            } else {
+                sellers.push({
+                    id: sellers.length + 1,
+                    store,
+                    email,
+                    status: 'active'
+                });
+            }
+            renderSellers();
+            new bootstrap.Modal(document.getElementById('sellerModal')).hide();
+        });
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCustomers();
+            renderSellers();
+            renderChat();
+            renderPayments();
+            
+            // Tab Switching
+            document.querySelectorAll('.admin-sidebar a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.admin-section').forEach(section => {
+                        section.classList.add('d-none');
+                    });
+                    document.querySelector(this.getAttribute('href')).classList.remove('d-none');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
