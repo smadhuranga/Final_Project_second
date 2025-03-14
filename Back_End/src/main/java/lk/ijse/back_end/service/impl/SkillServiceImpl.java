@@ -2,11 +2,12 @@ package lk.ijse.back_end.service.impl;
 
 
 
-import org.example.springwithjwt.dto.SkillDTO;
-import org.example.springwithjwt.entity.Skill;
-import org.example.springwithjwt.repo.SkillRepository;
-import org.example.springwithjwt.service.SkillService;
-import org.example.springwithjwt.util.VarList;
+
+import lk.ijse.back_end.dto.SkillDTO;
+import lk.ijse.back_end.entity.Skill;
+import lk.ijse.back_end.repository.SkillRepo;
+import lk.ijse.back_end.service.SkillService;
+import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class SkillServiceImpl implements SkillService {
 
     @Autowired
-    private SkillRepository skillRepository;
+    private SkillRepo skillRepository;
 
     @Autowired
     private ModelMapper modelMapper;

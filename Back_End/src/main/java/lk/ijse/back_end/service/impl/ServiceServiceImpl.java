@@ -1,11 +1,11 @@
 package lk.ijse.back_end.service.impl;
 
 
-import org.example.springwithjwt.dto.ServiceDTO;
-import org.example.springwithjwt.entity.Service;
-import org.example.springwithjwt.repo.ServiceRepository;
-import org.example.springwithjwt.service.ServiceService;
-import org.example.springwithjwt.util.VarList;
+
+import lk.ijse.back_end.dto.ServiceDTO;
+import lk.ijse.back_end.repository.ServiceRepo;
+import lk.ijse.back_end.service.ServiceService;
+import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ServiceServiceImpl implements ServiceService {
 
     @Autowired
-    private ServiceRepository serviceRepository;
+    private ServiceRepo serviceRepository;
 
     @Autowired
     private ModelMapper modelMapper;

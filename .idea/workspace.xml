@@ -5,28 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="imple classes creating">
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/ChatMessageService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/CoordinatorService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/CustomerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/OrderService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/PaymentService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/RatingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/SellerService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/ServiceCategoryService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/ServiceService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/SkillService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ChatMessageServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/OrderServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/PaymentServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/RatingServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/SkillServiceImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AuthController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/SkillServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/SkillServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

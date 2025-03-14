@@ -1,10 +1,11 @@
 package lk.ijse.back_end.service.impl;
 
-import org.example.springwithjwt.dto.*;
-import org.example.springwithjwt.entity.User;
-import org.example.springwithjwt.repo.UserRepository;
-import org.example.springwithjwt.service.UserService;
-import org.example.springwithjwt.util.VarList;
+
+import lk.ijse.back_end.dto.*;
+import lk.ijse.back_end.entity.User;
+import lk.ijse.back_end.repository.UserRepo;
+import lk.ijse.back_end.service.UserService;
+import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,12 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
+import static lk.ijse.back_end.util.UserType.*;
+
 @Service
 @Transactional
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepo userRepository;
 
     @Autowired
     private ModelMapper modelMapper;
