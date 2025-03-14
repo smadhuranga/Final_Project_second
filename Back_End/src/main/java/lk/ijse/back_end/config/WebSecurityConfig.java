@@ -1,6 +1,5 @@
 package lk.ijse.back_end.config;
 
-import lk.ijse.back_end.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,26 +22,29 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig {
 
-    @Autowired
-    private UserServiceImpl userService;
+    private final UserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JwtFilter jwtFilter;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    public WebSecurityConfig(UserDetailsService userDetailsService,
+                             JwtFilter jwtFilter,
+                             PasswordEncoder passwordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(passwordEncoder);
     }
 
     @Bean
@@ -61,10 +64,10 @@ public class WebSecurityConfig {
                                 "/swagger-ui.html",
                                 "/webjars/**"
                         ).permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/seller/**").hasAuthority("SELLER")
-                        .requestMatchers("/api/v1/customer/**").hasAuthority("CUSTOMER")
-                        .requestMatchers("/api/v1/coordinator/**").hasAuthority("COORDINATOR")
+                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/api/v1/seller/**").hasAuthority("ROLE_SELLER")
+                        .requestMatchers("/api/v1/customer/**").hasAuthority("ROLE_CUSTOMER")
+                        .requestMatchers("/api/v1/coordinator/**").hasAuthority("ROLE_COORDINATOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -73,5 +76,10 @@ public class WebSecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

@@ -1,22 +1,18 @@
 package lk.ijse.back_end.config;
 
-
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-
-import lk.ijse.back_end.service.impl.UserServiceImpl;
 import lk.ijse.back_end.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -26,14 +22,18 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+    private final UserDetailsService userDetailsService;
+    private final String secretKey;
 
     @Autowired
-    private UserServiceImpl userService;
-
-    @Value("${jwt.secret}")
-    private String secretKey;
+    public JwtFilter(JwtUtil jwtUtil,
+                     UserDetailsService userDetailsService,
+                     @Value("${jwt.secret}") String secretKey) {
+        this.jwtUtil = jwtUtil;
+        this.userDetailsService = userDetailsService;
+        this.secretKey = secretKey;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -50,13 +50,12 @@ public class JwtFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.getAllClaimsFromToken(jwt);
             userType = (String) claims.get("type");
 
-            // Set attributes for downstream use
             request.setAttribute("email", email);
             request.setAttribute("userType", userType);
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userService.loadUserByUsername(email);
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken =

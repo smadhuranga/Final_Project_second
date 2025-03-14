@@ -1,39 +1,57 @@
 package lk.ijse.back_end.service.impl;
 
 
-import org.example.springwithjwt.dto.ServiceDTO;
-import org.example.springwithjwt.entity.Service;
-import org.example.springwithjwt.repo.ServiceRepository;
-import org.example.springwithjwt.service.ServiceService;
-import org.example.springwithjwt.util.VarList;
+
+import lk.ijse.back_end.dto.ServiceDTO;
+
+
+import lk.ijse.back_end.repository.ServiceRepo;
+import lk.ijse.back_end.service.ServiceService;
+import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
 public class ServiceServiceImpl implements ServiceService {
 
-    @Autowired
-    private ServiceRepository serviceRepository;
+    private final ServiceRepo serviceRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public ServiceServiceImpl(ServiceRepo serviceRepository, ModelMapper modelMapper) {
+        this.serviceRepository = serviceRepository;
+        this.modelMapper = modelMapper;
+    }
+
 
     @Override
     public int saveService(ServiceDTO serviceDTO) {
-        if (serviceRepository.existsByTitle(serviceDTO.getTitle())) {
-            return VarList.Not_Acceptable;
+        try {
+            if (serviceRepository.existsByTitle(serviceDTO.getTitle())) {
+                return VarList.Not_Acceptable;
+            }
+
+            lk.ijse.back_end.entity.Service serviceEntity = modelMapper.map(serviceDTO, lk.ijse.back_end.entity.Service.class);
+            serviceRepository.save(serviceEntity);
+            return VarList.Created;
+
+        } catch (DataIntegrityViolationException e) {
+            return VarList.Bad_Request;
+        } catch (Exception e) {
+            return VarList.Internal_Server_Error;
         }
-        serviceRepository.save(modelMapper.map(serviceDTO, Service.class));
-        return VarList.Created;
     }
 
     @Override
     public ServiceDTO getServiceById(Long id) {
-        return serviceRepository.findById(id)
-                .map(service -> modelMapper.map(service, ServiceDTO.class))
+        Optional<lk.ijse.back_end.entity.Service> serviceEntity = serviceRepository.findById(id);
+        return serviceEntity.map(entity -> modelMapper.map(entity, ServiceDTO.class))
                 .orElse(null);
     }
 }

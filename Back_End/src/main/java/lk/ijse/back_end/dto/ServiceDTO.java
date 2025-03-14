@@ -1,12 +1,9 @@
 package lk.ijse.back_end.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Data
 public class ServiceDTO {
     private Long id;
@@ -16,5 +13,4 @@ public class ServiceDTO {
     private String deliveryTime;
     private Long sellerId;
     private Long categoryId;
-    // Getters and Setters
 }

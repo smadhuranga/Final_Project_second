@@ -1,26 +1,26 @@
 package lk.ijse.back_end.entity;
 
-import jakarta.persistence.*;
 
+
+import jakarta.persistence.*;
+import lombok.Data;
 import java.math.BigDecimal;
 
+@Data
 @Entity
+@Table(name = "services")
 public class Service {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String description;
     private BigDecimal price;
     private String deliveryTime;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @Column(name = "seller_id")
+    private Long sellerId;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private ServiceCategory category;
-
-    // Getters and setters
+    @Column(name = "category_id")
+    private Long categoryId;
 }

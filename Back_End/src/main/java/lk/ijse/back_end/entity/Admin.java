@@ -1,8 +1,12 @@
 package lk.ijse.back_end.entity;
 
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import lombok.Data;
 
 @Entity
+@Data
+@DiscriminatorValue("ADMIN")
 public class Admin extends User {
-    // Admin-specific fields if needed
+    // No additional fields
 }

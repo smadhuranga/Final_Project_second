@@ -1,12 +1,10 @@
 package lk.ijse.back_end.service.impl;
 
-
-
-import org.example.springwithjwt.dto.SkillDTO;
-import org.example.springwithjwt.entity.Skill;
-import org.example.springwithjwt.repo.SkillRepository;
-import org.example.springwithjwt.service.SkillService;
-import org.example.springwithjwt.util.VarList;
+import lk.ijse.back_end.dto.SkillDTO;
+import lk.ijse.back_end.entity.Skill;
+import lk.ijse.back_end.repository.SkillRepo;
+import lk.ijse.back_end.service.SkillService;
+import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,18 +14,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class SkillServiceImpl implements SkillService {
 
-    @Autowired
-    private SkillRepository skillRepository;
+    private final SkillRepo skillRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public SkillServiceImpl(SkillRepo skillRepository, ModelMapper modelMapper) {
+        this.skillRepository = skillRepository;
+        this.modelMapper = modelMapper;
+    }
 
     @Override
     public int saveSkill(SkillDTO skillDTO) {
         if (skillRepository.existsByName(skillDTO.getName())) {
             return VarList.Not_Acceptable;
         }
-        skillRepository.save(modelMapper.map(skillDTO, Skill.class));
+        Skill skillEntity = modelMapper.map(skillDTO, Skill.class);
+        skillRepository.save(skillEntity);
         return VarList.Created;
     }
 

@@ -1,52 +1,68 @@
 package lk.ijse.back_end.service.impl;
 
-import org.example.springwithjwt.dto.*;
-import org.example.springwithjwt.entity.User;
-import org.example.springwithjwt.repo.UserRepository;
-import org.example.springwithjwt.service.UserService;
-import org.example.springwithjwt.util.VarList;
+
+
+import lk.ijse.back_end.dto.*;
+import lk.ijse.back_end.entity.*;
+import lk.ijse.back_end.repository.UserRepo;
+import lk.ijse.back_end.service.UserService;
+import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+
+import static lk.ijse.back_end.util.UserType.*;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserDetailsService, UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepo userRepository;
+    private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private ModelMapper modelMapper;
+    public UserServiceImpl(UserRepo userRepository,
+                           ModelMapper modelMapper,
+                           PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null) throw new UsernameNotFoundException("User not found");
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(), getAuthority(user));
+                user.getEmail(),
+                user.getPassword(),
+                getAuthorities(user)
+        );
     }
 
-    private Set<SimpleGrantedAuthority> getAuthority(User user) {
+    private Set<SimpleGrantedAuthority> getAuthorities(User user) {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        authorities.add(new SimpleGrantedAuthority(user.getType().name()));
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getType().name()));
         return authorities;
     }
 
     @Override
     public UserDTO searchUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) return null;
-        return convertToDTO(user);
+        return userRepository.findByEmail(email)
+                .map(this::convertToDTO)
+                .orElse(null);
     }
 
     @Override
@@ -54,35 +70,53 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             return VarList.Not_Acceptable;
         }
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userDTO.setPassword(encoder.encode(userDTO.getPassword()));
-        userRepository.save(modelMapper.map(userDTO, User.class));
+
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        User userEntity = createUserEntity(userDTO);
+        userRepository.save(userEntity);
         return VarList.Created;
     }
 
+    private User createUserEntity(UserDTO userDTO) {
+        return switch (userDTO.getType()) {
+            case CUSTOMER -> modelMapper.map(userDTO, Customer.class);
+            case SELLER -> modelMapper.map(userDTO, Seller.class);
+            case COORDINATOR -> modelMapper.map(userDTO, Coordinator.class);
+            case ADMIN -> modelMapper.map(userDTO, Admin.class);
+            default -> throw new IllegalArgumentException("Invalid user type");
+        };
+    }
+
     private UserDTO convertToDTO(User user) {
-        switch (user.getType()) {
-            case CUSTOMER:
-                CustomerDTO customerDTO = modelMapper.map(user, CustomerDTO.class);
-                customerDTO.setOrderIds(user.getOrderIds());
-                return customerDTO;
-            case SELLER:
-                SellerDTO sellerDTO = modelMapper.map(user, SellerDTO.class);
-                sellerDTO.setNic(user.getNic());
-                sellerDTO.setBio(user.getBio());
-                sellerDTO.setQualifications(user.getQualifications());
-                sellerDTO.setSkillIds(user.getSkillIds());
-                return sellerDTO;
-            case COORDINATOR:
-                CoordinatorDTO coordinatorDTO = modelMapper.map(user, CoordinatorDTO.class);
-                coordinatorDTO.setNic(user.getNic());
-                coordinatorDTO.setQualifications(user.getQualifications());
-                coordinatorDTO.setSkillIds(user.getSkillIds());
-                return coordinatorDTO;
-            case ADMIN:
-                return modelMapper.map(user, AdminDTO.class);
-            default:
-                return modelMapper.map(user, UserDTO.class);
-        }
+        return switch (user.getType()) {
+            case CUSTOMER -> convertCustomer((Customer) user);
+            case SELLER -> convertSeller((Seller) user);
+            case COORDINATOR -> convertCoordinator((Coordinator) user);
+            case ADMIN -> modelMapper.map(user, AdminDTO.class);
+            default -> modelMapper.map(user, UserDTO.class);
+        };
+    }
+
+    private CustomerDTO convertCustomer(Customer customer) {
+        CustomerDTO dto = modelMapper.map(customer, CustomerDTO.class);
+        dto.setOrderIds(customer.getOrderIds());
+        return dto;
+    }
+
+    private SellerDTO convertSeller(Seller seller) {
+        SellerDTO dto = modelMapper.map(seller, SellerDTO.class);
+        dto.setNic(seller.getNic());
+        dto.setBio(seller.getBio());
+        dto.setQualifications(seller.getQualifications());
+        dto.setSkillIds(seller.getSkillIds());
+        return dto;
+    }
+
+    private CoordinatorDTO convertCoordinator(Coordinator coordinator) {
+        CoordinatorDTO dto = modelMapper.map(coordinator, CoordinatorDTO.class);
+        dto.setNic(coordinator.getNic());
+        dto.setQualifications(coordinator.getQualifications());
+        dto.setSkillIds(coordinator.getSkillIds());
+        return dto;
     }
 }

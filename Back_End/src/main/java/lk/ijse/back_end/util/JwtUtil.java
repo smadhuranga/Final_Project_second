@@ -52,6 +52,7 @@ public class JwtUtil {
 
     public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
+
     }
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {

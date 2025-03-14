@@ -1,13 +1,16 @@
 package lk.ijse.back_end.entity;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import lombok.Data;
 
 import java.util.List;
 
 @Entity
+@Data
+@DiscriminatorValue("CUSTOMER")
 public class Customer extends User {
-    // Additional customer-specific fields
-    @OneToMany(mappedBy = "customer")
-    private List<Orders> orders;
+    @ElementCollection
+    private List<Long> orderIds;
 }

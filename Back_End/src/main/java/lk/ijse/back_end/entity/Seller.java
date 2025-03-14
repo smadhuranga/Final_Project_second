@@ -1,10 +1,15 @@
 package lk.ijse.back_end.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import lombok.Data;
 
 import java.util.List;
 
 @Entity
+@Data
+@DiscriminatorValue("SELLER")
 public class Seller extends User {
     private String nic;
     private String bio;
@@ -12,13 +17,12 @@ public class Seller extends User {
     @ElementCollection
     private List<String> qualifications;
 
-    @ManyToMany
-    @JoinTable(name = "seller_skills")
-    private List<Skill> skills;
+    @ElementCollection
+    private List<Long> skillIds;
 
-    @OneToMany(mappedBy = "seller")
-    private List<Service> services;
+    @ElementCollection
+    private List<Long> serviceIds;
 
-    @OneToMany(mappedBy = "seller")
-    private List<Rating> ratings;
+    @ElementCollection
+    private List<Long> ratingIds;
 }

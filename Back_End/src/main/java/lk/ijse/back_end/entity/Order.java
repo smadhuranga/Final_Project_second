@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
-public class Rating {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +20,10 @@ public class Rating {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
-    private int score;
-    private String comment;
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    private Service service;
+
+    private LocalDateTime orderDate = LocalDateTime.now();
+    private String status;
 }

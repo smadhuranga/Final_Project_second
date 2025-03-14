@@ -1,26 +1,25 @@
 package lk.ijse.back_end.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.criteria.Order;
+import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
 public class Payment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Orders order;
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     private BigDecimal amount;
     private String paymentMethod;
     private String transactionId;
-    private LocalDateTime paymentDate;
-    private String status; // PENDING, COMPLETED, FAILED
+    private LocalDateTime paymentDate = LocalDateTime.now();
+    private String status;
 }
