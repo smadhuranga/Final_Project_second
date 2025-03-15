@@ -2,9 +2,11 @@ package lk.ijse.back_end.controller;
 
 import lk.ijse.back_end.dto.CustomerDTO;
 import lk.ijse.back_end.dto.ResponseDTO;
+import lk.ijse.back_end.service.UserService;
 import lk.ijse.back_end.service.impl.UserServiceImpl;
 import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class CustomerController {
 
-    private final UserServiceImpl userService;
+    private final UserService userService; // Use interface type
 
     @Autowired
-    public CustomerController(UserServiceImpl userService) {
+    public CustomerController(@Qualifier("userServiceImpl") UserService userService) {
         this.userService = userService;
     }
 

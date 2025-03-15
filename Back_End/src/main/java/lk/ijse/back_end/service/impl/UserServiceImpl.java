@@ -6,31 +6,34 @@ import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.entity.*;
 import lk.ijse.back_end.repository.UserRepo;
 import lk.ijse.back_end.service.UserService;
+import lk.ijse.back_end.util.CustomUserDetails;
 import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.HashSet;
-import java.util.Optional;
+
 import java.util.Set;
 
-import static lk.ijse.back_end.util.UserType.*;
+
 
 @Service
-@Transactional
-public class UserServiceImpl implements UserDetailsService, UserService {
+@Primary
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepo userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
+    // Remove any WebSecurityConfig dependencies
     @Autowired
     public UserServiceImpl(UserRepo userRepository,
                            ModelMapper modelMapper,
@@ -41,15 +44,10 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                getAuthorities(user)
-        );
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new CustomUserDetails(user);
     }
 
     private Set<SimpleGrantedAuthority> getAuthorities(User user) {

@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 import lk.ijse.back_end.dto.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -18,13 +19,15 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
+    private final String secret;
+    private final long expiration;
 
-    @Value("${jwt.secret}")
-    private String secret;
-
-    @Value("${jwt.expiration:36000000}") // 10 hours default
-    private long expiration;
-
+    @Autowired
+    public JwtUtil(@Value("${jwt.secret}") String secret,
+                   @Value("${jwt.expiration}") long expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+    }
     public String generateToken(UserDTO userDTO) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("type", userDTO.getType().name());
@@ -75,4 +78,5 @@ public class JwtUtil {
     public String getUserTypeFromToken(String token) {
         return getClaimFromToken(token, claims -> claims.get("type", String.class));
     }
+
 }
