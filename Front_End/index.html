@@ -225,18 +225,18 @@
 <body>
     <!-- Login Form -->
     <div class="container" id="loginForm">
-        <img src="/images/LOg.png" alt= "logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
+        <img src="images/LOg.png" alt= "logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
 <br>
         <h2><i class="fas fa-sign-in-alt"></i>Welcome Back</h2>
         <form>
             <div class="form-group">
-                <i class="fas fa-user input-icon"></i> 
-                <input type="text" placeholder="Email Address" id="email" required>
+                <i class="fas fa-user input-icon"></i>
+                <input type="text" id="loginEmail" placeholder="Email Address" required>
                
             </div>
             <div class="form-group">
                 <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="password" placeholder="Password" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
                
             </div>
             <button class="btn btn-primary">Sign In</button>
@@ -281,19 +281,20 @@
 
             <div class="form-group">
                 <i class="fas fa-user input-icon"></i>
-                <input type="text" placeholder="Full Name" id="name" required>
+                <input type="text" id="regName" placeholder="Full Name" required>
               
             </div>
             <div class="form-group">
                 <i class="fas fa-envelope input-icon"></i>
-                <input type="email" placeholder="Email Address" id="email" required>
+                <input type="email" id="regEmail" placeholder="Email Address" required>
                 
             </div>
 
             <div class="form-group">
                 <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="password" placeholder="Password" required>
-               
+                <input type="password" id="regPassword" placeholder="Password" required>
+
+
             </div>
 
             <div class="seller-fields">
@@ -327,7 +328,7 @@
         <form>
             <div class="form-group">
                 <i class="fas fa-envelope input-icon"></i>
-                <input type="email" placeholder="Email Address" required>
+                <input type="email" id="forgotEmail" placeholder="Email Address" required>
                
             </div>
             <button class="btn btn-primary">Send Reset Link</button>
@@ -338,7 +339,7 @@
             </div>
         </form>
     </div>
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function showForm(formId) {
             document.querySelectorAll('.container').forEach(form => {
@@ -368,6 +369,104 @@
                 const fileName = e.target.files[0]?. name || 'No file chosen';
                 this.previousElementSibling.textContent = fileName;
             });
+        });
+
+
+        // Form handling
+        $(document).ready(function() {
+            // Login Form
+            $('#loginForm form').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/api/login",
+                    data: {
+                        email: $('#loginForm input[type="text"]').val(),
+                        password: $('#loginForm input[type="password"]').val()
+                    },
+                    success: function(response) {
+                        window.location.href = '/dashboard'; // Redirect on success
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || 'Login failed');
+                    }
+                });
+            });
+
+            // Registration Form
+            $('#registerForm form').submit(function(e) {
+                e.preventDefault();
+                const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
+                const formData = new FormData();
+
+                // Add common fields
+                formData.append('name', $('#registerForm input[type="text"]').val());
+                formData.append('email', $('#registerForm input[type="email"]').val());
+                formData.append('password', $('#registerForm input[type="password"]').val());
+                formData.append('user_type', isSeller ? 'seller' : 'buyer');
+
+                // Add seller-specific fields
+                if(isSeller) {
+                    formData.append('business_name', $('#registerForm input[placeholder="Business Name"]').val());
+                    formData.append('business_phone', $('#registerForm input[placeholder="Business Phone"]').val());
+                    formData.append('license', $('#registerForm input[type="file"]')[0].files[0]);
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/api/v1/customers/register",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        alert('Registration successful! Please login');
+                        showForm('loginForm');
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || 'Registration failed');
+                    }
+                });
+            });
+
+            // Forgot Password Form
+            $('#forgotForm form').submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/api/forgot-password",
+                    data: {
+                        email: $('#forgotForm input[type="email"]').val()
+                    },
+                    success: function(response) {
+                        alert('Password reset link sent to your email');
+                        showForm('loginForm');
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON.message || 'Password reset failed');
+                    }
+                });
+            });
+        });
+
+        // Existing UI functions
+        function showForm(formId) {
+            $('.container').addClass('hidden');
+            $('#' + formId).removeClass('hidden');
+        }
+
+        function toggleUserType(element) {
+            $('.user-type-btn').removeClass('active');
+            $(element).addClass('active');
+            $('.seller-fields').toggle(element.textContent.includes('Seller'));
+        }
+
+        // File upload handling
+        $('.file-upload').click(function() {
+            $(this).find('input[type="file"]').click();
+        });
+
+        $('.file-upload input[type="file"]').change(function() {
+            $(this).siblings('p').text(this.files[0]?.name || 'Upload Business License');
         });
     </script>
 </body>

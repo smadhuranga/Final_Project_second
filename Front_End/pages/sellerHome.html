@@ -48,7 +48,7 @@
       backdrop-filter: blur(10px);
     }
 
-    .order-table {
+    .orders-table {
       background: rgba(255,255,255,0.03);
       border-radius: 15px;
       overflow: hidden;
@@ -217,7 +217,7 @@
   <!-- Order Management -->
   <section id="orders" class="py-5">
     <h3 class="mb-4">Recent Orders</h3>
-    <div class="order-table">
+    <div class="orders-table">
       <table class="table table-dark table-hover">
         <thead>
         <tr>
@@ -290,7 +290,7 @@
   </div>
   <div class="chat-messages p-3" style="height: 300px; overflow-y: auto;">
     <div class="message-bubble">How can I help you today?</div>
-    <div class="message-bubble message-right">I need some changes to my order</div>
+    <div class="message-bubble message-right">I need some changes to my orders</div>
   </div>
   <div class="chat-input p-3">
     <div class="input-group">
@@ -408,7 +408,7 @@
     $('#sendMessage').click(sendMessage);
 
     function loadDashboardData() {
-      const totalEarnings = sampleOrders.reduce((sum, order) => sum + order.price, 0);
+      const totalEarnings = sampleOrders.reduce((sum, orders) => sum + orders.price, 0);
       $('#totalEarnings').text(`$${totalEarnings.toFixed(2)}`);
       $('#activeOrders').text(sampleOrders.length);
     }
@@ -441,19 +441,19 @@
 
     function loadOrders() {
       let html = '';
-      sampleOrders.forEach(order => {
+      sampleOrders.forEach(orders => {
         html += `
                         <tr>
-                            <td>#${order.id}</td>
-                            <td>${order.service}</td>
-                            <td>$${order.price}</td>
+                            <td>#${orders.id}</td>
+                            <td>${orders.service}</td>
+                            <td>$${orders.price}</td>
                             <td>
-                                <span class="status-badge ${order.statusClass}">
-                                    ${order.status}
+                                <span class="status-badge ${orders.statusClass}">
+                                    ${orders.status}
                                 </span>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-success deliver-order" data-id="${order.id}">
+                                <button class="btn btn-sm btn-outline-success deliver-orders" data-id="${orders.id}">
                                     Deliver
                                 </button>
                             </td>
@@ -544,9 +544,9 @@
     }
 
     // Event Delegation for dynamic elements
-    $(document).on('click', '.deliver-order', function() {
+    $(document).on('click', '.deliver-orders', function() {
       const orderId = $(this).data('id');
-      // Handle order delivery logic here
+      // Handle orders delivery logic here
     });
 
     // Initialize tooltips
