@@ -373,25 +373,31 @@
 
 
         // Form handling
-        $(document).ready(function() {
-            // Login Form
-            $('#loginForm form').submit(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/api/login",
-                    data: {
-                        email: $('#loginForm input[type="text"]').val(),
-                        password: $('#loginForm input[type="password"]').val()
-                    },
-                    success: function(response) {
-                        window.location.href = '/dashboard'; // Redirect on success
-                    },
-                    error: function(xhr) {
-                        alert(xhr.responseJSON.message || 'Login failed');
-                    }
-                });
+        $('#loginForm form').submit(function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/v1/auth/login",
+                contentType: "application/json", // Add content type
+                data: JSON.stringify({ // Stringify the data
+                    email: $('#loginForm input[type="text"]').val(),
+                    password: $('#loginForm input[type="password"]').val()
+                }),
+                xhrFields: {
+                    withCredentials: true // For cookies/sessions
+                },
+                success: function(response) {
+                    window.location.href = './pages/home.html';
+                },
+                error: function(xhr) {
+                    // Handle undefined responseJSON
+                    const errorMsg = xhr.responseJSON?.message
+                        || xhr.responseText
+                        || 'Login failed';
+                    alert(errorMsg);
+                }
             });
+        });
 
             // Registration Form
             $('#registerForm form').submit(function(e) {
@@ -446,7 +452,7 @@
                     }
                 });
             });
-        });
+
 
         // Existing UI functions
         function showForm(formId) {

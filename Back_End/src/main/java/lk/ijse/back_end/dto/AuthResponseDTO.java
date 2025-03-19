@@ -22,4 +22,6 @@ public class AuthResponseDTO {
         this.email = email;
         this.token = token;
     }
+
+
 }
