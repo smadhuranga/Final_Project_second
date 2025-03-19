@@ -6,6 +6,7 @@ import jdk.jfr.ContentType;
 import lk.ijse.back_end.dto.AuthResponseDTO;
 import lk.ijse.back_end.dto.CustomerDTO;
 import lk.ijse.back_end.dto.ResponseDTO;
+import lk.ijse.back_end.dto.UserDTO;
 import lk.ijse.back_end.service.UserService;
 import lk.ijse.back_end.util.JwtUtil;
 import lk.ijse.back_end.util.VarList;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
 
@@ -40,32 +42,54 @@ public class CustomerController {
             // Log incoming request for debugging
             System.out.println("Received customerDTO: " + customerDTO);
 
+            // Validate required fields
+            if (customerDTO.getEmail() == null || customerDTO.getPassword() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(VarList.Bad_Request, "Email and password are required", null));
+            }
+
             // Set server-side values
-          customerDTO.setCreatedAt(LocalDateTime.now());
+            customerDTO.setCreatedAt(LocalDateTime.now());
             customerDTO.setOrderIds(Collections.emptyList());
 
+            // Save user and get result
             int result = userService.saveUser(customerDTO);
             switch (result) {
                 case VarList.Created -> {
-                    String token = jwtUtil.generateToken(customerDTO);
-                    AuthResponseDTO authDTO = new AuthResponseDTO(customerDTO.getEmail(), token);
+                    // Create UserDTO for token generation (with encoded password)
+                    UserDTO userDTO = new UserDTO();
+                    userDTO.setEmail(customerDTO.getEmail());
+                    userDTO.setPassword(customerDTO.getPassword()); // Already encoded in service
+                    userDTO.setType(customerDTO.getType()); // Ensure type is set if required by JWT
+
+                    String token = jwtUtil.generateToken(userDTO);
+                    AuthResponseDTO authDTO = new AuthResponseDTO();
+                    authDTO.setEmail(customerDTO.getEmail());
+                    authDTO.setToken(token);
+                    authDTO.setUserType(customerDTO.getType()); // Assuming CustomerDTO has type
+                    authDTO.setExpiresAt(
+                            jwtUtil.getExpirationDateFromToken(token)
+                                    .toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime()
+                    );
+
                     return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(new ResponseDTO(VarList.Created, "Success", authDTO));
+                            .body(new ResponseDTO(VarList.Created, "Registration successful", authDTO));
                 }
                 case VarList.Conflict -> {
                     return ResponseEntity.status(HttpStatus.CONFLICT)
-                            .body(new ResponseDTO(VarList.Conflict, "Email Already Exists", null));
+                            .body(new ResponseDTO(VarList.Conflict, "Email already exists", null));
                 }
                 default -> {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                            .body(new ResponseDTO(VarList.Bad_Request, "Invalid Request", null));
+                            .body(new ResponseDTO(VarList.Bad_Request, "Invalid request", null));
                 }
             }
         } catch (Exception e) {
-            // Log exception to help with debugging
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(VarList.Internal_Server_Error, e.getMessage(), null));
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Registration failed: " + e.getMessage(), null));
         }
     }
 

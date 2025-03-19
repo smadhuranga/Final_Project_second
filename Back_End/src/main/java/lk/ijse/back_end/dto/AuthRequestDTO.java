@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class AuthRequestDTO {
     private String email;
     private String password;
+
+
 }

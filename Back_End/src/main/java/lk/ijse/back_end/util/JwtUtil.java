@@ -3,6 +3,7 @@ package lk.ijse.back_end.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lk.ijse.back_end.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,8 +21,11 @@ public class JwtUtil {
     private final Key secretKey;
     private final long expiration;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret,
-                   @Value("${jwt.expiration}") long expiration) {
+    public JwtUtil(
+            @Value("${jwt.secret}") String secret,
+            @Value("${jwt.expiration}") long expiration
+    ) {
+        // Convert secret string to a secure Key
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
         this.expiration = expiration;
     }
@@ -32,15 +36,17 @@ public class JwtUtil {
         return createToken(claims, userDTO.getEmail());
     }
 
+
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(secretKey)
+                .signWith(secretKey, SignatureAlgorithm.HS256) // Use Key object
                 .compact();
     }
+
 
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
@@ -61,9 +67,8 @@ public class JwtUtil {
     }
 
     public Claims getAllClaimsFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
+        return Jwts.parser()
+                .setSigningKey(secretKey) // Match signing key
                 .parseClaimsJws(token)
                 .getBody();
     }
