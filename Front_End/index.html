@@ -183,6 +183,8 @@
             text-align: center;
             cursor: pointer;
             transition: 0.3s ease;
+            display: block;
+
         }
 
         .file-upload:hover {
@@ -262,9 +264,9 @@
         </form>
     </div>
 
-    <!-- Registration Form -->
+    <!-- Registration Form Section -->
     <div class="container hidden" id="registerForm">
-        <img src="/images/LOg.png" alt= "logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
+        <img src="./images/LOg.png" alt="logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
         <br>
         <h2><i class="fas fa-user-plus"></i>Create Account</h2>
         <form>
@@ -275,52 +277,59 @@
                 </div>
                 <div class="user-type-btn active" onclick="toggleUserType(this)">
                     <i class="fas fa-user"></i>
-                    <p>Buyer</p>
+                    <p>Customer</p>
                 </div>
             </div>
 
+            <!-- Common Fields -->
             <div class="form-group">
                 <i class="fas fa-user input-icon"></i>
                 <input type="text" id="regName" placeholder="Full Name" required>
-              
             </div>
             <div class="form-group">
                 <i class="fas fa-envelope input-icon"></i>
                 <input type="email" id="regEmail" placeholder="Email Address" required>
-                
             </div>
-
             <div class="form-group">
                 <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="regPassword" placeholder="Password" required>
-
-
+                <input type="password" id="regPassword" placeholder="Password" required minlength="6">
             </div>
 
+            <!-- Seller Specific Fields -->
             <div class="seller-fields">
                 <div class="form-group">
-                    <i class="fas fa-building input-icon"></i>
-                    <input type="text" placeholder="Business Name">
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" id="nic" placeholder="NIC Number" required>
                 </div>
                 <div class="form-group">
                     <i class="fas fa-phone input-icon"></i>
-                    <input type="tel" placeholder="Business Phone">
+                    <input type="tel" id="phone" placeholder="Phone Number">
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-map-marker-alt input-icon"></i>
+                    <input type="text" id="address" placeholder="Address">
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-comment input-icon"></i>
+                    <textarea id="bio" placeholder="Bio (max 500 characters)" maxlength="500"></textarea>
                 </div>
                 <div class="file-upload">
-                    <i class="fas fa-upload"></i>
-                    <p>Upload Business License</p>
-                    <input type="file" hidden>
+                    <label for="profileImage" class="file-upload-label">
+                        <i class="fas fa-image"></i>
+                        <p>Upload Profile Image</p>
+                    </label>
+                    <input type="file" id="profileImage" accept="image/*" hidden>
                 </div>
             </div>
 
             <button class="btn btn-primary">Create Account</button>
-
             <div class="toggle-forms">
                 <span>Already have an account? </span>
                 <span class="toggle-link" onclick="showForm('loginForm')">Sign In</span>
             </div>
         </form>
     </div>
+
 
     <!-- Forgot Password Form -->
     <div class="container hidden" id="forgotForm">
@@ -341,139 +350,153 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        function showForm(formId) {
-            document.querySelectorAll('.container').forEach(form => {
-                form.classList.add('hidden');
-            });
-            document.getElementById(formId).classList.remove('hidden');
-        }
-
-        function toggleUserType(element) {
-            const userTypeButtons = document.querySelectorAll('.user-type-btn');
-            userTypeButtons.forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-
-            const sellerFields = document.querySelector('.seller-fields');
-            sellerFields.style.display = element.textContent.includes('Seller') ? 'block' : 'none';
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('.seller-fields').style.display = 'none';
+        // Initialize on DOM ready
+        $(document).ready(function() {
             // Show login form by default
             showForm('loginForm');
-        });
-
-        // Handle file upload display
-        document.querySelectorAll('.file-upload input').forEach(input => {
-            input.addEventListener('change', function(e) {
-                const fileName = e.target.files[0]?. name || 'No file chosen';
-                this.previousElementSibling.textContent = fileName;
-            });
-        });
+            $('.seller-fields').hide();
 
 
-        // Form handling
-        $('#loginForm form').submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: "POST",
-                url: "http://localhost:8080/api/v1/auth/login",
-                contentType: "application/json", // Add content type
-                data: JSON.stringify({ // Stringify the data
-                    email: $('#loginForm input[type="text"]').val(),
-                    password: $('#loginForm input[type="password"]').val()
-                }),
-                xhrFields: {
-                    withCredentials: true // For cookies/sessions
-                },
-                success: function(response) {
-                    window.location.href = './pages/home.html';
-                },
-                error: function(xhr) {
-                    // Handle undefined responseJSON
-                    const errorMsg = xhr.responseJSON?.message
-                        || xhr.responseText
-                        || 'Login failed';
-                    alert(errorMsg);
+            $('#profileImage').on('change', function(e) {
+                const file = e.target.files[0];
+                const $display = $(this).siblings('p');
+
+                if (file) {
+                    if (file.type.startsWith('image/')) {
+                        $display.text(file.name);
+                    } else {
+                        alert('Only image files (JPEG, PNG, GIF) are allowed!');
+                        this.value = '';
+                        $display.text('Upload Profile Image');
+                    }
                 }
             });
-        });
 
-            // Registration Form
-            $('#registerForm form').submit(function(e) {
+            // Form submissions
+            $('#loginForm form').submit(function(e) {
                 e.preventDefault();
-                const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
-                const formData = new FormData();
-
-                // Add common fields
-                formData.append('name', $('#registerForm input[type="text"]').val());
-                formData.append('email', $('#registerForm input[type="email"]').val());
-                formData.append('password', $('#registerForm input[type="password"]').val());
-                formData.append('user_type', isSeller ? 'seller' : 'buyer');
-
-                // Add seller-specific fields
-                if(isSeller) {
-                    formData.append('business_name', $('#registerForm input[placeholder="Business Name"]').val());
-                    formData.append('business_phone', $('#registerForm input[placeholder="Business Phone"]').val());
-                    formData.append('license', $('#registerForm input[type="file"]')[0].files[0]);
-                }
-
                 $.ajax({
                     type: "POST",
-                    url: "http://localhost:8080/api/v1/customers/register",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
+                    url: "http://localhost:8080/api/v1/auth/login",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        email: $('#loginForm input[type="text"]').val(),
+                        password: $('#loginForm input[type="password"]').val()
+                    }),
+                    xhrFields: { withCredentials: true },
                     success: function(response) {
-                        alert('Registration successful! Please login');
-                        showForm('loginForm');
+                        window.location.href = './pages/home.html';
                     },
                     error: function(xhr) {
-                        alert(xhr.responseJSON.message || 'Registration failed');
+                        const errorMsg = xhr.responseJSON?.message || xhr.responseText || 'Login failed';
+                        alert(errorMsg);
                     }
                 });
             });
 
-            // Forgot Password Form
+            $('#registerForm form').submit(function(e) {
+                e.preventDefault();
+                const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
+
+                if (isSeller) handleSellerRegistration();
+                else handleCustomerRegistration();
+            });
+
             $('#forgotForm form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
                     type: "POST",
                     url: "/api/forgot-password",
-                    data: {
-                        email: $('#forgotForm input[type="email"]').val()
-                    },
+                    data: { email: $('#forgotForm input[type="email"]').val() },
                     success: function(response) {
                         alert('Password reset link sent to your email');
                         showForm('loginForm');
                     },
                     error: function(xhr) {
-                        alert(xhr.responseJSON.message || 'Password reset failed');
+                        alert(xhr.responseJSON?.message || 'Password reset failed');
                     }
                 });
             });
+        });
 
-
-        // Existing UI functions
+        // Unified form visibility control
         function showForm(formId) {
             $('.container').addClass('hidden');
             $('#' + formId).removeClass('hidden');
         }
 
+        // Single toggleUserType implementation
         function toggleUserType(element) {
             $('.user-type-btn').removeClass('active');
             $(element).addClass('active');
-            $('.seller-fields').toggle(element.textContent.includes('Seller'));
+            const isSeller = $(element).text().includes('Seller');
+            $('.seller-fields').toggle(isSeller);
+            $('#nic').prop('required', isSeller);
         }
 
-        // File upload handling
-        $('.file-upload').click(function() {
-            $(this).find('input[type="file"]').click();
-        });
+        // Registration handlers
+        function handleSellerRegistration() {
+            const formData = new FormData();
+            formData.append('name', $('#regName').val());
+            formData.append('email', $('#regEmail').val());
+            formData.append('password', $('#regPassword').val());
+            formData.append('type', 'SELLER');
+            formData.append('nic', $('#nic').val());
 
-        $('.file-upload input[type="file"]').change(function() {
-            $(this).siblings('p').text(this.files[0]?.name || 'Upload Business License');
-        });
+            // Optional fields
+            ['phone', 'address', 'bio'].forEach(field => {
+                const value = $(`#${field}`).val();
+                if (value) formData.append(field, value);
+            });
+
+            const profileImage = $('#profileImage')[0].files[0];
+            if (profileImage) formData.append('profileImage', profileImage);
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/v1/sellers/register",
+                data: formData,
+                processData: false,
+                contentType: false,
+                xhrFields: {
+                    withCredentials: true // For cookies
+                },
+                success: function(response) {
+                    alert('Seller registration successful! Please login');
+                    showForm('loginForm');
+                },
+                error: function(xhr) {
+                    const error = xhr.responseJSON || {};
+                    const message = error.message || `Registration failed: ${xhr.statusText} (${xhr.status})`;
+                    console.error('Registration error:', message);
+                    alert(message);
+                }
+            });
+        }
+
+        function handleCustomerRegistration() {
+            const customerData = {
+                name: $('#regName').val(),
+                email: $('#regEmail').val(),
+                password: $('#regPassword').val(),
+                type: 'CUSTOMER'
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/v1/customers/register",
+                contentType: "application/json",
+                data: JSON.stringify(customerData),
+                success: function(response) {
+                    alert('Customer registration successful! Please login');
+                    showForm('loginForm');
+                },
+                error: function(xhr) {
+                    const error = xhr.responseJSON || {};
+                    alert(error.message || `Registration failed: ${xhr.statusText}`);
+                }
+            });
+        }
     </script>
 </body>
 </html>
