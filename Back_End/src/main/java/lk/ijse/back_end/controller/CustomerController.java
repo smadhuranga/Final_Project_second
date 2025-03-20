@@ -13,6 +13,7 @@ import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class CustomerController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/register")
+    @PostMapping(path ="/register" , consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> registerCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
         try {
             // Log incoming request for debugging

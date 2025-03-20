@@ -400,27 +400,24 @@
         });
 
             // Registration Form
-            $('#registerForm form').submit(function(e) {
-                e.preventDefault();
-                const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
-                const formData = new FormData();
+        $('#registerForm form').submit(function(e) {
+            e.preventDefault();
+            const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
 
-                // Add common fields
+            if (isSeller) {
+                // Handle Seller Registration with multipart/form-data
+                const formData = new FormData();
                 formData.append('name', $('#registerForm input[type="text"]').val());
                 formData.append('email', $('#registerForm input[type="email"]').val());
                 formData.append('password', $('#registerForm input[type="password"]').val());
-                formData.append('user_type', isSeller ? 'seller' : 'buyer');
-
-                // Add seller-specific fields
-                if(isSeller) {
-                    formData.append('business_name', $('#registerForm input[placeholder="Business Name"]').val());
-                    formData.append('business_phone', $('#registerForm input[placeholder="Business Phone"]').val());
-                    formData.append('license', $('#registerForm input[type="file"]')[0].files[0]);
-                }
+                formData.append('user_type', 'SELLER');
+                formData.append('business_name', $('#registerForm input[placeholder="Business Name"]').val());
+                formData.append('business_phone', $('#registerForm input[placeholder="Business Phone"]').val());
+                formData.append('license', $('#registerForm input[type="file"]')[0].files[0]);
 
                 $.ajax({
                     type: "POST",
-                    url: "http://localhost:8080/api/v1/customers/register",
+                    url: "http://localhost:8080/api/v1/sellers/register",
                     data: formData,
                     processData: false,
                     contentType: false,
@@ -429,10 +426,33 @@
                         showForm('loginForm');
                     },
                     error: function(xhr) {
-                        alert(xhr.responseJSON.message || 'Registration failed');
+                        alert(xhr.responseJSON?.message || 'Registration failed');
                     }
                 });
-            });
+            } else {
+                // Handle Customer Registration with JSON
+                const customerData = {
+                    name: $('#registerForm input[type="text"]').val(),
+                    email: $('#registerForm input[type="email"]').val(),
+                    password: $('#registerForm input[type="password"]').val(),
+                    type: 'CUSTOMER' // Key must be "type", NOT "user_type"
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:8080/api/v1/customers/register",
+                    contentType: "application/json",
+                    data: JSON.stringify(customerData),
+                    success: function(response) {
+                        alert('Registration successful! Please login');
+                        showForm('loginForm');
+                    },
+                    error: function(xhr) {
+                        alert(xhr.responseJSON?.message || 'Registration failed');
+                    }
+                });
+            }
+        });
 
             // Forgot Password Form
             $('#forgotForm form').submit(function(e) {

@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/dataSources/f5d5dce8-e76b-45cb-9f5b-acbd39b63269.xml&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/pom.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/SecurityBeansConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Back_End/src/main/resources/application.properties">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -122,7 +122,7 @@
       <workItem from="1742181069574" duration="14450000" />
       <workItem from="1742274696855" duration="6536000" />
       <workItem from="1742359065601" duration="389000" />
-      <workItem from="1742359486587" duration="31834000" />
+      <workItem from="1742359486587" duration="33172000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -172,7 +172,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742457388017</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/dataSources/f5d5dce8-e76b-45cb-9f5b-acbd39b63269.xml&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/pom.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/SecurityBeansConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Back_End/src/main/resources/application.properties">
+      <option name="closed" value="true" />
+      <created>1742461913992</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742461913992</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
