@@ -15,8 +15,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -93,5 +97,117 @@ public class CustomerController {
                     .body(new ResponseDTO(VarList.Internal_Server_Error, "Registration failed: " + e.getMessage(), null));
         }
     }
+
+// Add these to your CustomerController.java
+
+    @GetMapping("/me")
+    public ResponseEntity<ResponseDTO> getCurrentCustomer(@AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String email = userDetails.getUsername();
+            CustomerDTO customer = (CustomerDTO) userService.findUserByEmail(email);
+            System.out.println(customer.getProfileImage());
+            return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Success", customer));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Error retrieving profile", null));
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDTO> updateCustomer(
+            @Valid @RequestBody CustomerDTO customerDTO,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String email = userDetails.getUsername();
+            CustomerDTO existingCustomer = (CustomerDTO) userService.findUserByEmail(email);
+
+            // Update allowed fields
+            existingCustomer.setName(customerDTO.getName());
+            existingCustomer.setEmail(customerDTO.getEmail());
+            existingCustomer.setPhone(customerDTO.getPhone());
+            existingCustomer.setAddress(customerDTO.getAddress());
+
+            int result = userService.updateUser(existingCustomer);
+            if (result == VarList.OK) {
+                return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Profile updated", existingCustomer));
+            }
+            return ResponseEntity.badRequest()
+                    .body(new ResponseDTO(VarList.Bad_Request, "Update failed", null));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
+    }
+
+    @PostMapping(value = "/upload-profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> uploadProfileImage(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            // Validate file
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new ResponseDTO(VarList.Bad_Request, "File cannot be empty", null));
+            }
+
+            // Check file type
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ResponseEntity.badRequest()
+                        .body(new ResponseDTO(VarList.Bad_Request, "Only image files are allowed", null));
+            }
+
+            String email = userDetails.getUsername();
+            String imageUrl = userService.storeProfileImage(email, file);
+            System.out.println("image url is "+imageUrl);
+
+            // Update user's profile image URL in database
+            CustomerDTO customer = (CustomerDTO) userService.findUserByEmail(email);
+            customer.setProfileImage(userService.storeProfileImage(email, file));
+            userService.updateUser(customer);
+
+            return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Image uploaded successfully", imageUrl));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Error processing image: " + e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<ResponseDTO> changePassword(
+            @RequestBody PasswordChangeRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String email = userDetails.getUsername();
+            int result = userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
+
+            switch (result) {
+                case VarList.OK:
+                    return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Password changed", null));
+                case VarList.Unauthorized:
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                            .body(new ResponseDTO(VarList.Unauthorized, "Current password incorrect", null));
+                default:
+                    return ResponseEntity.badRequest()
+                            .body(new ResponseDTO(VarList.Bad_Request, "Password change failed", null));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
+    }
+
+    // Add this DTO inside CustomerController.java
+    private static class PasswordChangeRequest {
+        private String currentPassword;
+        private String newPassword;
+
+        // Getters and setters
+        public String getCurrentPassword() { return currentPassword; }
+        public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
+        public String getNewPassword() { return newPassword; }
+        public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    }
+
 
 }

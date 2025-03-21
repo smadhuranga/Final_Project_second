@@ -1494,7 +1494,7 @@
       <StoredType>varchar(31)|0s</StoredType>
     </column>
     <column id="425" parent="323" name="id">
-      <AutoIncrement>3</AutoIncrement>
+      <AutoIncrement>20</AutoIncrement>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StoredType>bigint|0s</StoredType>

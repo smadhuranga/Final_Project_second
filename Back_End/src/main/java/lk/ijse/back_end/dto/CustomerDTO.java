@@ -13,4 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class CustomerDTO extends UserDTO {
     private List<Long> orderIds;
+
+
+
+
 }

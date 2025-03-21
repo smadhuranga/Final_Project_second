@@ -1,6 +1,9 @@
 package lk.ijse.back_end.service.impl;
 
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
+import com.cloudinary.utils.ObjectUtils;
 import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.entity.*;
 import lk.ijse.back_end.repository.UserRepo;
@@ -18,13 +21,16 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -34,16 +40,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepo userRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
+    private final Cloudinary cloudinary;
+
 
 
     // Remove any WebSecurityConfig dependencies
     @Autowired
     public UserServiceImpl(UserRepo userRepository,
                            ModelMapper modelMapper,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           Cloudinary cloudinary) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
+        this.cloudinary = cloudinary;
     }
 
     @Override
@@ -168,5 +178,77 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         dto.setQualifications(coordinator.getQualifications());
         dto.setSkillIds(coordinator.getSkillIds());
         return dto;
+    }
+
+    @Override
+    public UserDTO findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return convertToDTO(user);
+    }
+
+    @Override
+    public int updateUser(UserDTO userDTO) {
+        try {
+            User user = userRepository.findByEmail(userDTO.getEmail())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            user.setName(userDTO.getName());
+            user.setEmail(userDTO.getEmail());
+            user.setPhone(userDTO.getPhone());
+            user.setAddress(userDTO.getAddress());
+            user.setProfileImage(userDTO.getProfileImage());
+            userRepository.save(user);
+            return VarList.OK;
+        } catch (Exception e) {
+            return VarList.Bad_Request;
+        }
+    }
+
+
+
+    @Override
+    public String storeProfileImage(String email, MultipartFile file) {
+        try {
+            // Upload parameters
+            Map<String, Object> uploadParams = ObjectUtils.asMap(
+                    "public_id", "profile_images/" + email.replace("@", "_"), // Safe public ID
+                    "overwrite", true,
+                    "resource_type", "image",
+                    "folder", "profile_images",
+                    "allowed_formats", new String[]{"jpg", "png", "jpeg", "gif"},
+                    "transformation", new Transformation()
+                            .width(500)
+                            .height(500)
+                            .crop("fill")
+                            .gravity("face")
+            );
+
+            // Upload the image
+            Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);
+            System.out.println("Upload result: " + uploadResult.get("secure_url"));
+            // Return the secure URL of the uploaded image
+            return String.valueOf(uploadResult.get("secure_url"));
+        } catch (IOException e) {
+            try {
+                throw new IOException("Failed to upload image to Cloudinary", e);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
+
+    @Override
+    public int changePassword(String email, String currentPassword, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            return VarList.Unauthorized;
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return VarList.OK;
     }
 }

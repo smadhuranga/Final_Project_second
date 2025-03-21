@@ -5,18 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Front_End/index.html">
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/FileStorageService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/CloudinaryConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/images/356306451_54b19ada-d53e-4ee9-8882-9dfed1bf1396.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/f5d5dce8-e76b-45cb-9f5b-acbd39b63269.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/f5d5dce8-e76b-45cb-9f5b-acbd39b63269.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back_End/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/SellerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/SellerDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/AdminDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/AdminDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/CoordinatorDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/CoordinatorDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/CustomerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/CustomerDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Admin.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Admin.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Coordinator.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Coordinator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Customer.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Customer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Seller.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Seller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/FileStorageService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/FileStorageService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" afterDir="false" />
@@ -65,6 +80,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.KeyGenerator.executor&quot;: &quot;Run&quot;,
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;Maven.Back_End [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.Back_End [compile].executor&quot;: &quot;Run&quot;,
@@ -93,7 +109,25 @@
     ]
   }
 }</component>
-  <component name="RunManager">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/Front_End/images" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.BackEndApplication">
+    <configuration name="KeyGenerator" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="lk.ijse.back_end.util.KeyGenerator" />
+      <module name="Back_End" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="lk.ijse.back_end.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="BackEndApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="Back_End" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="lk.ijse.back_end.BackEndApplication" />
@@ -101,6 +135,11 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.KeyGenerator" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -136,7 +175,10 @@
       <workItem from="1742359065601" duration="389000" />
       <workItem from="1742359486587" duration="39777000" />
       <workItem from="1742527800198" duration="583000" />
-      <workItem from="1742537660192" duration="5945000" />
+      <workItem from="1742537660192" duration="6324000" />
+      <workItem from="1742565091101" duration="4623000" />
+      <workItem from="1742751711619" duration="12990000" />
+      <workItem from="1742822827278" duration="25762000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -202,7 +244,23 @@
       <option name="project" value="LOCAL" />
       <updated>1742463421325</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="cintrrol z not working">
+      <option name="closed" value="true" />
+      <created>1742550996959</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1742550996959</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Front_End/index.html">
+      <option name="closed" value="true" />
+      <created>1742764846140</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1742764846140</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -218,6 +276,7 @@
     <MESSAGE value="error fixed done" />
     <MESSAGE value="login done" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/dataSources/f5d5dce8-e76b-45cb-9f5b-acbd39b63269.xml&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/pom.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/SecurityBeansConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Back_End/src/main/resources/application.properties" />
+    <MESSAGE value="cintrrol z not working" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Front_End/index.html" />
     <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Front_End/index.html" />
   </component>

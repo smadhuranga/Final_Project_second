@@ -125,9 +125,11 @@
 package lk.ijse.back_end.config;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -180,7 +182,15 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/customers/register",  "/api/v1/sellers/register", "/api/v1/auth/login").permitAll()
+                        .requestMatchers(   "/api/v1/customers/register",
+                                "/api/v1/sellers/register",
+                                "/uploads/**",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/validate-token",
+                                "/api/v1/customers/update").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/customers/**").authenticated(
+
+                        )
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -194,7 +204,9 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:63342")); // Exact origin, no wildcard
+        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500"
+                // WebStorm/IntelliJ preview
+                 )); // Exact origin, no wildcard
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
@@ -204,6 +216,19 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", configuration); // Apply to all paths
         return source;
     }
+
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//        configuration.setAllowedOrigins(List.of("http://localhost:5500")); // Your frontend URL
+//        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//        configuration.setAllowedHeaders(List.of("*"));
+//        configuration.setAllowCredentials(true);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 
 
 
