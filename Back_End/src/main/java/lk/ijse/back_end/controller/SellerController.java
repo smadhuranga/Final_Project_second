@@ -36,13 +36,13 @@ public class SellerController {
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> registerSeller(
             @Valid @ModelAttribute SellerDTO sellerDTO,
-            @RequestParam("profileImage") MultipartFile profileImage) {
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
 
         try {
             // Validate required fields
-            if (!profileImage.isEmpty()) {
-                String filename = fileStorageService.storeFile(profileImage);
-                sellerDTO.setProfileImage("/uploads/" + filename);
+            if (sellerDTO.getEmail() == null || sellerDTO.getPassword() == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new ResponseDTO(VarList.Bad_Request, "Email and password are required", null));
             }
 
             // Handle file upload
@@ -51,58 +51,56 @@ public class SellerController {
                 sellerDTO.setProfileImage("/uploads/" + fileName);
             }
 
-            // Convert to SellerDTO
-
-            sellerDTO.setName(sellerDTO.getName());
-            sellerDTO.setEmail(sellerDTO.getEmail());
-            sellerDTO.setPassword(sellerDTO.getPassword());
-            sellerDTO.setType(UserType.SELLER);
-            sellerDTO.setPhone(sellerDTO.getPhone());
-            sellerDTO.setAddress(sellerDTO.getAddress());
-            sellerDTO.setProfileImage(sellerDTO.getProfileImage());
-            sellerDTO.setNic(sellerDTO.getNic());
-            sellerDTO.setBio(sellerDTO.getBio());
-
             // Set server-side values
-            if (!profileImage.isEmpty()) {
-                String filename = fileStorageService.storeFile(profileImage);
-                sellerDTO.setProfileImage("/uploads/" + filename);
+            sellerDTO.setCreatedAt(LocalDateTime.now());
+            sellerDTO.setType(UserType.SELLER);
+            sellerDTO.setSkillIds(Collections.emptyList());
+            sellerDTO.setServiceIds(Collections.emptyList());
+            sellerDTO.setRatingIds(Collections.emptyList());
+            sellerDTO.setQualifications(Collections.emptyList());
 
-                // Save user and get result
-                int result = userService.saveUser(sellerDTO);
-                switch (result) {
-                    case VarList.Created -> {
-                        // Create UserDTO for token generation
-                        UserDTO userDTO = new UserDTO();
-                        userDTO.setEmail(sellerDTO.getEmail());
-                        userDTO.setPassword(sellerDTO.getPassword());
-                        userDTO.setType(sellerDTO.getType());
+            // Save user and get result
+            int result = userService.saveUser(sellerDTO);
 
-                        String token = jwtUtil.generateToken(userDTO);
-                        AuthResponseDTO authDTO = new AuthResponseDTO();
-                        authDTO.setEmail(sellerDTO.getEmail());
-                        authDTO.setToken(token);
-                        authDTO.setUserType(sellerDTO.getType());
-                        authDTO.setExpiresAt(
-                                jwtUtil.getExpirationDateFromToken(token)
-                                        .toInstant()
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDateTime()
-                        );
+            switch (result) {
+                case VarList.Created -> {
+                    // Create UserDTO for token generation
+                    UserDTO authUserDTO = new UserDTO();
+                    authUserDTO.setEmail(sellerDTO.getEmail());
+                    authUserDTO.setType(sellerDTO.getType());
 
-                        return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(new ResponseDTO(VarList.Created, "Seller registration successful", authDTO));
-                    }
+                    String token = jwtUtil.generateToken(authUserDTO);
+                    AuthResponseDTO authResponse = new AuthResponseDTO();
+                    authResponse.setEmail(sellerDTO.getEmail());
+                    authResponse.setToken(token);
+                    authResponse.setUserType(sellerDTO.getType());
+                    authResponse.setExpiresAt(
+                            jwtUtil.getExpirationDateFromToken(token)
+                                    .toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDateTime()
+                    );
+
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(new ResponseDTO(VarList.Created, "Seller registration successful", authResponse));
                 }
-
-
-            catch(Exception e){
-                    e.printStackTrace();
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body(new ResponseDTO(VarList.Internal_Server_Error, "Seller registration failed: " + e.getMessage(), null));
+                case VarList.Conflict -> {
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
+                            .body(new ResponseDTO(VarList.Conflict, "Email already exists", null));
+                }
+                default -> {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(new ResponseDTO(VarList.Bad_Request, "Invalid request", null));
                 }
             }
-
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "File upload failed: " + e.getMessage(), null));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Registration failed: " + e.getMessage(), null));
         }
+    }
+}

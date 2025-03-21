@@ -8,26 +8,27 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class SellerDTO extends UserDTO {
-
     @NotBlank(message = "NIC is mandatory")
     private String nic;
 
     @Size(max = 500, message = "Bio must be less than 500 characters")
     private String bio;
 
-    // Initialize empty lists to avoid null pointers
-    private List<String> qualifications = Collections.emptyList();
-    private List<Long> skillIds = Collections.emptyList();
-    private List<Long> serviceIds = Collections.emptyList();
-    private List<Long> ratingIds = Collections.emptyList();
+    // Change to mutable collections
+    private List<String> qualifications = new ArrayList<>();
+    private List<Long> skillIds = new ArrayList<>();
+    private List<Long> serviceIds = new ArrayList<>();
+    private List<Long> ratingIds = new ArrayList<>();
 
     // Builder pattern setup (optional but recommended)
     public SellerDTO(String name, String email, String password, UserType type,

@@ -5,6 +5,7 @@ import lk.ijse.back_end.service.impl.UserServiceImpl;
 import lk.ijse.back_end.util.JwtUtil;
 import lk.ijse.back_end.util.UserType;
 import lk.ijse.back_end.util.VarList;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/auth")
 @CrossOrigin
@@ -95,4 +97,35 @@ public class AuthController {
                     .body(new ResponseDTO<>(VarList.Internal_Server_Error, "Authentication failed: " + e.getMessage(), null));
         }
     }
+
+    @GetMapping("/validate-token")
+    public ResponseEntity<ResponseDTO> validateToken(Authentication authentication) {
+        try {
+            // Get authenticated user's email from security context
+            String email = authentication.getName();
+
+            // Fetch complete user details from database
+            UserDTO userDTO = userServiceImpl.searchUser(email);
+            if (userDTO == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseDTO<>(VarList.Not_Found, "User not found", null));
+            }
+
+            // Create response DTO with user details
+            AuthValidationResponse validationResponse = new AuthValidationResponse();
+            validationResponse.setEmail(userDTO.getEmail());
+            validationResponse.setUserType(userDTO.getType());
+            validationResponse.setName(userDTO.getName());
+            validationResponse.setProfileImage(userDTO.getProfileImage());
+
+            return ResponseEntity.ok()
+                    .body(new ResponseDTO<>(VarList.OK, "Token is valid", validationResponse));
+
+        } catch (Exception e) {
+            log.error("Token validation error: ", e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO<>(VarList.Unauthorized, "Invalid token", null));
+        }
+    }
+
 }

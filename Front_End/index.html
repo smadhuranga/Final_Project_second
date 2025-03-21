@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Neon Modern Auth UI</title>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -66,15 +67,7 @@
             position: relative;
         }
 
-        .form-label {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
-            pointer-events: none;
-            transition: 0.3s ease;
-        }
+
 
         input, select, textarea {
             width: 100%;
@@ -222,6 +215,24 @@
             from { opacity: 0; transform: translateY(-10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+
+        .error-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ef4444;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .error-toast.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -299,29 +310,32 @@
             <div class="seller-fields">
                 <div class="form-group">
                     <i class="fas fa-id-card input-icon"></i>
-                    <input type="text" id="nic" placeholder="NIC Number" required>
+                    <input type="text" id="nic" placeholder="NIC Number*" required>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-building input-icon"></i>
+                    <input type="text" id="businessName" placeholder="Business Name">
                 </div>
                 <div class="form-group">
                     <i class="fas fa-phone input-icon"></i>
-                    <input type="tel" id="phone" placeholder="Phone Number">
+                    <input type="tel" id="businessPhone" placeholder="Business Phone">
                 </div>
                 <div class="form-group">
                     <i class="fas fa-map-marker-alt input-icon"></i>
-                    <input type="text" id="address" placeholder="Address">
+                    <input type="text" id="businessAddress" placeholder="Business Address">
                 </div>
                 <div class="form-group">
-                    <i class="fas fa-comment input-icon"></i>
-                    <textarea id="bio" placeholder="Bio (max 500 characters)" maxlength="500"></textarea>
+                    <i class="fas fa-certificate input-icon"></i>
+                    <textarea id="qualifications" placeholder="Professional Qualifications (one per line)"></textarea>
                 </div>
                 <div class="file-upload">
                     <label for="profileImage" class="file-upload-label">
                         <i class="fas fa-image"></i>
-                        <p>Upload Profile Image</p>
+                        <p>Upload Business Logo</p>
                     </label>
                     <input type="file" id="profileImage" accept="image/*" hidden>
                 </div>
             </div>
-
             <button class="btn btn-primary">Create Account</button>
             <div class="toggle-forms">
                 <span>Already have an account? </span>
@@ -349,65 +363,113 @@
         </form>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Initialize on DOM ready
         $(document).ready(function() {
+            // Check for existing JWT token
+            const jwtToken = localStorage.getItem('jwtToken');
+            if(jwtToken) {
+                window.location.href = './pages/home.html';
+            }
+
             // Show login form by default
             showForm('loginForm');
             $('.seller-fields').hide();
 
-
-            $('#profileImage').on('change', function(e) {
-                const file = e.target.files[0];
-                const $display = $(this).siblings('p');
-
-                if (file) {
-                    if (file.type.startsWith('image/')) {
-                        $display.text(file.name);
-                    } else {
-                        alert('Only image files (JPEG, PNG, GIF) are allowed!');
-                        this.value = '';
-                        $display.text('Upload Profile Image');
+            // Configure AJAX to include JWT token in headers
+            $.ajaxSetup({
+                beforeSend: function(xhr) {
+                    const token = localStorage.getItem('jwtToken');
+                    if (token) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                     }
                 }
             });
 
-            // Form submissions
+            // Handle global AJAX errors
+            $(document).ajaxError(function(event, jqXHR) {
+                if (jqXHR.status === 401) { // Unauthorized
+                    localStorage.removeItem('jwtToken');
+                    showForm('loginForm');
+                    alert('Session expired. Please login again.');
+                }
+            });
+// Login handler - add error clearing
+            $('#loginEmail, #loginPassword').on('input', function() {
+                $(this).removeClass('error-input');
+            });
+
+            // Update login handler
             $('#loginForm form').submit(function(e) {
                 e.preventDefault();
+                const $form = $(this);
+                const $btn = $form.find('button').prop('disabled', true);
+
+                // Clear previous errors
+                $form.find('.error-text').remove();
+
                 $.ajax({
                     type: "POST",
                     url: "http://localhost:8080/api/v1/auth/login",
                     contentType: "application/json",
                     data: JSON.stringify({
-                        email: $('#loginForm input[type="text"]').val(),
-                        password: $('#loginForm input[type="password"]').val()
+                        email: $('#loginEmail').val().trim(),
+                        password: $('#loginPassword').val()
                     }),
-                    xhrFields: { withCredentials: true },
                     success: function(response) {
-                        window.location.href = './pages/home.html';
+                        // Validate response structure
+                        if (!response?.data?.token) {
+                            throw new Error('Invalid server response');
+                        }
+
+                        // Store authentication data
+                        localStorage.setItem('jwtToken', response.data.token);
+                        localStorage.setItem('user', JSON.stringify({
+                            email: response.data.email,
+                            roles: response.data.roles
+                        }));
+
+                        // Redirect with token verification
+                        if (localStorage.getItem('jwtToken')) {
+                            window.location.href = './pages/home.html';
+                        }
                     },
                     error: function(xhr) {
-                        const errorMsg = xhr.responseJSON?.message || xhr.responseText || 'Login failed';
-                        alert(errorMsg);
+                        $('#loginPassword').val('');
+                        let errorMsg = xhr.responseJSON?.message || 'Login failed';
+                        showErrorToast(errorMsg);
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false);
                     }
                 });
             });
 
+
+
+
+
+
+
+
+            // Registration Form Submission
             $('#registerForm form').submit(function(e) {
                 e.preventDefault();
                 const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
-
                 if (isSeller) handleSellerRegistration();
                 else handleCustomerRegistration();
             });
 
+            // Forgot Password Form Submission
             $('#forgotForm form').submit(function(e) {
                 e.preventDefault();
                 $.ajax({
                     type: "POST",
                     url: "/api/forgot-password",
-                    data: { email: $('#forgotForm input[type="email"]').val() },
+                    data: {
+                        email: $('#forgotEmail').val()
+                    },
                     success: function(response) {
                         alert('Password reset link sent to your email');
                         showForm('loginForm');
@@ -419,13 +481,13 @@
             });
         });
 
-        // Unified form visibility control
+        // Form visibility control
         function showForm(formId) {
             $('.container').addClass('hidden');
             $('#' + formId).removeClass('hidden');
         }
 
-        // Single toggleUserType implementation
+        // User type toggle
         function toggleUserType(element) {
             $('.user-type-btn').removeClass('active');
             $(element).addClass('active');
@@ -434,23 +496,27 @@
             $('#nic').prop('required', isSeller);
         }
 
-        // Registration handlers
+        // Seller registration handler
         function handleSellerRegistration() {
             const formData = new FormData();
-            formData.append('name', $('#regName').val());
-            formData.append('email', $('#regEmail').val());
-            formData.append('password', $('#regPassword').val());
-            formData.append('type', 'SELLER');
-            formData.append('nic', $('#nic').val());
+            const sellerData = {
+                name: $('#regName').val(),
+                email: $('#regEmail').val(),
+                password: $('#regPassword').val(),
+                nic: $('#nic').val(),
+                phone: $('#businessPhone').val(),
+                address: $('#businessAddress').val(),
+                qualifications: $('#qualifications').val().split('\n')
+            };
 
-            // Optional fields
-            ['phone', 'address', 'bio'].forEach(field => {
-                const value = $(`#${field}`).val();
-                if (value) formData.append(field, value);
-            });
+            formData.append('data', new Blob([JSON.stringify(sellerData)], {
+                type: "application/json"
+            }));
 
             const profileImage = $('#profileImage')[0].files[0];
-            if (profileImage) formData.append('profileImage', profileImage);
+            if (profileImage) {
+                formData.append('profileImage', profileImage);
+            }
 
             $.ajax({
                 type: "POST",
@@ -458,28 +524,24 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                xhrFields: {
-                    withCredentials: true // For cookies
-                },
                 success: function(response) {
-                    alert('Seller registration successful! Please login');
-                    showForm('loginForm');
+                    localStorage.setItem('jwtToken', response.accessToken);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    window.location.href = './pages/home.html';
                 },
                 error: function(xhr) {
                     const error = xhr.responseJSON || {};
-                    const message = error.message || `Registration failed: ${xhr.statusText} (${xhr.status})`;
-                    console.error('Registration error:', message);
-                    alert(message);
+                    alert(error.message || `Registration failed: ${xhr.statusText}`);
                 }
             });
         }
 
+        // Customer registration handler
         function handleCustomerRegistration() {
             const customerData = {
                 name: $('#regName').val(),
                 email: $('#regEmail').val(),
-                password: $('#regPassword').val(),
-                type: 'CUSTOMER'
+                password: $('#regPassword').val()
             };
 
             $.ajax({
@@ -488,14 +550,23 @@
                 contentType: "application/json",
                 data: JSON.stringify(customerData),
                 success: function(response) {
-                    alert('Customer registration successful! Please login');
-                    showForm('loginForm');
+                    localStorage.setItem('jwtToken', response.accessToken);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    window.location.href = './pages/home.html';
                 },
                 error: function(xhr) {
                     const error = xhr.responseJSON || {};
                     alert(error.message || `Registration failed: ${xhr.statusText}`);
                 }
             });
+        }
+
+        // Add this utility function
+        function showErrorToast(message) {
+            const toast = $(`<div class="error-toast">${message}</div>`);
+            $('body').append(toast);
+            setTimeout(() => toast.addClass('show'), 10);
+            setTimeout(() => toast.remove(), 5000);
         }
     </script>
 </body>

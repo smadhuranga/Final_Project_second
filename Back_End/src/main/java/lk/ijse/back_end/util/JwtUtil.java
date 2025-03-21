@@ -1,21 +1,22 @@
 package lk.ijse.back_end.util;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lk.ijse.back_end.dto.UserDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
+
 import java.util.Map;
 import java.util.function.Function;
 
+@Slf4j
 @Component
 public class JwtUtil {
     private final Key secretKey;
@@ -26,17 +27,40 @@ public class JwtUtil {
             @Value("${jwt.expiration}") long expiration
     ) {
         // Convert secret string to a secure Key
-        this.secretKey = Keys.hmacShaKeyFor(secret.getBytes());
+        byte[] keyBytes = Base64.getDecoder().decode(secret.trim());
+        if (keyBytes.length < 64) {
+            throw new IllegalArgumentException("Key must be 512 bits (64 bytes)");
+        }
+        this.secretKey = Keys.hmacShaKeyFor(keyBytes);
         this.expiration = expiration;
     }
 
     public String generateToken(UserDTO userDTO) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("type", userDTO.getType().name());
-        return createToken(claims, userDTO.getEmail());
+        return Jwts.builder()
+                .setHeaderParam("typ", "JWT")
+                .setSubject(userDTO.getEmail())  // Use unique identifier
+                .claim("roles", userDTO.getType())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(secretKey, SignatureAlgorithm.HS512)
+                .compact();
     }
 
-
+    public Boolean validateToken(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(token);
+            return true;
+        } catch (MalformedJwtException ex) {
+            log.error("Invalid JWT structure: {}", ex.getMessage());
+            return false;
+        } catch (JwtException | IllegalArgumentException ex) {
+            log.error("JWT validation failed: {}", ex.getMessage());
+            return false;
+        }
+    }
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -48,10 +72,6 @@ public class JwtUtil {
     }
 
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);

@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
+
 
 @Data
 @NoArgsConstructor
@@ -30,13 +30,19 @@ public class UserDTO {
     @NotNull(message = "User type is mandatory")
     private UserType type;
 
-    // Other fields can be optional
     private String phone;
     private String address;
     private String profileImage;
+    private LocalDateTime createdAt;  // Change from ZonedDateTime
 
-        // ...
-        private LocalDateTime createdAt;  // Change from ZonedDateTime
 
-    // Remove createdAt from DTO (should be set server-side)
+    public UserDTO(String name, String email, String password, UserType type, String phone, String address, String profileImage) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.type = type;
+        this.phone = phone;
+        this.address = address;
+        this.profileImage = profileImage;
+    }
 }

@@ -215,6 +215,12 @@
             box-shadow: none;
             color: white;
         }
+
+
+        .admin-card canvas {
+            height: 400px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -235,9 +241,7 @@
             <a class="nav-link" href="#projects" data-section="projects">
                 <i class="fas fa-tasks me-2"></i> Project Management
             </a>
-            <a class="nav-link" href="#analytics" data-section="analytics">
-                <i class="fas fa-chart-line me-2"></i> Analytics
-            </a>
+
         </nav>
     </div>
 </div>
@@ -246,7 +250,22 @@
 <div class="admin-main">
     <!-- Dashboard Section -->
     <section id="dashboard" class="content-section">
-        <h2 class="mb-4">Dashboard Overview</h2>
+        <h1 class="mb-4">Dashboard </h1>
+        <h2 class="mb-4">Analytics</h2>
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="admin-card p-3">
+                    <canvas id="earningsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="admin-card p-3">
+                    <canvas id="projectStats"></canvas>
+                </div>
+            </div>
+        </div>
+        <br>
+        <h2 class="mb-4">Overview</h2>
         <div class="row g-4">
             <div class="col-md-3">
                 <div class="admin-card p-3">
@@ -283,45 +302,138 @@
     <section id="users" class="content-section d-none">
         <div class="d-flex justify-content-between mb-4">
             <h2>User Management</h2>
-            <button class="btn btn-admin btn-edit" data-bs-toggle="modal" data-bs-target="#userModal">
-                <i class="fas fa-plus me-2"></i>Add User
-            </button>
+            <div>
+                <button class="btn btn-admin btn-edit me-2" data-bs-toggle="modal" data-bs-target="#userModal">
+                    <i class="fas fa-plus me-2"></i>Add User
+                </button>
+            </div>
         </div>
-        <table class="table table-custom table-hover" id="usersTable">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <!-- Updated Sample Data with data-id -->
-            <tr data-id="1">
-                <td>John Doe</td>
-                <td>john@example.com</td>
-                <td>Freelancer</td>
-                <td><span class="status-badge active-status">Active</span></td>
-                <td>
-                    <button class="btn btn-admin btn-edit me-2" data-id="1"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-admin btn-delete" data-id="1"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>
-            <tr data-id="2">
-                <td>Jane Smith</td>
-                <td>jane@example.com</td>
-                <td>Client</td>
-                <td><span class="status-badge active-status">Active</span></td>
-                <td>
-                    <button class="btn btn-admin btn-edit me-2" data-id="2"><i class="fas fa-edit"></i></button>
-                    <button class="btn btn-admin btn-delete" data-id="2"><i class="fas fa-trash"></i></button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+
+        <!-- Tab Navigation -->
+        <div class="mb-3">
+            <label class="form-label">User Type</label>
+            <select class="form-select" id="userType">
+                <option value="customer">Customer</option>
+                <option value="seller">Seller</option>
+                <option value="coordinator">Coordinator</option>
+            </select>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Customers Tab -->
+            <div class="tab-pane fade show active" id="customers">
+                <table class="table table-custom table-hover" id="customersTable">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-id="1" data-type="customer">
+                        <td>John Doe</td>
+                        <td>john@example.com</td>
+                        <td>+1 234 567 890</td>
+                        <td>
+                            <button class="btn btn-admin btn-delete me-2" data-id="1"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-admin btn-edit" onclick="openChat('customer', 1)">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Sellers Tab -->
+            <div class="tab-pane fade" id="sellers">
+                <table class="table table-custom table-hover" id="sellersTable">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-id="1" data-type="seller">
+                        <td>Jane Smith</td>
+                        <td>jane@example.com</td>
+                        <td>+1 987 654 321</td>
+                        <td>Designer</td>
+                        <td>
+                            <button class="btn btn-admin btn-delete me-2" data-id="1"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-admin btn-edit me-2" onclick="showSellerHistory(1)">
+                                <i class="fas fa-history"></i>
+                            </button>
+                            <button class="btn btn-admin btn-edit" onclick="openChat('seller', 1)">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Coordinators Tab -->
+            <div class="tab-pane fade" id="coordinators">
+                <table class="table table-custom table-hover" id="coordinatorsTable">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr data-id="1" data-type="coordinator">
+                        <td>Mike Johnson</td>
+                        <td>mike@example.com</td>
+                        <td>+1 555 123 456</td>
+                        <td>Project Manager</td>
+                        <td>
+                            <button class="btn btn-admin btn-delete me-2" data-id="1"><i class="fas fa-trash"></i></button>
+                            <button class="btn btn-admin btn-edit" onclick="openChat('coordinator', 1)">
+                                <i class="fas fa-comment"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </section>
+
+    <!-- History Modal -->
+    <div class="modal fade" id="historyModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaction History</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-custom">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Project</th>
+                        </tr>
+                        </thead>
+                        <tbody id="historyContent"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Payment Management Section -->
     <section id="payments" class="content-section d-none">
@@ -382,22 +494,6 @@
         </table>
     </section>
 
-    <!-- Analytics Section -->
-    <section id="analytics" class="content-section d-none">
-        <h2 class="mb-4">Analytics</h2>
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="admin-card p-3">
-                    <canvas id="earningsChart"></canvas>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="admin-card p-3">
-                    <canvas id="projectStats"></canvas>
-                </div>
-            </div>
-        </div>
-    </section>
 </div>
 
 <!-- Modals -->
@@ -433,165 +529,255 @@
         </div>
     </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        // JWT Security Configuration
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            window.location.href = '/login.html';
+        }
+
+        // AJAX configuration with JWT
+        $.ajaxSetup({
+            headers: {
+                'Authorization': 'Bearer ' + authToken
+            },
+            statusCode: {
+                401: function() {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/login.html';
+                }
+            }
+        });
+
         // Initialize DataTables
-        $('table').DataTable({
-            responsive: true,
-            ordering: true,
-            searching: true
+        let userTables = {
+            customers: null,
+            sellers: null,
+            coordinators: null
+        };
+
+        // Initialize all user tables (hidden by default)
+        function initializeUserTables() {
+            userTables.customers = $('#customersTable').DataTable({
+                responsive: true,
+                ajax: {
+                    url: '/api/customers',
+                    dataSrc: 'data'
+                },
+                columns: getColumnsConfig('customers'),
+                createdRow: function(row, data) {
+                    $(row).attr('data-type', 'customer');
+                }
+            });
+
+            userTables.sellers = $('#sellersTable').DataTable({
+                responsive: true,
+                ajax: {
+                    url: '/api/sellers',
+                    dataSrc: 'data'
+                },
+                columns: getColumnsConfig('sellers'),
+                createdRow: function(row, data) {
+                    $(row).attr('data-type', 'seller');
+                }
+            });
+
+            userTables.coordinators = $('#coordinatorsTable').DataTable({
+                responsive: true,
+                ajax: {
+                    url: '/api/coordinators',
+                    dataSrc: 'data'
+                },
+                columns: getColumnsConfig('coordinators'),
+                createdRow: function(row, data) {
+                    $(row).attr('data-type', 'coordinator');
+                }
+            });
+
+            // Hide all tables initially
+            $('.user-table').addClass('d-none');
+        }
+
+        function getColumnsConfig(tableType) {
+            const baseColumns = [
+                { data: 'name' },
+                { data: 'email' },
+                { data: 'phone' }
+            ];
+
+            if (tableType === 'sellers' || tableType === 'coordinators') {
+                baseColumns.push({ data: 'role' });
+            }
+
+            baseColumns.push({
+                data: null,
+                render: function(data, type, row) {
+                    return `
+                        <button class="btn btn-admin btn-delete me-2" data-id="${row.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        ${tableType === 'sellers' ? `
+                            <button class="btn btn-admin btn-edit me-2" onclick="showSellerHistory(${row.id})">
+                                <i class="fas fa-history"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-admin btn-edit" onclick="openChat('${tableType}', ${row.id})">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    `;
+                }
+            });
+
+            return baseColumns;
+        }
+
+        // Handle user type selection
+        $('#userType').change(function() {
+            const selectedType = $(this).val();
+            $('.user-table').addClass('d-none');
+            $(`#${selectedType}Table`).removeClass('d-none');
+
+            // Reload table data if needed
+            if (userTables[selectedType]) {
+                userTables[selectedType].ajax.reload();
+            }
         });
 
         // Section switching
         $('.nav-link').click(function (e) {
             e.preventDefault();
             $('.content-section').addClass('d-none');
-            $($(this).attr('href')).removeClass('d-none');
+            const target = $(this).attr('href');
+            $(target).removeClass('d-none');
             $('.nav-link').removeClass('active');
             $(this).addClass('active');
+
+            if (target === '#dashboard') {
+                initializeCharts();
+            }
         });
 
         // Chart initialization
-        const earningsChart = new Chart(document.getElementById('earningsChart'), {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Monthly Earnings',
-                    data: [6500, 5900, 8000, 8100, 5600, 5500],
-                    borderColor: '#FFD700',
-                    tension: 0.4
-                }]
+        let earningsChart, projectStatsChart;
+
+        function initializeCharts() {
+            if (earningsChart) earningsChart.destroy();
+            if (projectStatsChart) projectStatsChart.destroy();
+
+            // Earnings Chart
+            earningsChart = new Chart(document.getElementById('earningsChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Monthly Earnings',
+                        data: [6500, 5900, 8000, 8100, 5600, 5500],
+                        borderColor: '#FFD700',
+                        tension: 0.4
+                    }]
+                }
+            });
+
+            // Project Stats Chart
+            projectStatsChart = new Chart(document.getElementById('projectStats'), {
+                type: 'bar',
+                data: {
+                    labels: ['Ongoing', 'Completed', 'Pending'],
+                    datasets: [{
+                        label: 'Project Status',
+                        data: [45, 32, 12],
+                        backgroundColor: ['#FFD700', '#00FF00', '#ff4444']
+                    }]
+                }
+            });
+        }
+
+        // Delete handler
+        $(document).on('click', '.btn-delete', function() {
+            const row = $(this).closest('tr');
+            const userId = $(this).data('id');
+            const userType = row.data('type');
+            const table = userTables[userType];
+
+            if(confirm(`Delete this ${userType}?`)) {
+                $.ajax({
+                    url: `/api/${userType}s/${userId}`,
+                    method: 'DELETE',
+                    success: () => {
+                        table.row(row).remove().draw();
+                        showAlert(`${userType} deleted successfully`, 'success');
+                    }
+                });
             }
         });
 
-        const projectStatsChart = new Chart(document.getElementById('projectStats'), {
-            type: 'bar',
-            data: {
-                labels: ['Ongoing', 'Completed', 'Pending'],
-                datasets: [{
-                    label: 'Project Status',
-                    data: [45, 32, 12],
-                    backgroundColor: ['#FFD700', '#00FF00', '#ff4444']
-                }]
-            }
-        });
-
-        // AJAX configuration
-        $.ajaxSetup({
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-            },
-            dataType: 'json'
-        });
-
-        // User Management
+        // Save user
         $('#saveUser').click(function () {
             const formData = {
                 name: $('#userName').val(),
                 email: $('#userEmail').val(),
-                status: $('#userStatus').val()
+                status: $('#userStatus').val(),
+                type: $('#userType').val()
             };
 
             $.ajax({
                 url: '/api/users',
                 method: 'POST',
+                contentType: 'application/json',
                 data: JSON.stringify(formData),
                 success: function (response) {
                     $('#userModal').modal('hide');
                     $('#userForm')[0].reset();
                     showAlert('User saved successfully!', 'success');
-                    $('#usersTable').DataTable().ajax.reload();
+                    userTables[formData.type].ajax.reload();
                 },
                 error: function (xhr) {
-                    showAlert(xhr.responseJSON.message, 'danger');
+                    showAlert(xhr.responseJSON?.message || 'Error saving user', 'danger');
                 }
             });
         });
 
-        $(document).on('click', '.btn-delete', function () {
-            const userId = $(this).data('id');
-            if (confirm('Are you sure you want to delete this user?')) {
-                $.ajax({
-                    url: `/api/users/${userId}`,
-                    method: 'DELETE',
-                    success: function () {
-                        showAlert('User deleted successfully!', 'success');
-                        $('#usersTable').DataTable().row($(this).closest('tr')).remove().draw();
-                    }.bind(this)
-                });
-            }
-        });
+        // Initialize the dashboard
+        initializeUserTables();
+        initializeCharts();
 
-        $(document).on('click', '.btn-edit', function () {
-            const userId = $(this).data('id');
-            $.ajax({
-                url: `/api/users/${userId}`,
-                method: 'GET',
-                success: function (user) {
-                    $('#userName').val(user.name);
-                    $('#userEmail').val(user.email);
-                    $('#userStatus').val(user.status);
-                    $('#userModal').modal('show');
-                }
-            });
-        });
-
-        // Payment Management
-        $(document).on('click', '.mark-paid', function () {
-            const paymentId = $(this).data('id');
-            $.ajax({
-                url: `/api/payments/${paymentId}/complete`,
-                method: 'PUT',
-                success: function () {
-                    $(this).closest('tr').find('.status-badge')
-                        .removeClass('blocked-status')
-                        .addClass('active-status')
-                        .text('Paid');
-                    showAlert('Payment marked as paid!', 'success');
-                }.bind(this)
-            });
-        });
-
-        // Data Loading
-        function loadInitialData() {
-            ['/api/users', '/api/payments', '/api/projects'].forEach(url => {
-                $.ajax({
-                    url,
-                    method: 'GET',
-                    success: function (response) {
-                        $(`#${url.split('/')[2]}Table`).DataTable().clear().rows.add(response.data).draw();
-                    }
-                });
-            });
-        }
-
-        function loadAnalytics() {
-            $.ajax({
-                url: '/api/analytics',
-                method: 'GET',
-                success: function (response) {
-                    updateCharts(response.data);
-                }
-            });
-        }
-
-        // Alert System
+        // Utility Functions
         function showAlert(message, type = 'success') {
             const alert = $(`
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `);
+                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `);
             $('.admin-main').prepend(alert);
             setTimeout(() => alert.alert('close'), 3000);
         }
 
-        // Initial Load
-        loadInitialData();
-        loadAnalytics();
+        window.showSellerHistory = function(sellerId) {
+            $.ajax({
+                url: `/api/sellers/${sellerId}/history`,
+                method: 'GET',
+                success: (data) => {
+                    $('#historyContent').html(
+                        data.map(history => `
+                            <tr>
+                                <td>${new Date(history.date).toLocaleDateString()}</td>
+                                <td>$${history.amount.toFixed(2)}</td>
+                                <td>${history.project}</td>
+                            </tr>
+                        `).join('')
+                    );
+                    $('#historyModal').modal('show');
+                }
+            });
+        }
+
+        window.openChat = function(userType, userId) {
+            // Implement chat functionality
+            showAlert(`Chat with ${userType} #${userId} initialized`, 'info');
+        }
     });
 </script>
 </body>

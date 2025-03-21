@@ -67,6 +67,21 @@
             overflow: hidden;
         }
 
+
+         .navbar-nav .btn-accent {
+             margin-left: 15px;
+             padding: 8px 20px;
+         }
+
+         @media (max-width: 991px) {
+             .navbar-nav .btn-accent {
+                 margin-left: 0;
+                 margin-top: 15px;
+                 width: 100%;
+                 text-align: left;
+             }
+         }
+
         .btn-accent {
             background-color: var(--accent-green);
             color: var(--bg-black);
@@ -555,12 +570,19 @@
                     </form>
                 </div>
 
+                <!-- In the navbar-nav list -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#home" onclick="showSection('home')">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#services" onclick="showSection('services')">Services</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact" onclick="showSection('contact')">Contact</a></li>
                     <li class="nav-item"><a class="nav-link" href="#about" onclick="showSection('about')">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#profile" onclick="showSection('profile')">Profile</a></li>
+                    <!-- Add logout button here -->
+                    <li class="nav-item ms-3">
+                        <button class="btn btn-accent" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -1058,12 +1080,160 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Section Management
+        // auth.js - Consolidated Security & Functionality
+
+        // Global JWT Configuration
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                const token = localStorage.getItem('jwtToken');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                }
+            }
+        });
+
+        // Session Management
+        function checkAuthStatus() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            if (!jwtToken) {
+                window.location.href = '../index.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Token Validation
+        function validateToken() {
+            if (!checkAuthStatus()) return;
+
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/authvalidate-token',
+                method: 'GET',
+                success: function(response) {
+                    const storedUser = JSON.parse(localStorage.getItem('user'));
+                    if (!storedUser || storedUser.id !== response.user.id) {
+                        localStorage.setItem('user', JSON.stringify(response.user));
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401){
+                        logout();
+                    }
+
+                }
+            });
+        }
+
+        // Error Handling
+        $(document).ajaxError(function(event, jqXHR) {
+            if (jqXHR.status === 401) logout();
+        });
+
+        // Logout Function
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        }
+
+        // Profile Management
+        function loadProfileData() {
+            if (!checkAuthStatus()) return;
+
+            $.ajax({
+                url: '/api/profile',
+                method: 'GET',
+                success: function(response) {
+                    updateProfileUI(response);
+                    populateEditForm(response);
+                },
+                error: () => showAlert('Error loading profile data', 'danger')
+            });
+        }
+
+        function updateProfileUI(response) {
+            $('#profileName').text(response.name);
+            $('#profileEmail').text(response.email);
+            $('#profileBio').text(response.bio);
+            $('#profileAddress').text(response.address);
+            $('#profileSkills').html(response.skills.map(skill =>
+                `<span class="skill-badge">${skill}</span>`
+            ).join(''));
+        }
+
+        function populateEditForm(response) {
+            $('#editName').val(response.name);
+            $('#editEmail').val(response.email);
+            $('#editBio').val(response.bio);
+            $('#editAddress').val(response.address);
+            $('#editSkills').val(response.skills.join(', '));
+        }
+
+        // Form Handlers
+        function handleProfileUpdate(formData) {
+            $.ajax({
+                url: '/api/profile/update',
+                method: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function() {
+                    loadProfileData();
+                    $('#editProfileModal').modal('hide');
+                    showAlert('Profile updated successfully!', 'success');
+                },
+                error: () => showAlert('Error updating profile', 'danger')
+            });
+        }
+
+        function handlePasswordChange(passwordData) {
+            if (passwordData.newPassword !== passwordData.confirmPassword) {
+                showAlert('Passwords do not match!', 'danger');
+                return;
+            }
+
+            $.ajax({
+                url: '/api/change-password',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(passwordData),
+                success: function() {
+                    $('#changePasswordModal').modal('hide');
+                    $('#changePasswordForm')[0].reset();
+                    showAlert('Password changed successfully!', 'success');
+                },
+                error: xhr => showAlert(xhr.responseJSON?.message || 'Error changing password', 'danger')
+            });
+        }
+
+        // UI Helpers
+        function showAlert(message, type) {
+            const alert = $(`
+        <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `);
+            $('body').append(alert);
+            setTimeout(() => alert.alert('close'), 3000);
+        }
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+            return Math.min(strength, 100);
+        }
+
+        // Navigation & UI
         function showSection(sectionId) {
+            if (!checkAuthStatus()) return;
+
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
-            
+
             setTimeout(() => {
                 const section = document.getElementById(sectionId);
                 if (section) {
@@ -1073,227 +1243,75 @@
             }, 50);
 
             const navbarCollapse = document.getElementById('navbarNav');
-            if (navbarCollapse.classList.contains('show')) {
+            if (navbarCollapse?.classList.contains('show')) {
                 new bootstrap.Collapse(navbarCollapse).hide();
             }
         }
 
-       
+        function initializeScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, { threshold: 0.1 });
 
-        // Scroll Animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);
-        });
-
-        // Search Functionality
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            document.querySelectorAll('.service-card').forEach(card => {
-                const text = card.textContent.toLowerCase();
-                card.style.display = text.includes(searchTerm) ? 'block' : 'none';
-            });
-        });
-
-        // Form Submission
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Add login logic here
-            alert('Login functionality coming soon!');
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            // Add registration logic here
-            alert('Registration functionality coming soon!');
-        });
-
-        // Initialize default section
-        showSection('home');
-
-            // Add parallax effect to service images
-  // In the parallax effect section, modify the speed and division factor
-document.addEventListener('mousemove', (e) => {
-    document.querySelectorAll('.service-image').forEach(img => {
-        const speed = 2; // Reduced from 5
-        const x = (window.innerWidth - e.pageX * speed) / 150; // Changed divisor from 100 to 150
-        const y = (window.innerHeight - e.pageY * speed) / 150; // Changed divisor from 100 to 150
-        img.style.transform = `translate(${x}px, ${y}px) scale(1.02)`; // Reduced scale from 1.05
-    });
-});
-
-    // Add hover sound effect (make sure to add audio file)
-    document.querySelectorAll('.service-card').forEach(card => {
-        card.addEventListener('mouseenter', () => {
-            new Audio('hover-sound.mp3').play().catch(() => {});
-        });
-    });
-
-    // Initialize service card animations
-    const serviceCards = document.querySelectorAll('.service-card');
-    const serviceObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.animationPlayState = 'running';
-            }
-        });
-    }, { threshold: 0.1 });
-
-    serviceCards.forEach(card => serviceObserver.observe(card));
-
-
-
-
-     // Add contact form submission handler
-     document.getElementById('contactForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert('Thank you for your message! We will respond shortly.');
-            this.reset();
-        });
-
-
-
-
-
-
-
-               // Profile Tab Management
-               function showProfileTab(tabId) {
-            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.profile-tab').forEach(tab => tab.classList.remove('active'));
-            
-            document.getElementById(`${tabId}Tab`).classList.add('active');
-            event.target.classList.add('active');
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
         }
 
-        // Profile AJAX Operations
+        // Document Ready
         $(document).ready(function() {
-            // Load profile data
-            function loadProfileData() {
-                $.ajax({
-                    url: '/api/profile',
-                    method: 'GET',
-                    success: function(response) {
-                        $('#profileName').text(response.name);
-                        $('#profileEmail').text(response.email);
-                        $('#profileBio').text(response.bio);
-                        $('#profileAddress').text(response.address);
-                        $('#profileSkills').html(
-                            response.skills.map(skill => 
-                                `<span class="skill-badge">${skill}</span>`
-                            ).join('')
-                        );
-                        
-                        // Populate edit form
-                        $('#editName').val(response.name);
-                        $('#editEmail').val(response.email);
-                        $('#editBio').val(response.bio);
-                        $('#editAddress').val(response.address);
-                        $('#editSkills').val(response.skills.join(', '));
-                    },
-                    error: function() {
-                        showAlert('Error loading profile data', 'danger');
-                    }
-                });
-            }
+            validateToken();
+            initializeScrollAnimations();
 
-            // Handle profile update
-            $('#editProfileForm').submit(function(e) {
-                e.preventDefault();
-                
-                const formData = {
-                    name: $('#editName').val(),
-                    email: $('#editEmail').val(),
-                    bio: $('#editBio').val(),
-                    address: $('#editAddress').val(),
-                    skills: $('#editSkills').val().split(',').map(s => s.trim())
-                };
-
-                $.ajax({
-                    url: '/api/profile/update',
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify(formData),
-                    success: function(response) {
-                        loadProfileData();
-                        $('#editProfileModal').modal('hide');
-                        showAlert('Profile updated successfully!', 'success');
-                    },
-                    error: function() {
-                        showAlert('Error updating profile', 'danger');
-                    }
-                });
-            });
-
-            // Handle password change
-            $('#changePasswordForm').submit(function(e) {
-                e.preventDefault();
-                
-                const currentPassword = $('#currentPassword').val();
-                const newPassword = $('#newPassword').val();
-                const confirmPassword = $('#confirmPassword').val();
-
-                if(newPassword !== confirmPassword) {
-                    showAlert('Passwords do not match!', 'danger');
-                    return;
-                }
-
-                $.ajax({
-                    url: '/api/change-password',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        currentPassword: currentPassword,
-                        newPassword: newPassword
-                    }),
-                    success: function(response) {
-                        $('#changePasswordModal').modal('hide');
-                        $('#changePasswordForm')[0].reset();
-                        showAlert('Password changed successfully!', 'success');
-                    },
-                    error: function(xhr) {
-                        showAlert(xhr.responseJSON.message || 'Error changing password', 'danger');
-                    }
-                });
-            });
-
-            // Password strength indicator
+            // Password Strength Indicator
             $('#newPassword').on('input', function() {
                 const strength = calculatePasswordStrength($(this).val());
                 $('.progress-bar').css('width', strength + '%');
             });
 
-            function calculatePasswordStrength(password) {
-                let strength = 0;
-                if (password.length >= 8) strength += 25;
-                if (/[A-Z]/.test(password)) strength += 25;
-                if (/[0-9]/.test(password)) strength += 25;
-                if (/[^A-Za-z0-9]/.test(password)) strength += 25;
-                return Math.min(strength, 100);
-            }
+            // Form Submissions
+            $('#editProfileForm').submit(function(e) {
+                e.preventDefault();
+                handleProfileUpdate({
+                    name: $('#editName').val(),
+                    email: $('#editEmail').val(),
+                    bio: $('#editBio').val(),
+                    address: $('#editAddress').val(),
+                    skills: $('#editSkills').val().split(',').map(s => s.trim())
+                });
+            });
 
-            function showAlert(message, type) {
-                const alert = $(`
-                    <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `);
-                $('body').append(alert);
-                setTimeout(() => alert.alert('close'), 3000);
-            }
+            $('#changePasswordForm').submit(function(e) {
+                e.preventDefault();
+                handlePasswordChange({
+                    currentPassword: $('#currentPassword').val(),
+                    newPassword: $('#newPassword').val(),
+                    confirmPassword: $('#confirmPassword').val()
+                });
+            });
 
-            // Initial load
+            // Search Functionality
+            $('#searchInput').on('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                document.querySelectorAll('.service-card').forEach(card => {
+                    card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            // Contact Form
+            $('#contactForm').submit(function(e) {
+                e.preventDefault();
+                showAlert('Thank you for your message! We will respond shortly.', 'success');
+                this.reset();
+            });
+
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);
+            });
+
             loadProfileData();
         });
     </script>
