@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collections;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/customers")
@@ -67,7 +68,7 @@ public class CustomerController {
                     userDTO.setPassword(customerDTO.getPassword()); // Already encoded in service
                     userDTO.setType(customerDTO.getType()); // Ensure type is set if required by JWT
 
-                    String token = jwtUtil.generateToken(userDTO);
+                    String token = jwtUtil.generateToken((UserDetails) userDTO);
                     AuthResponseDTO authDTO = new AuthResponseDTO();
                     authDTO.setEmail(customerDTO.getEmail());
                     authDTO.setToken(token);
@@ -115,17 +116,25 @@ public class CustomerController {
 
     @PutMapping("/update")
     public ResponseEntity<ResponseDTO> updateCustomer(
-            @Valid @RequestBody CustomerDTO customerDTO,
+            @Valid @RequestBody Map<String, String> request,
             @AuthenticationPrincipal UserDetails userDetails) {
         try {
             String email = userDetails.getUsername();
             CustomerDTO existingCustomer = (CustomerDTO) userService.findUserByEmail(email);
 
-            // Update allowed fields
-            existingCustomer.setName(customerDTO.getName());
-            existingCustomer.setEmail(customerDTO.getEmail());
-            existingCustomer.setPhone(customerDTO.getPhone());
-            existingCustomer.setAddress(customerDTO.getAddress());
+            // Update only allowed fields
+            if (request.containsKey("name")) {
+                existingCustomer.setName(request.get("name"));
+            }
+            if (request.containsKey("email")) {
+                existingCustomer.setEmail(request.get("email"));
+            }
+            if (request.containsKey("phone")) {
+                existingCustomer.setPhone(request.get("phone"));
+            }
+            if (request.containsKey("address")) {
+                existingCustomer.setAddress(request.get("address"));
+            }
 
             int result = userService.updateUser(existingCustomer);
             if (result == VarList.OK) {

@@ -5,6 +5,8 @@ package lk.ijse.back_end.entity;
 import jakarta.persistence.*;
 import lk.ijse.back_end.util.UserType;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,10 +27,16 @@ public class User {
     private String phone;
     private String address;
     private String profileImage;
+    @Column(name = "status")
+    private String status;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "user_type", insertable = false, updatable = false)
     private UserType type;
-
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "last_login")
+    private LocalDateTime lastLogin;
 }

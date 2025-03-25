@@ -362,15 +362,15 @@
             </div>
         </form>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Initialize on DOM ready
         $(document).ready(function() {
-            // Check for existing JWT token
+            //Check for existing JWT token
             const jwtToken = localStorage.getItem('jwtToken');
             if(jwtToken) {
-                window.location.href = './pages/home.html';
+                window.location.href = 'index.html';
             }
 
             // Show login form by default
@@ -401,7 +401,9 @@
                 $(this).removeClass('error-input');
             });
 
-            // Update login handler
+
+//
+//             // Update login handler
             $('#loginForm form').submit(function(e) {
                 e.preventDefault();
                 const $form = $(this);
@@ -436,8 +438,39 @@
                         // Redirect with token verification
 
                         // Verify token before redirect
-                        validateTokenAfterLogin();// Add this line
-                        window.location.href = './pages/home.html';
+                            validateTokenAfterLogin();
+                            switch (response.data.userType.toUpperCase()) {
+                                case 'CUSTOMER':
+                                    window.location.href = './pages/home.html';
+                                    break;
+                                case 'ADMIN':
+                                    window.location.href = './pages/adminController.html';
+                                    break;
+                                case 'COORDINATOR':
+                                    window.location.href = './pages/coordinatorController.html';
+                                    break;
+                                default:
+                                    logout();
+                                    showErrorToast('Unknown user type - contact support');
+                            }
+                            // window.location.href = './pages/home.html';
+                        // validateTokenAfterLogin(() => {
+                        //     switch (response.data.userType.toUpperCase()) {  // Fixed property name
+                        //         case 'CUSTOMER':
+                        //             window.location.href = './pages/home.html';
+                        //
+                        //             break;
+                        //         case 'ADMIN':
+                        //             window.location.href = './pages/adminController.html';
+                        //             break;
+                        //         case 'COORDINATOR':
+                        //             window.location.href = './pages/coordinatorController.html';
+                        //             break;  // Added break statement
+                        //         default:
+                        //             logout();
+                        //             showErrorToast('Unknown user type - contact support');
+                        //     }
+                        // })
                     },
                     error: function(xhr) {
                         $('#loginPassword').val('');
@@ -450,7 +483,27 @@
                 });
             });
 
+// Handle status toggle
+            $(document).on('change', '.status-toggle input', function() {
+                const row = $(this).closest('tr');
+                const userId = row.data('id'); // Get from row data attribute
+                const userType = row.data('type'); // Get from row data attribute
+                const newStatus = $(this).prop('checked') ? 'active' : 'inactive';
 
+                if (!userId || !userType) {
+                    showAlert('Invalid user data', 'danger');
+                    return;
+                }
+
+                $.ajax({
+                    url: `http://localhost:8080/api/${userType}s/${userId}/status`,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ status: newStatus }),
+                    success: () => showAlert('Status updated successfully', 'success'),
+                    error: (xhr) => showAlert(xhr.responseJSON?.message || 'Update failed', 'danger')
+                });
+            });
 
 
 // Add this function to your login page script
@@ -474,6 +527,112 @@
             }
 
 
+
+
+
+
+
+//             // Add logout function at the top level
+//             function logout() {
+//                 localStorage.removeItem('jwtToken');
+//                 localStorage.removeItem('user');
+//                 window.location.href = './index.html';
+//             }
+//
+// // Updated login handler
+//             $('#loginForm form').submit(function(e) {
+//                 e.preventDefault();
+//                 const $form = $(this);
+//                 const $btn = $form.find('button').prop('disabled', true);
+//
+//                 // Clear previous errors
+//                 $form.find('.error-text').remove();
+//
+//                 $.ajax({
+//                     type: "POST",
+//                     url: "http://localhost:8080/api/v1/auth/login",
+//                     contentType: "application/json",
+//                     data: JSON.stringify({
+//                         email: $('#loginEmail').val().trim(),
+//                         password: $('#loginPassword').val()
+//                     }),
+//                     success: function(response) {
+//                         // Validate response structure
+//                         if (!response?.data?.token || !response.data.userType) {
+//                             showErrorToast('Invalid server response');
+//                             return;
+//                         }
+//
+//                         // Store authentication data
+//                         localStorage.setItem('jwtToken', response.data.token);
+//                         localStorage.setItem('user', JSON.stringify({
+//                             email: response.data.email,
+//                             type: response.data.userType,
+//                             profileImage: response.data.profileImage || 'default-avatar.jpg'
+//                         }));
+//
+//                         // Verify token with server before redirect
+//                         validateTokenAfterLogin(() => {
+//                             switch(response.data.userType.toUpperCase()) {
+//                                 case 'CUSTOMER':
+//                                     window.location.href = './pages/home.html';
+//                                     break;
+//                                 case 'ADMIN':
+//                                     window.location.href = './pages/adminController.html';
+//                                     break;
+//                                 case 'COORDINATOR':
+//                                     window.location.href = './pages/coordinatorController.html';
+//                                     break;
+//                                 default:
+//                                     logout();
+//                                     showErrorToast('Unknown user type');
+//                             }
+//                         });
+//                     },
+//                     error: function(xhr) {
+//                         $('#loginPassword').val('');
+//                         let errorMsg = xhr.responseJSON?.message || 'Login failed. Check credentials';
+//                         if (xhr.status === 401) {
+//                             errorMsg = 'Invalid email or password';
+//                         }
+//                         showErrorToast(errorMsg);
+//                     },
+//                     complete: function() {
+//                         $btn.prop('disabled', false);
+//                     }
+//                 });
+//             });
+//
+// // Server-side token validation
+//             function validateTokenAfterLogin(callback) {
+//                 const token = localStorage.getItem('jwtToken');
+//                 if (!token) {
+//                     logout();
+//                     return;
+//                 }
+//
+//                 $.ajax({
+//                     url: 'http://localhost:8080/api/v1/auth/validate-token',
+//                     method: 'GET',
+//                     headers: {
+//                         'Authorization': 'Bearer ' + token
+//                     },
+//                     success: function(response) {
+//                         if (response.valid) {
+//                             callback();
+//                         } else {
+//                             logout();
+//                             showErrorToast('Session validation failed');
+//                         }
+//                     },
+//                     error: function() {
+//                         logout();
+//                         showErrorToast('Could not verify session');
+//                     }
+//                 });
+//             }
+//
+//
 
 
 
@@ -551,7 +710,7 @@
                 success: function(response) {
                     localStorage.setItem('jwtToken', response.accessToken);
                     localStorage.setItem('user', JSON.stringify(response.user));
-                    window.location.href = './pages/home.html';
+                    window.location.href = './pages/sellerHome.html';
                 },
                 error: function(xhr) {
                     const error = xhr.responseJSON || {};

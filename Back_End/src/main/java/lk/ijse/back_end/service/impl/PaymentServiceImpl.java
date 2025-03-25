@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class PaymentServiceImpl implements PaymentService {
@@ -33,5 +36,23 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentRepository.findById(id)
                 .map(payment -> modelMapper.map(payment, PaymentDTO.class))
                 .orElse(null);
+    }
+
+    @Override
+    public List<PaymentDTO> getAllPayments() {
+        return paymentRepository.findAll().stream()
+                .map(payment -> modelMapper.map(payment, PaymentDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public PaymentDTO updatePaymentStatus(Long id, String status) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+        payment.setStatus(status);
+        Payment updatedPayment = paymentRepository.save(payment);
+        return modelMapper.map(updatedPayment, PaymentDTO.class);
+
     }
 }

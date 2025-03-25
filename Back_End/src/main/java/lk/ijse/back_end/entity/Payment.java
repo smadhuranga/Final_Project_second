@@ -21,5 +21,6 @@ public class Payment {
     private String paymentMethod;
     private String transactionId;
     private LocalDateTime paymentDate = LocalDateTime.now();
+    @Column(nullable = false)
     private String status;
 }

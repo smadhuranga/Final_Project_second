@@ -1221,13 +1221,23 @@ console.log(user.data.profileImage)
                 url: 'http://localhost:8080/api/v1/customers/update',
                 method: 'PUT',
                 contentType: 'application/json',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('token')
+                },
                 data: JSON.stringify(formData),
                 success: function(response) {
+                    console.log('Update success:', response);
                     loadProfileData();
                     $('#editProfileModal').modal('hide');
                     showAlert('Profile updated successfully!', 'success');
                 },
-                error: (xhr) => showAlert(xhr.responseJSON?.message || 'Error updating profile', 'danger')
+                error: function(xhr) {
+                    console.error('Update error:', xhr);
+                    const errorMsg = xhr.responseJSON?.message || 'Error updating profile';
+                    showAlert(errorMsg, 'danger');
+
+
+                }
             });
         }
 

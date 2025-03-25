@@ -1,5 +1,6 @@
 package lk.ijse.back_end.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.service.impl.UserServiceImpl;
 import lk.ijse.back_end.util.JwtUtil;
@@ -21,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
+import java.util.Collections;
 
 @Slf4j
 @RestController
@@ -71,7 +73,7 @@ public class AuthController {
             }
 
             // Generate JWT token
-            String token = jwtUtil.generateToken(userDTO);
+            String token = jwtUtil.generateToken((UserDetails) userDTO);
 
             // Build response DTO
             AuthResponseDTO authResponse = new AuthResponseDTO();
@@ -125,6 +127,23 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO<>(VarList.Internal_Server_Error, "Error validating token", null));
         }
+    }
+
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String token = authHeader.substring(7);
+        if (jwtUtil.canTokenBeRefreshed(token)) {
+            String newToken = jwtUtil.refreshToken(token);
+            return ResponseEntity.ok().body(Collections.singletonMap("token", newToken));
+        }
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
 }

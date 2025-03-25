@@ -4,6 +4,8 @@ import lk.ijse.back_end.dto.UserDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface UserService extends UserDetailsService {
     UserDTO searchUser(String username);
     int saveUser(UserDTO userDTO);
@@ -12,6 +14,11 @@ public interface UserService extends UserDetailsService {
 
     public UserDTO findUserByEmail(String email);
     public int updateUser(UserDTO userDTO);
+    List<UserDTO> findAllUsers();
+    void updateUserStatus(String userId, boolean active);
+    void deleteUser(String userId);
+
+    void updateUserStatus(String userType, String userId, String status);
 }
 
 

@@ -35,6 +35,11 @@ public class UserDTO {
     private String profileImage;
     private LocalDateTime createdAt;  // Change from ZonedDateTime
 
+    private String status;
+
+    private LocalDateTime lastLogin;
+
+    private boolean active = true;
 
     public UserDTO(String name, String email, String password, UserType type, String phone, String address, String profileImage) {
         this.name = name;
@@ -45,4 +50,5 @@ public class UserDTO {
         this.address = address;
         this.profileImage = profileImage;
     }
+
 }
