@@ -6,10 +6,7 @@
     <title>Freelance Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" rel="stylesheet">
 
     <style>
@@ -221,6 +218,58 @@
             height: 400px;
             width: 100%;
         }
+
+
+
+
+        .chat-container {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+
+        .received {
+            background: rgba(255, 215, 0, 0.1);
+            align-self: flex-start;
+        }
+
+        .sent {
+            background: rgba(0, 255, 0, 0.1);
+            align-self: flex-end;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--accent-yellow);
+            color: white;
+            border-radius: 20px;
+            padding: 8px 15px;
+        }
+
+        .status-toggle {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -298,116 +347,50 @@
         </div>
     </section>
 
-    <!-- User Management Section -->
+
+    <!-- Update the User Management Section -->
     <section id="users" class="content-section d-none">
         <div class="d-flex justify-content-between mb-4">
             <h2>User Management</h2>
-            <div>
-                <button class="btn btn-admin btn-edit me-2" data-bs-toggle="modal" data-bs-target="#userModal">
+            <div class="d-flex gap-2">
+                <input type="text" class="search-box" placeholder="Search users..." id="userSearch">
+                <button class="btn btn-admin btn-edit" data-bs-toggle="modal" data-bs-target="#userModal">
                     <i class="fas fa-plus me-2"></i>Add User
                 </button>
             </div>
         </div>
 
-        <!-- Tab Navigation -->
+        <!-- User Type Selection -->
         <div class="mb-3">
-            <label class="form-label">User Type</label>
-            <select class="form-select" id="userType">
-                <option value="customer">Customer</option>
-                <option value="seller">Seller</option>
-                <option value="coordinator">Coordinator</option>
-            </select>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-admin btn-edit active"
+                        data-type="customer">Customers</button>
+                <button type="button" class="btn btn-admin btn-edit"
+                        data-type="seller">Sellers</button>
+                <button type="button" class="btn btn-admin btn-edit"
+                        data-type="coordinator">Coordinators</button>
+            </div>
         </div>
 
-        <!-- Tab Content -->
-        <div class="tab-content">
-            <!-- Customers Tab -->
-            <div class="tab-pane fade show active" id="customers">
-                <table class="table table-custom table-hover" id="customersTable">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr data-id="1" data-type="customer">
-                        <td>John Doe</td>
-                        <td>john@example.com</td>
-                        <td>+1 234 567 890</td>
-                        <td>
-                            <button class="btn btn-admin btn-delete me-2" data-id="1"><i class="fas fa-trash"></i></button>
-                            <button class="btn btn-admin btn-edit" onclick="openChat('customer', 1)">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Sellers Tab -->
-            <div class="tab-pane fade" id="sellers">
-                <table class="table table-custom table-hover" id="sellersTable">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr data-id="1" data-type="seller">
-                        <td>Jane Smith</td>
-                        <td>jane@example.com</td>
-                        <td>+1 987 654 321</td>
-                        <td>Designer</td>
-                        <td>
-                            <button class="btn btn-admin btn-delete me-2" data-id="1"><i class="fas fa-trash"></i></button>
-                            <button class="btn btn-admin btn-edit me-2" onclick="showSellerHistory(1)">
-                                <i class="fas fa-history"></i>
-                            </button>
-                            <button class="btn btn-admin btn-edit" onclick="openChat('seller', 1)">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Coordinators Tab -->
-            <div class="tab-pane fade" id="coordinators">
-                <table class="table table-custom table-hover" id="coordinatorsTable">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr data-id="1" data-type="coordinator">
-                        <td>Mike Johnson</td>
-                        <td>mike@example.com</td>
-                        <td>+1 555 123 456</td>
-                        <td>Project Manager</td>
-                        <td>
-                            <button class="btn btn-admin btn-delete me-2" data-id="1"><i class="fas fa-trash"></i></button>
-                            <button class="btn btn-admin btn-edit" onclick="openChat('coordinator', 1)">
-                                <i class="fas fa-comment"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
+        <!-- User Tables -->
+        <div class="table-responsive">
+            <table class="table table-custom table-hover" id="usersTable">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Registered</th>
+                    <th>Last Login</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Data will be populated via JavaScript -->
+                </tbody>
+            </table>
         </div>
     </section>
 
@@ -529,27 +512,96 @@
         </div>
     </div>
 </div>
+
+<!--chat model-->
+<div class="modal fade" id="chatModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="chatTitle">Chat with User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="chat-container d-flex flex-column" id="chatMessages">
+                    <!-- Chat messages will be loaded here -->
+                </div>
+                <div class="input-group mt-3">
+                    <input type="text" class="form-control" id="messageInput"
+                           placeholder="Type your message...">
+                    <button class="btn btn-admin btn-edit" id="sendMessage">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     $(document).ready(function () {
         // JWT Security Configuration
-        const authToken = localStorage.getItem('authToken');
-        if (!authToken) {
-            window.location.href = '/login.html';
-        }
-
-        // AJAX configuration with JWT
         $.ajaxSetup({
-            headers: {
-                'Authorization': 'Bearer ' + authToken
-            },
-            statusCode: {
-                401: function() {
-                    localStorage.removeItem('authToken');
-                    window.location.href = '/login.html';
+            beforeSend: function(xhr) {
+                const token = localStorage.getItem('jwtToken');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 }
             }
         });
+
+        // Session Management
+        function checkAuthStatus() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            if (!jwtToken) {
+                window.location.href = '../index.html';
+                return false;
+            }
+
+            // Verify token is not expired
+            const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+            if (tokenPayload.exp * 1000 < Date.now()) {
+                logout();
+                return false;
+            }
+
+            return true;
+        }
+
+
+        // Token Validation
+        function validateToken() {
+            if (!checkAuthStatus()) return;
+
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/auth/validate-token',
+                method: 'GET',
+                success: function(response) {
+                    const storedUser = JSON.parse(localStorage.getItem('user'));
+                    console.log('Stored user:', storedUser);
+                    console.log('Response:', response);
+
+                    // Check if response has user data in different possible locations
+                    const userData = response.user || response.data || response;
+
+                    if (!storedUser || (userData.email && storedUser.email !== userData.email)) {
+                        localStorage.setItem('user', JSON.stringify(userData));
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401){
+                        logout();
+                    }
+
+                }
+            });
+        }
+
 
         // Initialize DataTables
         let userTables = {
@@ -559,7 +611,20 @@
         };
 
         // Initialize all user tables (hidden by default)
+        // Modify your initializeUserTables function
         function initializeUserTables() {
+            // Destroy existing DataTables instances if they exist
+            if ($.fn.DataTable.isDataTable('#customersTable')) {
+                $('#customersTable').DataTable().destroy();
+            }
+            if ($.fn.DataTable.isDataTable('#sellersTable')) {
+                $('#sellersTable').DataTable().destroy();
+            }
+            if ($.fn.DataTable.isDataTable('#coordinatorsTable')) {
+                $('#coordinatorsTable').DataTable().destroy();
+            }
+
+            // Initialize new DataTables instances
             userTables.customers = $('#customersTable').DataTable({
                 responsive: true,
                 ajax: {
@@ -595,9 +660,6 @@
                     $(row).attr('data-type', 'coordinator');
                 }
             });
-
-            // Hide all tables initially
-            $('.user-table').addClass('d-none');
         }
 
         function getColumnsConfig(tableType) {
@@ -778,6 +840,146 @@
             // Implement chat functionality
             showAlert(`Chat with ${userType} #${userId} initialized`, 'info');
         }
+    });
+
+    // Chat functionality
+    let currentChatUser = null;
+
+    function loadChatHistory(userType, userId) {
+        $.ajax({
+            url: `/api/chats/${userId}`,
+            method: 'GET',
+            success: (messages) => {
+                const chatContainer = $('#chatMessages');
+                chatContainer.empty();
+
+                messages.forEach(msg => {
+                    const messageClass = msg.sender === 'admin' ? 'sent' : 'received';
+                    chatContainer.append(`
+                        <div class="message ${messageClass}">
+                            <div class="message-text">${msg.text}</div>
+                            <div class="message-time">
+                                ${new Date(msg.timestamp).toLocaleString()}
+                            </div>
+                        </div>
+                    `);
+                });
+                chatContainer.scrollTop(chatContainer[0].scrollHeight);
+            }
+        });
+    }
+
+    window.openChat = function(userType, userId) {
+        currentChatUser = { type: userType, id: userId };
+        $('#chatTitle').text(`Chat with ${userType} #${userId}`);
+        loadChatHistory(userType, userId);
+        $('#chatModal').modal('show');
+    }
+
+    $('#sendMessage').click(function() {
+        const message = $('#messageInput').val();
+        if (!message) return;
+
+        $.ajax({
+            url: '/api/chats/send',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                recipientType: currentChatUser.type,
+                recipientId: currentChatUser.id,
+                message: message
+            }),
+            success: () => {
+                $('#messageInput').val('');
+                loadChatHistory(currentChatUser.type, currentChatUser.id);
+            }
+        });
+    });
+
+    // Enhanced User Management
+    function initializeUserTables() {
+        $('#usersTable').DataTable({
+            responsive: true,
+            ajax: {
+                url: '/api/users',
+                dataSrc: 'data'
+            },
+            columns: [
+                {
+                    data: 'avatar',
+                    render: (data) => `<img src="${data || 'default-avatar.jpg'}" class="user-avatar">`
+                },
+                { data: 'name' },
+                { data: 'email' },
+                { data: 'phone' },
+                {
+                    data: 'status',
+                    render: (data, type, row) => `
+                        <label class="switch status-toggle">
+                            <input type="checkbox" ${data === 'active' ? 'checked' : ''}
+                                   data-id="${row.id}">
+                            <span class="slider"></span>
+                        </label>
+                    `
+                },
+                {
+                    data: 'createdAt',
+                    render: (data) => new Date(data).toLocaleDateString()
+                },
+                {
+                    data: 'lastLogin',
+                    render: (data) => data ? new Date(data).toLocaleString() : 'Never'
+                },
+                {
+                    data: null,
+                    render: (data, type, row) => `
+                        <button class="btn btn-admin btn-delete me-2" data-id="${row.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="btn btn-admin btn-edit" onclick="openChat('${row.type}', ${row.id})">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    `
+                }
+            ]
+        });
+    }
+
+    // Handle status toggle
+    $(document).on('change', '.status-toggle input', function() {
+        const userId = $(this).data('id');
+        const newStatus = $(this).prop('checked') ? 'active' : 'inactive';
+
+        $.ajax({
+            url: `/api/users/${userId}/status`,
+            method: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify({ status: newStatus }),
+            success: () => showAlert('Status updated successfully', 'success')
+        });
+    });
+
+    // Search functionality
+    $('#userSearch').on('input', function() {
+        const table = $('#usersTable').DataTable();
+        table.search(this.value).draw();
+    });
+
+    // Filter by user type
+    $('[data-type]').click(function() {
+        const type = $(this).data('type');
+        const table = $('#usersTable').DataTable();
+
+        $('[data-type]').removeClass('active');
+        $(this).addClass('active');
+
+        table.column(3).search(type).draw();
+    });
+
+    // Initialize with some default data
+    $(document).ready(function() {
+        initializeUserTables();
+        // ... rest of your existing initialization code ...
     });
 </script>
 </body>

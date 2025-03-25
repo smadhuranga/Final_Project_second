@@ -45,4 +45,5 @@ public class UserDTO {
         this.address = address;
         this.profileImage = profileImage;
     }
+
 }

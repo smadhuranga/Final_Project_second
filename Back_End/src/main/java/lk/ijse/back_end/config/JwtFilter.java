@@ -175,7 +175,12 @@ public class JwtFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) {
         return new AntPathRequestMatcher("/api/v1/auth/login").matches(request) ||
                 new AntPathRequestMatcher("/api/v1/customers/register").matches(request) ||
-                new AntPathRequestMatcher("/api/v1/sellers/register").matches(request);
+                new AntPathRequestMatcher("/api/v1/sellers/register").matches(request) ||
+        new AntPathRequestMatcher("/login.html").matches(request)||
+                new AntPathRequestMatcher( "/pages/").matches(request) ||
+                new AntPathRequestMatcher( "/css/").matches(request) ||
+                new AntPathRequestMatcher( "/js/").matches(request) ||
+                new AntPathRequestMatcher( "/images/").matches(request);
     }
 
     private String extractAndCleanToken(String header) {

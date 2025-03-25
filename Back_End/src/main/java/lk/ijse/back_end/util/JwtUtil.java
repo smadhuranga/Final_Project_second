@@ -39,7 +39,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
                 .setSubject(userDTO.getEmail())  // Use unique identifier
-                .claim("roles", userDTO.getType())
+                .claim("type", userDTO.getType())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(secretKey, SignatureAlgorithm.HS512)
