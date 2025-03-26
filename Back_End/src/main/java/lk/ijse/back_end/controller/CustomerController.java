@@ -68,7 +68,7 @@ public class CustomerController {
                     userDTO.setPassword(customerDTO.getPassword()); // Already encoded in service
                     userDTO.setType(customerDTO.getType()); // Ensure type is set if required by JWT
 
-                    String token = jwtUtil.generateToken((UserDetails) userDTO);
+                    String token = jwtUtil.generateToken(userDTO);
                     AuthResponseDTO authDTO = new AuthResponseDTO();
                     authDTO.setEmail(customerDTO.getEmail());
                     authDTO.setToken(token);

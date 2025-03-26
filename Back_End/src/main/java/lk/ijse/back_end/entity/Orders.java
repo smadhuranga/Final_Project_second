@@ -1,7 +1,6 @@
 package lk.ijse.back_end.entity;
 
 import jakarta.persistence.*;
-import lk.ijse.back_end.util.OrderStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -26,7 +25,5 @@ public class Orders {
     private Service service;
 
     private LocalDateTime orderDate = LocalDateTime.now();
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus status;
+    private String status;
 }

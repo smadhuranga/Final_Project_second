@@ -1,80 +1,37 @@
 package lk.ijse.back_end.controller;
 
 import lk.ijse.back_end.dto.ResponseDTO;
-import lk.ijse.back_end.repository.OrdersRepo;
-import lk.ijse.back_end.repository.PaymentRepo;
-import lk.ijse.back_end.service.CoordinatorService;
-import lk.ijse.back_end.service.CustomerService;
-import lk.ijse.back_end.service.SellerService;
+import lk.ijse.back_end.dto.UserDTO;
+import lk.ijse.back_end.service.impl.UserServiceImpl;
+import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
-@PreAuthorize("hasRole('ADMIN')")
+@CrossOrigin
 public class AdminController {
 
     @Autowired
-    private PaymentRepo paymentRepo;
+    private UserServiceImpl userService;
 
-    @Autowired
-    private OrdersRepo ordersRepo;
-
-    @GetMapping("/analytics/earnings")
-    public ResponseDTO<Map<String, Object>> getEarningsAnalytics() {
-        Map<String, Object> data = new HashMap<>();
-
-        // Get monthly earnings data
-        List<Object[]> monthlyData = paymentRepo.getMonthlyEarnings();
-        List<Double> monthlyEarnings = new ArrayList<>(Collections.nCopies(12, 0.0));
-
-        for (Object[] item : monthlyData) {
-            int month = (int) item[0];
-            BigDecimal amount = (BigDecimal) item[1];
-            monthlyEarnings.set(month - 1, amount.doubleValue());
+    @GetMapping("/users")
+    public ResponseEntity<ResponseDTO<List<UserDTO>>> getAllUsers() {
+        try {
+            List<UserDTO> users = userService.getAllUsers();
+            return ResponseEntity.ok(
+                    new ResponseDTO<>(VarList.OK, "Success", users)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO<>(VarList.Internal_Server_Error, "Error: " + e.getMessage(), null));
         }
-
-        // Get total earnings
-        BigDecimal total = paymentRepo.getTotalCompletedPayments();
-
-        data.put("monthly", monthlyEarnings);
-        data.put("total", total != null ? total.doubleValue() : 0.0);
-
-        return new ResponseDTO<>(200, "Success", data);
-    }
-
-    @GetMapping("/analytics/projects")
-    public ResponseDTO<Map<String, Long>> getProjectStats() {
-        Map<String, Long> stats = new HashMap<>();
-        stats.put("ongoing", ordersRepo.countByStatus("ongoing"));
-        stats.put("completed", ordersRepo.countByStatus("completed"));
-        stats.put("pending", ordersRepo.countByStatus("pending"));
-        return new ResponseDTO<>(200, "Success", stats);
-    }
-
-    @DeleteMapping("/{userType}s/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseDTO<?> deleteUser(
-            @PathVariable String userType,
-            @PathVariable String id
-    ) {
-        switch(userType.toLowerCase()) {
-            case "customer":
-                CustomerService.deleteCustomer(id);
-                break;
-            case "seller":
-                SellerService.deleteSeller(id);
-                break;
-            case "coordinator":
-                CoordinatorService.deleteCoordinator(id);
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid user type");
-        }
-        return new ResponseDTO<>(200, "User deleted successfully", null);
     }
 }

@@ -14,11 +14,8 @@ public interface UserService extends UserDetailsService {
 
     public UserDTO findUserByEmail(String email);
     public int updateUser(UserDTO userDTO);
-    List<UserDTO> findAllUsers();
-    void updateUserStatus(String userId, boolean active);
-    void deleteUser(String userId);
 
-    void updateUserStatus(String userType, String userId, String status);
+    List<UserDTO> getAllUsers();
 }
 
 
