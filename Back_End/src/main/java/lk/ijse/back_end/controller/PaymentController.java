@@ -7,15 +7,10 @@ import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/payments")
-@PreAuthorize("hasRole('ADMIN')")
-
 @CrossOrigin
 public class PaymentController {
 
@@ -42,19 +37,4 @@ public class PaymentController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping
-    public ResponseDTO<List<PaymentDTO>> getAllPayments() {
-        return new ResponseDTO<>(200, "Success", paymentService.getAllPayments());
-    }
-
-    @PutMapping("/{id}/status")
-    public ResponseDTO<PaymentDTO> updatePaymentStatus(
-            @PathVariable Long id,
-            @RequestParam String status) {
-
-        return new ResponseDTO<>(200, "Updated",
-                paymentService.updatePaymentStatus(id, status));
-    }
-
 }

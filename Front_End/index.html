@@ -367,10 +367,10 @@
     <script>
         // Initialize on DOM ready
         $(document).ready(function() {
-            //Check for existing JWT token
+            // Check for existing JWT token
             const jwtToken = localStorage.getItem('jwtToken');
             if(jwtToken) {
-                window.location.href = 'index.html';
+                // window.location.href = 'index.html';
             }
 
             // Show login form by default
@@ -443,6 +443,9 @@
                                 case 'CUSTOMER':
                                     window.location.href = './pages/home.html';
                                     break;
+                                case 'SELLER':
+                                    window.location.href = './pages/sellerHome.html';
+                                    break;
                                 case 'ADMIN':
                                     window.location.href = './pages/adminController.html';
                                     break;
@@ -483,27 +486,7 @@
                 });
             });
 
-// Handle status toggle
-            $(document).on('change', '.status-toggle input', function() {
-                const row = $(this).closest('tr');
-                const userId = row.data('id'); // Get from row data attribute
-                const userType = row.data('type'); // Get from row data attribute
-                const newStatus = $(this).prop('checked') ? 'active' : 'inactive';
 
-                if (!userId || !userType) {
-                    showAlert('Invalid user data', 'danger');
-                    return;
-                }
-
-                $.ajax({
-                    url: `http://localhost:8080/api/${userType}s/${userId}/status`,
-                    method: 'PUT',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ status: newStatus }),
-                    success: () => showAlert('Status updated successfully', 'success'),
-                    error: (xhr) => showAlert(xhr.responseJSON?.message || 'Update failed', 'danger')
-                });
-            });
 
 
 // Add this function to your login page script

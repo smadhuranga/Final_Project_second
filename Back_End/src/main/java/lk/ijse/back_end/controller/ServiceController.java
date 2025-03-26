@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/services")
 @CrossOrigin
@@ -52,6 +55,23 @@ public class ServiceController {
             return new ResponseEntity<>(
                     new ResponseDTO(VarList.Internal_Server_Error, "Error", e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+
+    @GetMapping
+    public ResponseEntity<ResponseDTO<List<ServiceDTO>>> getAllServices() {
+        try {
+            // Implement service retrieval logic based on your implementation
+            List<ServiceDTO> services = Collections.emptyList(); // Replace with actual implementation
+            return ResponseEntity.ok(
+                    new ResponseDTO<>(VarList.OK, "Services retrieved", services)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
 }

@@ -4,7 +4,6 @@ package lk.ijse.back_end.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
-import jakarta.persistence.EntityNotFoundException;
 import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.entity.*;
 import lk.ijse.back_end.repository.UserRepo;
@@ -15,7 +14,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import java.io.IOException;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,45 +53,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username)
+
+    public UserDetails loadUserByUsername(String email) {
+
+        User user = userRepository.findByEmail(email)
+
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Get the role from user entity
-        String role = user.getType().name(); // If using Enum
-        // Or if using String directly: String role = user.getRole();
-        // Convert your user roles to GrantedAuthority list
-        List<GrantedAuthority> authorities = Collections.singletonList(
-                new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())
-        );
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                authorities
-        );
+            throw new AuthenticationCredentialsNotFoundException("No password set");
+
+        }
+
+        return new CustomUserDetails(user);
+
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String email) {
-//
-//        User user = userRepository.findByEmail(email)
-//
-//                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-//
-//        if (user.getPassword() == null || user.getPassword().isEmpty()) {
-//
-//            throw new AuthenticationCredentialsNotFoundException("No password set");
-//
-//        }
-//
-//        return new CustomUserDetails(user);
-//
-//    }
-
     private Set<SimpleGrantedAuthority> getAuthorities(User user) {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getType().name())).stream()
-                .collect(Collectors.toSet());
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getType().name()));
+        return authorities;
     }
 
     @Override
@@ -182,6 +161,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private SellerDTO convertSeller(Seller seller) {
         SellerDTO dto = modelMapper.map(seller, SellerDTO.class);
+        dto.setId(seller.getId()); // Add this line to set the ID
         dto.setNic(seller.getNic());
         dto.setBio(seller.getBio());
         dto.setQualifications(seller.getQualifications());
@@ -201,6 +181,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO findUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        if(user instanceof Seller) {
+            return convertSeller((Seller) user);
+        }
+
         return convertToDTO(user);
     }
 
@@ -221,43 +205,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
     }
 
-    @Override
-    public List<UserDTO> findAllUsers() {
-        try {
-            return userRepository.findAll().stream()
-                    .map(user -> {
-                        UserDTO dto = modelMapper.map(user, UserDTO.class);
-                        // Manual mapping for inherited fields
-                        dto.setStatus(user.getStatus());
-                        dto.setCreatedAt(user.getCreatedAt());
-                        dto.setLastLogin(user.getLastLogin());
-                        return dto;
-                    })
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Error retrieving users");
-        }
-    }
-
-    @Override
-    public void updateUserStatus(String userId, boolean active) {
-
-    }
-
-    @Override
-    public void deleteUser(String userId) {
-
-    }
-
-    @Override
-    public void updateUserStatus(String userType, String userId, String status) {
-        User user = userRepository.findByIdAndType(userId, userType.toUpperCase())
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-
-        user.setStatus(status);
-        userRepository.save(user);
-    }
 
 
     @Override
@@ -304,5 +251,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         return VarList.OK;
+    }
+
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }

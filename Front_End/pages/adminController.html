@@ -550,17 +550,9 @@
             beforeSend: function(xhr) {
                 const token = localStorage.getItem('jwtToken');
                 if (token) {
-                    console.log('Attaching token:', token.substring(0, 20) + '...');
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 }
-            },
-            error: function(xhr) {
-                if(xhr.status === 401) {
-                    console.error('Auth error, redirecting to login');
-                    window.location.href = '/login.html';
-                }
             }
-
         });
 
         // Session Management
@@ -571,42 +563,16 @@
                 return false;
             }
 
-            try {
-                const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
-                const expirationTime = tokenPayload.exp * 1000;
-
-                if (expirationTime < Date.now()) {
-                    logout();
-                    return false;
-                }
-
-                // Check if token will expire in next 5 minutes
-                if (expirationTime - Date.now() < 300000) {
-                    refreshToken();
-                }
-
-                return true;
-            } catch (e) {
+            // Verify token is not expired
+            const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+            if (tokenPayload.exp * 1000 < Date.now()) {
                 logout();
                 return false;
             }
+
+            return true;
         }
 
-        function refreshToken() {
-            $.ajax({
-                url: 'http://localhost:8080/api/v1/auth/refresh-token',
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-                },
-                success: function(response) {
-                    localStorage.setItem('jwtToken', response.token);
-                },
-                error: function() {
-                    logout();
-                }
-            });
-        }
 
         // Token Validation
         function validateToken() {
@@ -658,27 +624,23 @@
             if (tableType === 'sellers' || tableType === 'coordinators') {
                 baseColumns.push({ data: 'role' });
             }
-// In getColumnsConfig function
+
             baseColumns.push({
                 data: null,
                 render: function(data, type, row) {
                     return `
-            <button class="btn btn-admin btn-delete me-2"
-                    data-id="${row.id}"
-                    data-type="${tableType}">
-                <i class="fas fa-trash"></i>
-            </button>
-            ${tableType === 'sellers' ? `
-                <button class="btn btn-admin btn-edit me-2"
-                        onclick="showSellerHistory(${row.id})">
-                    <i class="fas fa-history"></i>
-                </button>
-            ` : ''}
-            <button class="btn btn-admin btn-edit"
-                    onclick="openChat('${tableType}', ${row.id})">
-                <i class="fas fa-comment"></i>
-            </button>
-        `;
+                        <button class="btn btn-admin btn-delete me-2" data-id="${row.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        ${tableType === 'sellers' ? `
+                            <button class="btn btn-admin btn-edit me-2" onclick="showSellerHistory(${row.id})">
+                                <i class="fas fa-history"></i>
+                            </button>
+                        ` : ''}
+                        <button class="btn btn-admin btn-edit" onclick="openChat('${tableType}', ${row.id})">
+                            <i class="fas fa-comment"></i>
+                        </button>
+                    `;
                 }
             });
 
@@ -747,30 +709,19 @@
         }
 
         // Delete handler
-        // Delete handler
         $(document).on('click', '.btn-delete', function() {
+            const row = $(this).closest('tr');
             const userId = $(this).data('id');
-            const userType = $(this).data('type');
-
-            if (!userId || !userType) {
-                showAlert('Invalid user data', 'danger');
-                return;
-            }
+            const userType = row.data('type');
+            const table = userTables[userType];
 
             if(confirm(`Delete this ${userType}?`)) {
                 $.ajax({
-                    url: `http://localhost:8080/api/${userType}s/${userId}`,
+                    url: `/api/${userType}s/${userId}`,
                     method: 'DELETE',
                     success: () => {
-                        // Destroy and reinitialize table
-                        if ($.fn.DataTable.isDataTable('#usersTable')) {
-                            $('#usersTable').DataTable().destroy();
-                        }
-                        initializeUserTables();
+                        table.row(row).remove().draw();
                         showAlert(`${userType} deleted successfully`, 'success');
-                    },
-                    error: function(xhr) {
-                        showAlert(xhr.responseJSON?.message || 'Error deleting user', 'danger');
                     }
                 });
             }
@@ -786,7 +737,7 @@
             };
 
             $.ajax({
-                url: 'http://localhost:8080/api/users',
+                url: '/api/users',
                 method: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(formData),
@@ -807,7 +758,7 @@
         initializeCharts();
 
         // Utility Functions
-        window.showAlert = function(message, type = 'success') {
+        function showAlert(message, type = 'success') {
             const alert = $(`
                 <div class="alert alert-${type} alert-dismissible fade show" role="alert">
                     ${message}
@@ -820,7 +771,7 @@
 
         window.showSellerHistory = function(sellerId) {
             $.ajax({
-                url: `http://localhost:8080/api/sellers/${sellerId}/history`,
+                url: `/api/sellers/${sellerId}/history`,
                 method: 'GET',
                 success: (data) => {
                     $('#historyContent').html(
@@ -848,7 +799,7 @@
 
     function loadChatHistory(userType, userId) {
         $.ajax({
-            url: `http://localhost:8080/api/chats/${userId}`,
+            url: `/api/chats/${userId}`,
             method: 'GET',
             success: (messages) => {
                 const chatContainer = $('#chatMessages');
@@ -882,7 +833,7 @@
         if (!message) return;
 
         $.ajax({
-            url: 'http://localhost:8080/api/chats/send',
+            url: '/api/chats/send',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
@@ -967,14 +918,13 @@
 
         });
     }
-
     // Handle status toggle
     $(document).on('change', '.status-toggle input', function() {
         const userId = $(this).data('id');
         const newStatus = $(this).prop('checked') ? 'active' : 'inactive';
 
         $.ajax({
-            url: `http://localhost:8080/api/users/${userId}/status`,
+            url: `/api/users/${userId}/status`,
             method: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify({ status: newStatus }),

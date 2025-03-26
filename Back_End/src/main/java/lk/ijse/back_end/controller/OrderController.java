@@ -7,7 +7,12 @@ import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -35,6 +40,21 @@ public class OrderController {
             return new ResponseEntity<>(
                     new ResponseDTO(VarList.Internal_Server_Error, "Error", e.getMessage()),
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping
+    public ResponseEntity<ResponseDTO<List<OrderDTO>>> getSellerOrders(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        try {
+            // Implement order retrieval logic
+            List<OrderDTO> orders = Collections.emptyList(); // Replace with actual implementation
+            return ResponseEntity.ok(
+                    new ResponseDTO<>(VarList.OK, "Orders retrieved", orders)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
 }

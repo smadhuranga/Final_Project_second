@@ -385,184 +385,424 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!--<script>-->
+<!--  $(document).ready(function() {-->
+<!--    let sampleServices = JSON.parse(localStorage.getItem('services')) || [-->
+<!--      { id: 1, title: "Web Design", category: "design", price: 299, description: "Professional web design services" },-->
+<!--      { id: 2, title: "Logo Design", category: "design", price: 99, description: "Custom logo creation" }-->
+<!--    ];-->
+
+<!--    let sampleOrders = JSON.parse(localStorage.getItem('orders')) || [-->
+<!--      { id: 1001, service: "Web Design", price: 299, status: "Pending", statusClass: "status-pending" },-->
+<!--      { id: 1002, service: "Logo Design", price: 99, status: "In Progress", statusClass: "status-progress" }-->
+<!--    ];-->
+
+<!--    // Initial load-->
+<!--    loadDashboardData();-->
+<!--    loadServices();-->
+<!--    loadOrders();-->
+<!--    loadProfileData();-->
+
+<!--    // Chat functionality-->
+<!--    $('.chat-toggle').click(() => $('.chat-box').toggleClass('active'));-->
+<!--    $('#sendMessage').click(sendMessage);-->
+
+<!--    function loadDashboardData() {-->
+<!--      const totalEarnings = sampleOrders.reduce((sum, orders) => sum + orders.price, 0);-->
+<!--      $('#totalEarnings').text(`$${totalEarnings.toFixed(2)}`);-->
+<!--      $('#activeOrders').text(sampleOrders.length);-->
+<!--    }-->
+
+<!--    function loadServices() {-->
+<!--      let html = '';-->
+<!--      sampleServices.forEach(service => {-->
+<!--        html += `-->
+<!--                        <div class="col-md-4">-->
+<!--                            <div class="dashboard-card">-->
+<!--                                <h5>${service.title}</h5>-->
+<!--                                <p class="text-muted">${service.category}</p>-->
+<!--                                <div class="d-flex justify-content-between">-->
+<!--                                    <span>$${service.price}</span>-->
+<!--                                    <div>-->
+<!--                                        <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">-->
+<!--                                            <i class="fas fa-edit"></i>-->
+<!--                                        </button>-->
+<!--                                        <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">-->
+<!--                                            <i class="fas fa-trash"></i>-->
+<!--                                        </button>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>`;-->
+<!--      });-->
+<!--      $('#servicesContainer').html(html);-->
+<!--      localStorage.setItem('services', JSON.stringify(sampleServices));-->
+<!--    }-->
+
+<!--    function loadOrders() {-->
+<!--      let html = '';-->
+<!--      sampleOrders.forEach(orders => {-->
+<!--        html += `-->
+<!--                        <tr>-->
+<!--                            <td>#${orders.id}</td>-->
+<!--                            <td>${orders.service}</td>-->
+<!--                            <td>$${orders.price}</td>-->
+<!--                            <td>-->
+<!--                                <span class="status-badge ${orders.statusClass}">-->
+<!--                                    ${orders.status}-->
+<!--                                </span>-->
+<!--                            </td>-->
+<!--                            <td>-->
+<!--                                <button class="btn btn-sm btn-outline-success deliver-orders" data-id="${orders.id}">-->
+<!--                                    Deliver-->
+<!--                                </button>-->
+<!--                            </td>-->
+<!--                        </tr>`;-->
+<!--      });-->
+<!--      $('#ordersTable').html(html);-->
+<!--      localStorage.setItem('orders', JSON.stringify(sampleOrders));-->
+<!--    }-->
+
+<!--    // Service Form Handling-->
+<!--    $('#serviceForm').submit(function(e) {-->
+<!--      e.preventDefault();-->
+<!--      const newService = {-->
+<!--        id: Date.now(),-->
+<!--        title: $('#serviceTitle').val(),-->
+<!--        category: $('#serviceCategory').val(),-->
+<!--        price: parseFloat($('#servicePrice').val()),-->
+<!--        description: $('#serviceDescription').val()-->
+<!--      };-->
+<!--      sampleServices.push (newService);-->
+<!--      loadServices();-->
+<!--      $('#addServiceModal').modal('hide');-->
+<!--      this.reset();-->
+<!--    });-->
+
+<!--    // Edit Service Handling-->
+<!--    $(document).on('click', '.edit-service', function() {-->
+<!--      const serviceId = $(this).data('id');-->
+<!--      const service = sampleServices.find(s => s.id === serviceId);-->
+<!--      $('#editServiceId').val(service.id);-->
+<!--      $('#editServiceTitle').val(service.title);-->
+<!--      $('#editServiceCategory').val(service.category);-->
+<!--      $('#editServicePrice').val(service.price);-->
+<!--      $('#editServiceDescription').val(service.description);-->
+<!--      $('#editServiceModal').modal('show');-->
+<!--    });-->
+
+<!--    $('#editServiceForm').submit(function(e) {-->
+<!--      e.preventDefault();-->
+<!--      const serviceId = parseInt($('#editServiceId').val());-->
+<!--      const updatedService = {-->
+<!--        id: serviceId,-->
+<!--        title: $('#editServiceTitle').val(),-->
+<!--        category: $('#editServiceCategory').val(),-->
+<!--        price: parseFloat($('#editServicePrice').val()),-->
+<!--        description: $('#editServiceDescription').val()-->
+<!--      };-->
+<!--      const index = sampleServices.findIndex(s => s.id === serviceId);-->
+<!--      sampleServices[index] = updatedService;-->
+<!--      loadServices();-->
+<!--      $('#editServiceModal').modal('hide');-->
+<!--    });-->
+
+<!--    // Delete Service Handling-->
+<!--    $(document).on('click', '.delete-service', function() {-->
+<!--      const serviceId = $(this).data('id');-->
+<!--      if (confirm('Are you sure you want to delete this service?')) {-->
+<!--        sampleServices = sampleServices.filter(s => s.id !== serviceId);-->
+<!--        loadServices();-->
+<!--      }-->
+<!--    });-->
+
+<!--    // Load Profile Data-->
+<!--    function loadProfileData() {-->
+<!--      $('#sellerName').text('John Doe');-->
+<!--      $('#sellerRating').text('⭐ 4.8 (42 reviews)');-->
+<!--      $('#profileEmail').text('john@example.com');-->
+<!--      $('#profileLocation').text('New York, USA');-->
+<!--      $('#memberSince').text('2022');-->
+<!--      $('#completedOrders').text('38');-->
+<!--      $('#profileSkills').html(`-->
+<!--                    <span class="badge bg-primary">Web Design</span>-->
+<!--                    <span class="badge bg-primary">UI/UX</span>-->
+<!--                    <span class="badge bg-primary">Frontend Development</span>-->
+<!--                `);-->
+<!--    }-->
+
+<!--    // Chat Functionality-->
+<!--    function sendMessage() {-->
+<!--      const message = $('#chatInput').val();-->
+<!--      if (message.trim()) {-->
+<!--        $('.chat-messages').append(`-->
+<!--                        <div class="message-bubble message-right">${message}</div>-->
+<!--                    `);-->
+<!--        $('#chatInput').val('');-->
+<!--        $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);-->
+<!--      }-->
+<!--    }-->
+
+<!--    // Event Delegation for dynamic elements-->
+<!--    $(document).on('click', '.deliver-orders', function() {-->
+<!--      const orderId = $(this).data('id');-->
+<!--      // Handle orders delivery logic here-->
+<!--    });-->
+
+<!--    // Initialize tooltips-->
+<!--    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));-->
+<!--    tooltipTriggerList.map(function(tooltipTriggerEl) {-->
+<!--      return new bootstrap.Tooltip(tooltipTriggerEl);-->
+<!--    });-->
+
+<!--    // Sample message functionality-->
+<!--    $('#chatInput').keypress(function(e) {-->
+<!--      if (e.which === 13) { // Enter key-->
+<!--        sendMessage();-->
+<!--      }-->
+<!--    });-->
+<!--  });-->
+
+<!--</script>-->
+
+
 <script>
   $(document).ready(function() {
-    let sampleServices = JSON.parse(localStorage.getItem('services')) || [
-      { id: 1, title: "Web Design", category: "design", price: 299, description: "Professional web design services" },
-      { id: 2, title: "Logo Design", category: "design", price: 99, description: "Custom logo creation" }
-    ];
+    // JWT Management
+    let jwtToken = localStorage.getItem('jwtToken');
+    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
 
-    let sampleOrders = JSON.parse(localStorage.getItem('orders')) || [
-      { id: 1001, service: "Web Design", price: 299, status: "Pending", statusClass: "status-pending" },
-      { id: 1002, service: "Logo Design", price: 99, status: "In Progress", statusClass: "status-progress" }
-    ];
+    // Set up AJAX defaults with JWT
+    $.ajaxSetup({
+      beforeSend: function(xhr) {
+        if (jwtToken) {
+          xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);
+        }
+      }
+    });
 
-    // Initial load
-    loadDashboardData();
-    loadServices();
-    loadOrders();
-    loadProfileData();
-
-    // Chat functionality
-    $('.chat-toggle').click(() => $('.chat-box').toggleClass('active'));
-    $('#sendMessage').click(sendMessage);
-
-    function loadDashboardData() {
-      const totalEarnings = sampleOrders.reduce((sum, orders) => sum + orders.price, 0);
-      $('#totalEarnings').text(`$${totalEarnings.toFixed(2)}`);
-      $('#activeOrders').text(sampleOrders.length);
+    // Initial Load
+    if (jwtToken) {
+      loadDashboardData();
+      loadServices();
+      loadOrders();
+      loadProfileData();
+    } else {
+      window.location.href = '../index.html';
     }
 
+    // Dashboard Data Load
+    function loadDashboardData() {
+      $.ajax({
+        url: 'http://localhost:8080/api/v1/sellers/dashboard',
+        method: 'GET',
+        success: function(response) {
+          if (response.code === 200) {
+            $('#totalEarnings').text(`$${response.data.totalEarnings.toFixed(2)}`);
+            $('#activeOrders').text(response.data.activeOrders);
+            $('#avgRating').text(response.data.avgRating.toFixed(1));
+          }
+        },
+        error: handleError
+      });
+    }
+
+    // Services Management
     function loadServices() {
+      $.ajax({
+        url: 'http://localhost:8080/api/v1/services',
+        method: 'GET',
+        success: function(response) {
+          if (response.code === 200) {
+            renderServices(response.data);
+          }
+        },
+        error: handleError
+      });
+    }
+
+    function renderServices(services) {
       let html = '';
-      sampleServices.forEach(service => {
+      services.forEach(service => {
         html += `
-                        <div class="col-md-4">
-                            <div class="dashboard-card">
-                                <h5>${service.title}</h5>
-                                <p class="text-muted">${service.category}</p>
-                                <div class="d-flex justify-content-between">
-                                    <span>$${service.price}</span>
-                                    <div>
-                                        <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>`;
+          <div class="col-md-4">
+            <div class="dashboard-card">
+              <h5>${service.title}</h5>
+              <p class="text-muted">${service.category}</p>
+              <div class="d-flex justify-content-between">
+                <span>$${service.price}</span>
+                <div>
+                  <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>`;
       });
       $('#servicesContainer').html(html);
-      localStorage.setItem('services', JSON.stringify(sampleServices));
-    }
-
-    function loadOrders() {
-      let html = '';
-      sampleOrders.forEach(orders => {
-        html += `
-                        <tr>
-                            <td>#${orders.id}</td>
-                            <td>${orders.service}</td>
-                            <td>$${orders.price}</td>
-                            <td>
-                                <span class="status-badge ${orders.statusClass}">
-                                    ${orders.status}
-                                </span>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-success deliver-orders" data-id="${orders.id}">
-                                    Deliver
-                                </button>
-                            </td>
-                        </tr>`;
-      });
-      $('#ordersTable').html(html);
-      localStorage.setItem('orders', JSON.stringify(sampleOrders));
     }
 
     // Service Form Handling
     $('#serviceForm').submit(function(e) {
       e.preventDefault();
-      const newService = {
-        id: Date.now(),
+      const serviceData = {
         title: $('#serviceTitle').val(),
         category: $('#serviceCategory').val(),
         price: parseFloat($('#servicePrice').val()),
         description: $('#serviceDescription').val()
       };
-      sampleServices.push (newService);
-      loadServices();
-      $('#addServiceModal').modal('hide');
-      this.reset();
+
+      $.ajax({
+        url: 'http://localhost:8080/api/v1/services',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(serviceData),
+        success: function(response) {
+          if (response.code === 201) {
+            loadServices();
+            $('#addServiceModal').modal('hide');
+            this.reset();
+          }
+        },
+        error: handleError
+      });
     });
 
-    // Edit Service Handling
-    $(document).on('click', '.edit-service', function() {
-      const serviceId = $(this).data('id');
-      const service = sampleServices.find(s => s.id === serviceId);
-      $('#editServiceId').val(service.id);
-      $('#editServiceTitle').val(service.title);
-      $('#editServiceCategory').val(service.category);
-      $('#editServicePrice').val(service.price);
-      $('#editServiceDescription').val(service.description);
-      $('#editServiceModal').modal('show');
-    });
+    // Order Management
+    function loadOrders() {
+      $.ajax({
+        url: 'http://localhost:8080/api/v1/orders',
+        method: 'GET',
+        success: function(response) {
+          if (response.code === 200) {
+            renderOrders(response.data);
+          }
+        },
+        error: handleError
+      });
+    }
 
-    $('#editServiceForm').submit(function(e) {
-      e.preventDefault();
-      const serviceId = parseInt($('#editServiceId').val());
-      const updatedService = {
-        id: serviceId,
-        title: $('#editServiceTitle').val(),
-        category: $('#editServiceCategory').val(),
-        price: parseFloat($('#editServicePrice').val()),
-        description: $('#editServiceDescription').val()
-      };
-      const index = sampleServices.findIndex(s => s.id === serviceId);
-      sampleServices[index] = updatedService;
-      loadServices();
-      $('#editServiceModal').modal('hide');
-    });
+    function renderOrders(orders) {
+      let html = '';
+      orders.forEach(order => {
+        html += `
+          <tr>
+            <td>#${order.id}</td>
+            <td>${order.service}</td>
+            <td>$${order.price}</td>
+            <td>
+              <span class="status-badge ${order.statusClass}">
+                ${order.status}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-success deliver-order" data-id="${order.id}">
+                Deliver
+              </button>
+            </td>
+          </tr>`;
+      });
+      $('#ordersTable').html(html);
+    }
 
-    // Delete Service Handling
-    $(document).on('click', '.delete-service', function() {
-      const serviceId = $(this).data('id');
-      if (confirm('Are you sure you want to delete this service?')) {
-        sampleServices = sampleServices.filter(s => s.id !== serviceId);
-        loadServices();
-      }
-    });
-
-    // Load Profile Data
+    // Profile Management
     function loadProfileData() {
-      $('#sellerName').text('John Doe');
-      $('#sellerRating').text('⭐ 4.8 (42 reviews)');
-      $('#profileEmail').text('john@example.com');
-      $('#profileLocation').text('New York, USA');
-      $('#memberSince').text('2022');
-      $('#completedOrders').text('38');
-      $('#profileSkills').html(`
-                    <span class="badge bg-primary">Web Design</span>
-                    <span class="badge bg-primary">UI/UX</span>
-                    <span class="badge bg-primary">Frontend Development</span>
-                `);
+      $.ajax({
+        url: 'http://localhost:8080/api/v1/sellers/me',
+        method: 'GET',
+        success: function(response) {
+          if (response.code === 200) {
+            const profile = response.data;
+            $('#sellerName').text(profile.name);
+            $('#sellerRating').text(`⭐ ${profile.avgRating} (${profile.reviewCount} reviews)`);
+            $('#profileEmail').text(profile.email);
+            $('#profileLocation').text(profile.location);
+            $('#memberSince').text(new Date(profile.createdAt).getFullYear());
+            $('#completedOrders').text(profile.completedOrders);
+          }
+        },
+        error: handleError
+      });
     }
 
     // Chat Functionality
     function sendMessage() {
-      const message = $('#chatInput').val();
-      if (message.trim()) {
-        $('.chat-messages').append(`
-                        <div class="message-bubble message-right">${message}</div>
-                    `);
-        $('#chatInput').val('');
-        $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+      const message = $('#chatInput').val().trim();
+      if (message) {
+        $.ajax({
+          url: 'http://localhost:8080/api/v1/chat',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ message: message }),
+          success: function() {
+            $('.chat-messages').append(`
+              <div class="message-bubble message-right">${message}</div>
+            `);
+            $('#chatInput').val('');
+            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
+          },
+          error: handleError
+        });
       }
     }
 
-    // Event Delegation for dynamic elements
-    $(document).on('click', '.deliver-orders', function() {
+    // Error Handling
+    function handleError(xhr) {
+      const error = xhr.responseJSON;
+      switch (xhr.status) {
+        case 401:
+          localStorage.clear();
+          window.location.href = '../index.html';
+          break;
+        case 403:
+          alert('You dont have permission for this action');
+          break;
+        default:
+          alert(error?.message || 'An error occurred');
+      }
+    }
+
+    // Event Listeners
+    $('.chat-toggle').click(() => $('.chat-box').toggleClass('active'));
+    $('#sendMessage').click(sendMessage);
+    $('#chatInput').keypress(e => e.which === 13 && sendMessage());
+
+    $(document).on('click', '.deliver-order', function() {
       const orderId = $(this).data('id');
-      // Handle orders delivery logic here
+      $.ajax({
+        url: `http://localhost:8080/api/v1/orders/${orderId}/deliver`,
+        method: 'PUT',
+        success: function(response) {
+          if (response.code === 200) loadOrders();
+        },
+        error: handleError
+      });
     });
 
-    // Initialize tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltipTriggerList.map(function(tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-
-    // Sample message functionality
-    $('#chatInput').keypress(function(e) {
-      if (e.which === 13) { // Enter key
-        sendMessage();
+    $(document).on('click', '.delete-service', function() {
+      const serviceId = $(this).data('id');
+      if (confirm('Are you sure you want to delete this service?')) {
+        $.ajax({
+          url: `http://localhost:8080/api/v1/services/${serviceId}`,
+          method: 'DELETE',
+          success: function(response) {
+            if (response.code === 200) loadServices();
+          },
+          error: handleError
+        });
       }
     });
-  });
 
+    // Logout Functionality
+    $('#logoutButton').click(() => {
+      localStorage.clear();
+      window.location.href = '../index.html';
+    });
+  });
 </script>
 </body>
 </html>

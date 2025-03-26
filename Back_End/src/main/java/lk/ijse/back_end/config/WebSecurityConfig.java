@@ -139,7 +139,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -177,46 +176,13 @@ public class WebSecurityConfig {
         return new StandardServletMultipartResolver();
     }
 
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/v1/customers/register",
-                                "/api/v1/sellers/register",
-                                "/uploads/**",
-                                "/login.html",
-                                "/pages/**",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/api/v1/auth/**"
-                        ).permitAll()
-                        .requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
-                        .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
-    }
-
-
 //    @Bean
 //    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//
 //        http
 //                .csrf(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
 //                .authorizeHttpRequests(auth -> auth
-//                        // Public endpoints
-//                        .requestMatchers(
-//                                "/api/v1/customers/register",
+//                        .requestMatchers(   "/api/v1/customers/register",
 //                                "/api/v1/sellers/register",
 //                                "/uploads/**",
 //                                "/login.html",
@@ -225,14 +191,10 @@ public class WebSecurityConfig {
 //                                "/js/**",
 //                                "/images/**",
 //                                "/api/v1/auth/**",
-//                                "/api/v1/admin/**"
-//                        ).permitAll()
+//                                "/api/v1/auth/validate-token").permitAll()
+//                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/customers/**" , "/pages/adminController.html").authenticated(
 //
-//                        // Admin-specific endpoints
-//                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-//
-//                        // Authenticated endpoints
-//                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+//                        )
 //                        .anyRequest().authenticated()
 //                )
 //                .sessionManagement(session -> session
@@ -244,25 +206,65 @@ public class WebSecurityConfig {
 //    }
 
     @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
+                        // Public endpoints (no auth)
+                        .requestMatchers(
+                                "/api/v1/customers/register",
+                                "/api/v1/sellers/register",
+                                "/uploads/**",
+                                "/login.html",
+                                "/pages/**",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+                                "/api/v1/auth/**",
+                                "/api/v1/auth/validate-token",
+                                "/api/v1/sellers/dashboard",
+                                "/api/v1/sellers/me",
+                                "/api/v1/services/**",
+                                "/api/v1/orders/**"
+                        ).permitAll()
+
+                        // Admin endpoints (require ADMIN role)
+
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/sellers/dashboard").hasAnyRole("SELLER", "ADMIN")
+
+                        // OPTIONS requests for specific paths
+                        .requestMatchers(HttpMethod.OPTIONS,
+                                "/api/v1/customers/**",
+                                "/pages/adminController.html"
+                        ).authenticated()
+
+                        // All other requests require authentication
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+    @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:63342",
-                "http://localhost:8080",
-                "http://localhost:5500",
-                "http://127.0.0.1:5500"
-        ));
+        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500" ,  "http://127.0.0.1:5500"
+                // WebStorm/IntelliJ preview
+                 )); // Exact origin, no wildcard
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("*")); // Allow all headers
+        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+        configuration.setExposedHeaders(List.of("Authorization" , "Content-Type")); // Expose Authorization header if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration); // Apply to all paths
         return source;
     }
-
-
 
 
 

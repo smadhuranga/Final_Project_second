@@ -1,27 +1,26 @@
 package lk.ijse.back_end.repository;
 
+import lk.ijse.back_end.dto.OrderDTO;
 import lk.ijse.back_end.entity.Orders;
 import lk.ijse.back_end.util.OrderStatus;
+import org.springframework.beans.PropertyValues;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface OrdersRepo extends JpaRepository<Orders, Long> {
-    @Query("SELECT COUNT(o) FROM Orders o WHERE o.status = :status")
-    long countByStatus(@Param("status") String status);
 
-    // For more complex queries if needed
-    @Query("SELECT o.status, COUNT(o) FROM Orders o GROUP BY o.status")
-    List<Object[]> getOrderStatusCounts();
+    // OrderServiceImpl.java
+    List<Orders> findBySeller_IdAndStatus(Long sellerId, String status);
+    Long countBySeller_IdAndStatus(Long sellerId, String status);
+    // OrderRepository.java
+    @Query("SELECT COUNT(o) FROM Orders o WHERE o.seller.id = :sellerId AND o.status = :status")
+    int countBySellerIdAndStatus(@Param("sellerId") Long sellerId, @Param("status") OrderStatus status);
 
-    @Query("SELECT COUNT(o) FROM Orders o WHERE o.orderDate BETWEEN :start AND :end")
-    long countOrdersBetweenDates(@Param("start") LocalDateTime start,
-                                 @Param("end") LocalDateTime end);
-    long countByStatus(OrderStatus status);
-
+    @Query("SELECT o FROM Orders o WHERE o.seller.id = :sellerId AND o.status = :status")
+    List<Orders> findBySellerIdAndStatus(@Param("sellerId") Long sellerId, @Param("status") OrderStatus status);
 }

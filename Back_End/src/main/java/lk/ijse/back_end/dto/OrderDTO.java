@@ -1,5 +1,6 @@
 package lk.ijse.back_end.dto;
 
+import lk.ijse.back_end.util.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,5 +16,8 @@ public class OrderDTO {
     private Long sellerId;
     private Long serviceId;
     private LocalDateTime orderDate;
-    private String status;
+    private OrderStatus status;
+    private double amount;
+
+
 }

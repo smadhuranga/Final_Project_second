@@ -18,6 +18,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class SellerDTO extends UserDTO {
+    private Long id;  // Add this field
     @NotBlank(message = "NIC is mandatory")
     private String nic;
 
@@ -38,4 +39,6 @@ public class SellerDTO extends UserDTO {
         this.nic = nic;
         this.bio = bio;
     }
+
+
 }

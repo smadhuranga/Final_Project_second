@@ -21,6 +21,9 @@ public class Rating {
     private Seller seller;
 
     private int score;
+    private double value;
     private String comment;
     private LocalDateTime createdAt = LocalDateTime.now();
+
+
 }
