@@ -5,26 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Front_End/index.html&#10;#&#9;Front_End/pages/adminController.html">
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/RatingController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/OrderStatus.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ServiceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ServiceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/OrderDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/OrderDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/SellerDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/SellerDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Orders.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Orders.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Rating.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/Rating.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/RatingRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/RatingRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/OrderService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/RatingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/RatingService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/OrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/RatingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/RatingServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -173,7 +155,7 @@
       <workItem from="1742916159305" duration="3116000" />
       <workItem from="1743017768536" duration="477000" />
       <workItem from="1743049314536" duration="12000" />
-      <workItem from="1743049406054" duration="20341000" />
+      <workItem from="1743049406054" duration="25280000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -271,7 +253,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743052611473</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Front_End/index.html&#10;#&#9;Front_End/pages/adminController.html">
+      <option name="closed" value="true" />
+      <created>1743076988083</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1743076988083</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
