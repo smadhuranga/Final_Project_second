@@ -247,6 +247,70 @@
                 font-size: 2.5rem;
             }
         }
+
+
+
+        .btn-chat {
+            background: linear-gradient(45deg, var(--accent-yellow), var(--accent-green));
+            color: var(--bg-black) !important;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-chat:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .message {
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            animation: messageAppear 0.3s ease;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .message.received {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .message-bubble {
+            padding: 12px 18px;
+            border-radius: 20px;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent-yellow);
+            backdrop-filter: blur(5px);
+            position: relative;
+        }
+
+        .message.sent .message-bubble {
+            background: linear-gradient(45deg, var(--accent-yellow), var(--accent-green));
+            color: var(--bg-black);
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 4px;
+        }
+
+        @keyframes messageAppear {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-content {
+            border: 1px solid var(--accent-yellow);
+            border-radius: 15px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out !important;
+        }
     </style>
 </head>
 <body>
@@ -423,7 +487,7 @@
     <!-- Design Process -->
     <section class="py-5 design-process">
         <div class="container">
-            < h2 class="text-center mb-5 display-4 animate-on-scroll">Our Process</h2>
+            <h2 class="text-center mb-5 display-4 animate-on-scroll">Design Process</h2>
             <div class="row">
                 <div class="col-lg-8 mx-auto">
                     <div class="design-process-step animate-on-scroll">
@@ -451,107 +515,320 @@
         </div>
     </section>
 
+    <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title text-yellow" id="chatModalLabel">Chat with <span id="sellerName"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="chat-container" style="height: 400px; overflow-y: auto;">
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- Messages will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="input-group mt-3">
+                        <input type="text" class="form-control bg-black text-white border-yellow"
+                               placeholder="Type your message..." id="messageInput">
+                        <button class="btn btn-accent" id="sendMessageBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        // AJAX Data Fetching (Simulated)
-        async function fetchSellers() {
-            try {
-                // Simulated delay for API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Simulated response data
-                return [
-                    {
-                        name: "Design Masters",
-                        experience: 8,
-                        rate: 85,
-                        projects: 42,
-                        skills: ["Logo Design", "Branding", "Illustration"]
-                    },
-                    {
-                        name: "Creative Studio",
-                        experience: 5,
-                        rate: 65,
-                        projects: 28,
-                        skills: ["Print Design", "Packaging"]
-                    },
-                    {
-                        name: "Pixel Perfect",
-                        experience: 10,
-                        rate: 120,
-                        projects: 67,
-                        skills: ["UI/UX", "Social Media"]
+        // Global JWT Configuration
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                const token = localStorage.getItem('jwtToken');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                }
+            }
+        });
+
+        // Session Management
+        function checkAuthStatus() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            if (!jwtToken) {
+                window.location.href = '../index.html';
+                return false;
+            }
+
+            // Verify token expiration
+            const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+            if (tokenPayload.exp * 1000 < Date.now()) {
+                logout();
+                return false;
+            }
+            return true;
+        }
+
+        // Scroll Animations Initialization
+        function initializeScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
                     }
-                ];
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        }
+
+        // Initialize
+        $(document).ready(function() {
+            if (checkAuthStatus()) {
+                fetchSellers();
+                initializeScrollAnimations(); // Now properly initialized
+            }
+
+            // Navbar Scroll Effect
+            $(window).scroll(() => {
+                $('.navbar').toggleClass('navbar-scrolled', $(window).scrollTop() > 50);
+            });
+        });
+
+
+        // Error Handling
+        $(document).ajaxError(function(event, jqXHR) {
+            if (jqXHR.status === 401) logout();
+        });
+
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('user');
+            window.location.href = '../index.html';
+        }
+
+        // Seller Data Management
+        async function fetchSellers() {
+            if (!checkAuthStatus()) return;
+
+            try {
+                const response = await $.ajax({
+                    url: 'http://localhost:8080/api/v1/sellers',
+                    method: 'GET'
+                });
+
+                renderSellers(response.data);
+                initializeFilterHandlers(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
-                return [];
+                showAlert('Error loading sellers: ' + error.responseJSON?.message, 'danger');
             }
         }
 
-        // Render Table
         function renderSellers(sellers) {
-            const tbody = document.getElementById('sellersBody');
-            tbody.innerHTML = sellers.map(seller => `
-                <tr class="glow-on-hover">
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
-                            <div>
-                                <h5 class="mb-0">${seller.name}</h5>
-                                <small class="text-muted">${seller.experience}+ years experience</small>
+            const tbody = $('#sellersBody');
+            tbody.empty().html(sellers.map(seller => `
+            <tr class="glow-on-hover">
+                <td>
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
+                        <div>
+                            <h5 class="mb-0">${seller.name}</h5>
+                            <small class="text-muted">${seller.experience}+ years experience</small>
+                        </div>
+                    </div>
+                </td>
+                <td>${seller.experience} years</td>
+                <td>$${seller.rate}/hr</td>
+                <td>${seller.projects}+</td>
+                <td>
+                    ${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-accent me-2 view-portfolio"
+                            data-seller-id="${seller.id}">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    <button class="btn btn-sm btn-chat"
+                            data-seller-id="${seller.id}"
+                            data-seller-name="${seller.name}">
+                        <i class="fas fa-comment"></i> Chat
+                    </button>
+                </td>
+            </tr>
+        `).join(''));
+
+            $('.btn-chat').off('click').click((e) => {
+                const btn = $(e.currentTarget);
+                openChat(btn.data('seller-id'), btn.data('seller-name'));
+            });
+
+            $('.view-portfolio').off('click').click((e) => {
+                viewPortfolio($(e.currentTarget).data('seller-id'));
+            });
+        }
+
+        // Filter Handling
+        function initializeFilterHandlers(fullSellerList) {
+            const applyFilters = () => {
+                const minExp = parseInt($('#minExp').val()) || 0;
+                const maxRate = parseInt($('#maxRate').val()) || Infinity;
+                const minProjects = parseInt($('#minProjects').val()) || 0;
+
+                const filtered = fullSellerList.filter(seller =>
+                    seller.experience >= minExp &&
+                    seller.rate <= maxRate &&
+                    seller.projects >= minProjects
+                );
+                renderSellers(filtered);
+            };
+
+            $('#minExp, #maxRate, #minProjects').off('input').on('input', applyFilters);
+        }
+
+        // Chat System
+        let currentChatSeller = null;
+
+        async function openChat(sellerId, sellerName) {
+            if (!checkAuthStatus()) return;
+
+            currentChatSeller = { id: sellerId, name: sellerName };
+            $('#sellerName').text(sellerName);
+            $('#chatModal').modal('show');
+            await loadChatHistory(sellerId);
+        }
+
+        async function loadChatHistory(sellerId) {
+            try {
+                const response = await $.ajax({
+                    url: `http://localhost:8080/api/v1/chat/${sellerId}`,
+                    method: 'GET'
+                });
+                renderMessages(response.messages);
+            } catch (error) {
+                showAlert('Failed to load chat history: ' + error.responseJSON?.message, 'danger');
+            }
+        }
+
+        function renderMessages(messages) {
+            const container = $('#chatMessages');
+            container.html(messages.map(msg => `
+            <div class="message ${msg.sender === 'user' ? 'sent' : 'received'}">
+                <div class="message-bubble">${msg.content}</div>
+                <div class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</div>
+            </div>
+        `).join(''));
+            container.scrollTop(container[0].scrollHeight);
+        }
+
+        $('#sendMessageBtn').click(async () => {
+            const message = $('#messageInput').val().trim();
+            if (!message) return;
+
+            try {
+                await $.ajax({
+                    url: 'http://localhost:8080/api/v1/chat/send',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        recipientId: currentChatSeller.id,
+                        content: message
+                    })
+                });
+
+                $('#messageInput').val('');
+                $('#chatMessages').append(`
+                <div class="message sent">
+                    <div class="message-bubble">${message}</div>
+                    <div class="message-time">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `);
+                $('.chat-container').scrollTop($('.chat-container')[0].scrollHeight);
+            } catch (error) {
+                showAlert('Failed to send message: ' + error.responseJSON?.message, 'danger');
+            }
+        });
+
+        // Portfolio Handling
+        async function viewPortfolio(sellerId) {
+            try {
+                const response = await $.ajax({
+                    url: `http://localhost:8080/api/v1/sellers/${sellerId}/portfolio`,
+                    method: 'GET'
+                });
+                showPortfolioModal(response.data);
+            } catch (error) {
+                showAlert('Failed to load portfolio: ' + error.responseJSON?.message, 'danger');
+            }
+        }
+
+        function showPortfolioModal(portfolio) {
+            const modalHtml = `
+            <div class="modal fade" id="portfolioModal">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content bg-dark">
+                        <div class="modal-header">
+                            <h5 class="modal-title">${portfolio.sellerName}'s Portfolio</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row g-4">
+                                ${portfolio.items.map(item => `
+                                    <div class="col-md-4">
+                                        <div class="portfolio-item">
+                                            <img src="${item.imageUrl}" class="img-fluid">
+                                            <div class="portfolio-overlay">
+                                                <h5>${item.title}</h5>
+                                                <p>${item.description}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `).join('')}
                             </div>
                         </div>
-                    </td>
-                    <td>${seller.experience} years</td>
-                    <td>$${seller.rate}/hr</td>
-                    <td>${seller.projects}+</td>
-                    <td>
-                        ${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-accent">View Portfolio</button>
-                    </td>
-                </tr>
-            `).join('');
+                    </div>
+                </div>
+            </div>`;
+
+            $(modalHtml).modal('show');
         }
 
-        // Filter Functionality
-        function filterSellers(sellers) {
-            const minExp = parseInt(document.getElementById('minExp').value) || 0;
-            const maxRate = parseInt(document.getElementById('maxRate').value) || Infinity;
-            const minProjects = parseInt(document.getElementById('minProjects').value) || 0;
-
-            return sellers.filter(seller => 
-                seller.experience >= minExp &&
-                seller.rate <= maxRate &&
-                seller.projects >= minProjects
-            );
+        // UI Helpers
+        function showAlert(message, type) {
+            const alert = $(`
+            <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `);
+            $('body').append(alert);
+            setTimeout(() => alert.alert('close'), 3000);
         }
 
-        // Initial Load
-        (async () => {
-            const data = await fetchSellers();
-            renderSellers(data);
-            
-            // Add event listeners for filters
-            document.querySelectorAll('.filter-input').forEach(input => {
-                input.addEventListener('input', () => {
-                    renderSellers(filterSellers(data));
+        async function fetchSellers() {
+            if (!checkAuthStatus()) return;
+
+            try {
+                const response = await $.ajax({
+                    url: 'http://localhost:8080/api/v1/sellers',
+                    method: 'GET'
                 });
-            });
-        })();
 
-        // Scroll Animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
+                if (response.data && response.data.length > 0) {
+                    renderSellers(response.data);
+                    initializeFilterHandlers(response.data);
+                } else {
+                    showAlert('No sellers found', 'warning');
+                    renderSellers([]);
                 }
-            });
-        }, { threshold: 0.1 });
+            } catch (error) {
+                console.error('Fetch sellers error:', error);
+                showAlert('Error loading sellers: ' + (error.responseJSON?.message || error.statusText), 'danger');
+            }
+        }
 
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
     </script>
 </body>
 </html>

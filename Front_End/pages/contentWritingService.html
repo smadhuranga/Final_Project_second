@@ -196,6 +196,56 @@
             color: var(--bg-black);
         }
 
+
+        /* Chat Modal Styles */
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .message {
+            margin: 10px 0;
+            padding: 8px 12px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+        }
+
+        .user-message {
+            background: var(--accent-yellow);
+            color: black;
+            margin-left: auto;
+        }
+
+        .seller-message {
+            background: rgba(255,255,255,0.1);
+            margin-right: auto;
+        }
+
+        .message-time {
+            opacity: 0.7;
+            font-size: 0.75rem;
+            display: block;
+            text-align: right;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Toast Animations */
+        .toast {
+            animation: toastSlideIn 0.3s ease;
+        }
+
+        @keyframes toastSlideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
@@ -359,107 +409,235 @@
         </div>
     </section>
 
+    <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="chatModalLabel">Chat with <span id="sellerName"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chatMessages" class="chat-messages mb-3">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                    <div class="input-group">
+                    <textarea id="messageInput" class="form-control bg-black text-white border-secondary"
+                              placeholder="Type your message..." rows="2"></textarea>
+                        <button id="sendMessage" class="btn btn-yellow">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        // AJAX Data Fetching (Simulated)
-        async function fetchSellers() {
-            try {
-                // Simulated delay for API call
-                await new Promise(resolve => setTimeout(resolve, 1000));
-                
-                // Simulated response data
-                return [
-                    {
-                        name: "Design Masters",
-                        experience: 8,
-                        rate: 85,
-                        projects: 42,
-                        skills: ["Logo Design", "Branding", "Illustration"]
-                    },
-                    {
-                        name: "Creative Studio",
-                        experience: 5,
-                        rate: 65,
-                        projects: 28,
-                        skills: ["Print Design", "Packaging"]
-                    },
-                    {
-                        name: "Pixel Perfect",
-                        experience: 10,
-                        rate: 120,
-                        projects: 67,
-                        skills: ["UI/UX", "Social Media"]
-                    }
-                ];
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                return [];
+        // Global AJAX Configuration
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                const token = localStorage.getItem('jwtToken');
+                if (token) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                }
             }
+        });
+
+        // Session Management
+        let currentSeller = null;
+
+        function checkAuthStatus() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            if (!jwtToken) {
+                showToast('Please login to access this feature', 'warning');
+                return false;
+            }
+
+            // Verify token expiration
+            const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+            if (tokenPayload.exp * 1000 < Date.now()) {
+                showToast('Session expired. Please login again.', 'danger');
+                return false;
+            }
+            return true;
         }
 
-        // Render Table
-        function renderSellers(sellers) {
-            const tbody = document.getElementById('sellersBody');
-            tbody.innerHTML = sellers.map(seller => `
-                <tr class="glow-on-hover">
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
-                            <div>
-                                <h5 class="mb-0">${seller.name}</h5>
-                                <small class="text-muted">${seller.experience}+ years experience</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${seller.experience} years</td>
-                    <td>$${seller.rate}/hr</td>
-                    <td>${seller.projects}+</td>
-                    <td>
-                        ${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-accent">View Portfolio</button>
-                    </td>
-                </tr>
-            `).join('');
+        // Seller Data Management
+        let allSellers = [];
+
+        function fetchSellers() {
+            $.ajax({
+                url: '/api/sellers',
+                method: 'GET',
+                success: function(response) {
+                    allSellers = response.data;
+                    applyFilters();
+                },
+                error: function(xhr) {
+                    showToast('Failed to load sellers: ' + xhr.responseJSON?.message, 'danger');
+                }
+            });
         }
 
-        // Filter Functionality
-        function filterSellers(sellers) {
-            const minExp = parseInt(document.getElementById('minExp').value) || 0;
-            const maxRate = parseInt(document.getElementById('maxRate').value) || Infinity;
-            const minProjects = parseInt (document.getElementById('minProjects').value) || 0;
+        function applyFilters() {
+            const minExp = parseInt($('#minExp').val()) || 0;
+            const maxRate = parseInt($('#maxRate').val()) || Infinity;
+            const minProjects = parseInt($('#minProjects').val()) || 0;
 
-            return sellers.filter(seller => 
+            const filtered = allSellers.filter(seller =>
                 seller.experience >= minExp &&
                 seller.rate <= maxRate &&
                 seller.projects >= minProjects
             );
+
+            renderSellers(filtered);
         }
 
-        // Initial Load
-        (async () => {
-            const data = await fetchSellers();
-            renderSellers(data);
-            
-            // Add event listeners for filters
-            document.querySelectorAll('.filter-input').forEach(input => {
-                input.addEventListener('input', () => {
-                    renderSellers(filterSellers(data));
-                });
-            });
-        })();
+        function renderSellers(sellers) {
+            $('#sellersBody').html(sellers.map(seller => `
+        <tr>
+            <td>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>
+                    <div>
+                        <h5 class="mb-0">${seller.name}</h5>
+                        <small class="text-muted">${seller.skills[0]} Specialist</small>
+                    </div>
+                </div>
+            </td>
+            <td>${seller.experience}+ years</td>
+            <td>$${seller.rate}/hr</td>
+            <td>${seller.projects}+</td>
+            <td>${seller.skills.map(skill =>
+                `<span class="seller-badge">${skill}</span>`
+            ).join('')}</td>
+            <td>
+                <button class="btn btn-sm btn-yellow me-2" onclick="viewPortfolio('${seller.portfolio}')">
+                    <i class="fas fa-eye me-1"></i>Portfolio
+                </button>
+                <button class="btn btn-sm btn-green" onclick="openChat(${seller.id})">
+                    <i class="fas fa-comments me-1"></i>Chat
+                </button>
+            </td>
+        </tr>
+    `).join(''));
+        }
 
-        // Scroll Animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
+        // Chat System
+        async function openChat(sellerId) {
+            if (!checkAuthStatus()) return;
+
+            currentSeller = allSellers.find(s => s.id === sellerId);
+            $('#sellerName').text(currentSeller.name);
+            await loadChatHistory(sellerId);
+            $('#chatModal').modal('show');
+        }
+
+        async function loadChatHistory(sellerId) {
+            try {
+                const response = await $.ajax({
+                    url: `/api/chat/${sellerId}`,
+                    method: 'GET'
+                });
+
+                $('#chatMessages').html(response.messages.map(msg => `
+            <div class="message ${msg.senderType === 'user' ? 'user-message' : 'seller-message'}">
+                <div class="message-content">${msg.content}</div>
+                <small class="message-time">
+                    ${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </small>
+            </div>
+        `).join(''));
+
+                $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+            } catch (error) {
+                showToast('Failed to load chat history', 'danger');
+            }
+        }
+
+        $('#sendMessage').click(async function() {
+            const message = $('#messageInput').val().trim();
+            if (!message || !currentSeller) return;
+
+            try {
+                const response = await $.ajax({
+                    url: '/api/chat/send',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        sellerId: currentSeller.id,
+                        message: message
+                    })
+                });
+
+                $('#chatMessages').append(`
+            <div class="message user-message">
+                <div class="message-content">${message}</div>
+                <small class="message-time">
+                    ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </small>
+            </div>
+        `);
+
+                $('#messageInput').val('');
+                $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);
+            } catch (error) {
+                showToast('Failed to send message', 'danger');
+            }
+        });
+
+        // UI Helpers
+        function showToast(message, type = 'success') {
+            const toast = $(`
+        <div class="toast align-items-center border-0 bg-${type} position-fixed bottom-0 end-0 m-3">
+            <div class="d-flex">
+                <div class="toast-body text-white">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    `);
+
+            $('body').append(toast);
+            new bootstrap.Toast(toast[0]).show();
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // Event Listeners
+        $(document).ready(function() {
+            fetchSellers();
+
+            // Filter Inputs
+            $('#minExp, #maxRate, #minProjects').on('input', function() {
+                applyFilters();
+            });
+
+            // Message Input Enter Key
+            $('#messageInput').keypress(function(e) {
+                if (e.which === 13 && !e.shiftKey) {
+                    e.preventDefault();
+                    $('#sendMessage').click();
                 }
             });
-        }, { threshold: 0.1 });
 
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+            // Scroll Animations
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        });
+
+        // Portfolio Viewer
+        function viewPortfolio(url) {
+            window.open(url, '_blank', 'noopener,noreferrer');
+        }
     </script>
 </body>
 </html>

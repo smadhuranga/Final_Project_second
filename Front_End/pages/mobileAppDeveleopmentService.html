@@ -131,6 +131,81 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+
+
+        /* Chat Modal Styles */
+        .chat-body {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message.received {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid var(--accent-yellow);
+            margin-right: auto;
+        }
+
+        .message.sent {
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid var(--accent-green);
+            margin-left: auto;
+        }
+
+        .message-time {
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Seller Modal Styles */
+        .seller-details h5 {
+            border-bottom: 2px solid var(--accent-yellow);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item:hover {
+            transform: scale(1.05);
+        }
+
+        .portfolio-item img {
+            transition: transform 0.3s ease;
+        }
+
+        .modal-content {
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -284,107 +359,317 @@
         </div>
     </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Developers Data
-        const developers = [
-            {
-                name: "Tech Innovators",
-                exp: 8,
-                rate: 85,
-                projects: 42,
-                rating: 4.9,
-                skills: ["iOS", "Android", "Flutter"]
-            },
-            {
-                name: "App Masters",
-                exp: 5,
-                rate: 65,
-                projects: 28,
-                rating: 4.7,
-                skills: ["React Native", "Firebase"]
-            },
-            {
-                name: "Mobile Wizards",
-                exp: 10,
-                rate: 120,
-                projects: 67,
-                rating: 5.0,
-                skills: ["Kotlin", "Swift", "AWS"]
-            }
-        ];
+     <!-- Add these modals at the end of body before scripts -->
+     <div class="modal fade" id="sellerModal" tabindex="-1" aria-labelledby="sellerModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered modal-lg">
+             <div class="modal-content bg-dark text-white">
+                 <div class="modal-header border-secondary">
+                     <h5 class="modal-title" id="sellerModalLabel">Seller Profile</h5>
+                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                 </div>
+                 <div class="modal-body">
+                     <div class="row">
+                         <div class="col-md-4 text-center">
+                             <img src="https://source.unsplash.com/random/200x200/?person"
+                                  class="img-fluid rounded-circle mb-3 seller-avatar"
+                                  alt="Seller Avatar">
+                             <h4 class="seller-name">John Doe</h4>
+                             <div class="rating-stars seller-rating"></div>
+                         </div>
+                         <div class="col-md-8">
+                             <div class="seller-details">
+                                 <h5 class="mb-3"><i class="fas fa-user-tie me-2"></i>About</h5>
+                                 <p class="seller-bio"></p>
 
-        // Populate Table
-        function renderDevelopers(data) {
-            const tbody = document.getElementById('developersTable');
-            tbody.innerHTML = data.map(dev => `
+                                 <h5 class="mb-3"><i class="fas fa-code me-2"></i>Skills</h5>
+                                 <div class="seller-skills"></div>
+
+                                 <h5 class="mb-3"><i class="fas fa-briefcase me-2"></i>Portfolio</h5>
+                                 <div class="seller-portfolio row"></div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+     <!-- Chat Modal -->
+     <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+             <div class="modal-content bg-dark text-white">
+                 <div class="modal-header border-secondary">
+                     <h5 class="modal-title"><i class="fas fa-comments me-2"></i>Chat</h5>
+                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                 </div>
+                 <div class="modal-body chat-body">
+                     <div class="chat-messages mb-3"></div>
+                     <div class="chat-input">
+                    <textarea class="form-control bg-black text-white"
+                              placeholder="Type your message..."
+                              rows="2"></textarea>
+                         <button class="btn btn-accent mt-2 send-message">
+                             <i class="fas fa-paper-plane"></i> Send
+                         </button>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+
+
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+     <script>
+         // Auth Configuration
+         $.ajaxSetup({
+             beforeSend: function(xhr) {
+                 const token = localStorage.getItem('jwtToken');
+                 if (token) {
+                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+                 }
+             }
+         });
+
+         // Global Variables
+         let allDevelopers = [];
+         let currentChat = null;
+         let chatInterval = null;
+
+         $(document).ready(function() {
+             checkAuthStatus();
+             initializeScrollAnimations();
+             loadDevelopers();
+             setupEventListeners();
+         });
+
+         function setupEventListeners() {
+             // Filter Inputs
+             $('#minExp, #maxRate, #minProjects').on('input', filterDevelopers);
+
+             // Seller Actions
+             $(document).on('click', '.view-seller', showSellerDetails);
+             $(document).on('click', '.chat-seller', startChatSession);
+
+             // Chat Actions
+             $(document).on('click', '.send-message', sendChatMessage);
+             $('#chatModal').on('hidden.bs.modal', stopChatPolling);
+         }
+
+         // Authentication Functions
+         function checkAuthStatus() {
+             const token = localStorage.getItem('jwtToken');
+             if (!token) redirectToLogin();
+
+             const payload = JSON.parse(atob(token.split('.')[1]));
+             if (payload.exp * 1000 < Date.now()) logout();
+         }
+
+         function redirectToLogin() {
+             window.location.href = '../index.html';
+         }
+
+         function logout() {
+             localStorage.removeItem('jwtToken');
+             redirectToLogin();
+         }
+
+         // Developer Data Functions
+         async function loadDevelopers() {
+             try {
+                 const response = await $.ajax({
+                     url: 'http://localhost:8080/api/v1/developers',
+                     method: 'GET'
+                 });
+
+                 allDevelopers = response.data;
+                 renderDevelopers(allDevelopers);
+             } catch (error) {
+                 handleAjaxError(error, 'Failed to load developers');
+             }
+         }
+
+         function filterDevelopers() {
+             const filters = {
+                 minExp: parseInt($('#minExp').val()) || 0,
+                 maxRate: parseInt($('#maxRate').val()) || Infinity,
+                 minProjects: parseInt($('#minProjects').val()) || 0
+             };
+
+             const filtered = allDevelopers.filter(dev =>
+                 dev.experience >= filters.minExp &&
+                 dev.hourlyRate <= filters.maxRate &&
+                 dev.completedProjects >= filters.minProjects
+             );
+
+             renderDevelopers(filtered);
+         }
+
+         function renderDevelopers(developers) {
+             const tbody = $('#developersTable');
+             tbody.empty();
+
+             developers.forEach(dev => {
+                 tbody.append(`
                 <tr>
                     <td>
                         <div class="d-flex align-items-center">
-                            <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
+                            <img src="${dev.avatar}" class="rounded-circle me-3" width="40" height="40">
                             <div>
-                                <h5 class="mb- 0">${dev.name}</h5>
-                                <div>${dev.skills.map(skill => `<span class="badge bg-secondary me-1">${skill}</span>`).join('')}</div>
+                                <h6 class="mb-0">${dev.name}</h6>
+                                <div class="text-muted">${dev.skills.join(', ')}</div>
                             </div>
                         </div>
                     </td>
-                    <td>${dev.exp} years</td>
-                    <td>$${dev.rate}</td>
-                    <td>${dev.projects}</td>
+                    <td>${dev.experience} yrs</td>
+                    <td>$${dev.hourlyRate}/hr</td>
+                    <td>${dev.completedProjects}</td>
+                    <td>${generateStars(dev.rating)}</td>
                     <td>
-                        <div class="rating-stars">
-                            ${'<i class="fas fa-star"></i>'.repeat(Math.floor(dev.rating))}
-                            ${dev.rating % 1 !== 0 ? '<i class="fas fa-star-half-alt"></i>' : ''}
-                        </div>
-                    </td>
-                    <td>
-                        <button class="btn btn-sm btn-accent">View Portfolio</button>
+                        <button class="btn btn-sm btn-outline-primary view-seller"
+                                data-seller-id="${dev.id}">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-success chat-seller ms-2"
+                                data-seller-id="${dev.id}">
+                            <i class="fas fa-comment"></i>
+                        </button>
                     </td>
                 </tr>
-            `).join('');
-        }
+            `);
+             });
+         }
 
-        // Initial render
-        renderDevelopers(developers);
+         // Seller Details Functions
+         async function showSellerDetails() {
+             const sellerId = $(this).data('seller-id');
+             try {
+                 const response = await $.ajax({
+                     url: `http://localhost:8080/api/v1/sellers/${sellerId}`
+                 });
+                 populateSellerModal(response.data);
+                 $('#sellerModal').modal('show');
+             } catch (error) {
+                 handleAjaxError(error, 'Failed to load seller details');
+             }
+         }
 
-        // Filter Functionality
-        function filterDevelopers() {
-            const minExp = parseInt(document.getElementById('minExp').value) || 0;
-            const maxRate = parseInt(document.getElementById('maxRate').value) || Infinity;
-            const minProjects = parseInt(document.getElementById('minProjects').value) || 0;
+         function populateSellerModal(seller) {
+             $('.seller-name').text(seller.name);
+             $('.seller-avatar').attr('src', seller.avatar);
+             $('.seller-bio').text(seller.bio);
+             $('.seller-rating').html(generateStars(seller.rating));
+             $('.seller-skills').html(seller.skills.map(s => `<span class="badge bg-secondary">${s}</span>`).join(' '));
+         }
 
-            const filtered = developers.filter(dev => 
-                dev.exp >= minExp &&
-                dev.rate <= maxRate &&
-                dev.projects >= minProjects
-            );
+         // Chat Functions
+         async function startChatSession() {
+             currentChat = $(this).data('seller-id');
+             try {
+                 const response = await $.ajax({
+                     url: `http://localhost:8080/api/v1/chat/${currentChat}`
+                 });
+                 openChatModal(response.messages);
+                 startChatPolling();
+             } catch (error) {
+                 handleAjaxError(error, 'Failed to start chat');
+             }
+         }
 
-            renderDevelopers(filtered);
-        }
+         function openChatModal(messages) {
+             $('.chat-messages').html(messages.map(msg =>
+                 `<div class="message ${msg.direction}">${msg.content}</div>`
+             ));
+             $('#chatModal').modal('show');
+         }
 
-        // Event Listeners
-        document.getElementById('minExp').addEventListener('input', filterDevelopers);
-        document.getElementById('maxRate').addEventListener('input', filterDevelopers);
-        document.getElementById('minProjects').addEventListener('input', filterDevelopers);
+         async function sendChatMessage() {
+             const message = $('#chatModal textarea').val().trim();
+             if (!message) return;
 
-        // Scroll Animation
-        const animateOnScroll = () => {
-            const elements = document.querySelectorAll('.animate-on-scroll');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animated');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            });
+             try {
+                 await $.ajax({
+                     url: `http://localhost:8080/api/v1/chat/${currentChat}`,
+                     method: 'POST',
+                     contentType: 'application/json',
+                     data: JSON.stringify({ message })
+                 });
 
-            elements.forEach(element => {
-                observer.observe(element);
-            });
-        };
+                 $('#chatModal textarea').val('');
+                 appendMessage(message, 'sent');
+             } catch (error) {
+                 handleAjaxError(error, 'Failed to send message');
+             }
+         }
 
-        document.addEventListener('DOMContentLoaded', animateOnScroll);
-    </script>
+         function appendMessage(content, direction) {
+             const msgElement = `
+            <div class="message ${direction}">
+                <div class="message-content">${content}</div>
+                <div class="message-time">${new Date().toLocaleTimeString()}</div>
+            </div>
+        `;
+             $('.chat-messages').append(msgElement);
+             scrollToBottom();
+         }
+
+         function startChatPolling() {
+             chatInterval = setInterval(async () => {
+                 try {
+                     const response = await $.ajax({
+                         url: `http://localhost:8080/api/v1/chat/${currentChat}/updates`
+                     });
+
+                     response.messages.forEach(msg =>
+                         appendMessage(msg.content, 'received')
+                     );
+                 } catch (error) {
+                     console.error('Chat polling error:', error);
+                 }
+             }, 3000);
+         }
+
+         // Helper Functions
+         function generateStars(rating) {
+             return [...Array(5)].map((_, i) =>
+                 `<i class="fas fa-star ${i < rating ? 'text-warning' : 'text-secondary'}"></i>`
+             ).join('');
+         }
+
+         function scrollToBottom() {
+             const container = $('.chat-messages');
+             container.scrollTop(container[0].scrollHeight);
+         }
+
+         function handleAjaxError(error, defaultMsg) {
+             console.error(error);
+             if (error.status === 401) logout();
+             showAlert(error.responseJSON?.message || defaultMsg, 'danger');
+         }
+
+         function showAlert(message, type) {
+             const alert = $(`
+            <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        `);
+             $('body').append(alert);
+             setTimeout(() => alert.alert('close'), 3000);
+         }
+
+         function initializeScrollAnimations() {
+             const observer = new IntersectionObserver((entries) => {
+                 entries.forEach(entry => {
+                     if (entry.isIntersecting) {
+                         entry.target.classList.add('animated');
+                     }
+                 });
+             }, { threshold: 0.1 });
+
+             document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+         }
+     </script>
 </body>
 </html>

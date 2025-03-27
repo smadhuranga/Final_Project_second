@@ -2,6 +2,7 @@ package lk.ijse.back_end.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lk.ijse.back_end.util.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,15 +14,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Data
 public class AuthResponseDTO {
-    private String token;
+    @NotBlank
     private String email;
+
+    @NotBlank
+    private String token;
+
+    @NotNull
     private UserType userType;
+
+    @NotNull
     private LocalDateTime expiresAt;
 
-    public AuthResponseDTO(@Email(message = "Invalid email format") @NotBlank(message = "Email is mandatory") String email, String token) {
-        this.email = email;
-        this.token = token;
-    }
 
 
 }

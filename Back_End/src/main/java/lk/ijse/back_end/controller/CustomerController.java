@@ -42,12 +42,18 @@ public class CustomerController {
         this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping(path ="/register" , consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseDTO> registerCustomer(@Valid @RequestBody CustomerDTO customerDTO) {
+    @PostMapping( path = "/register",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,  // Changed from APPLICATION_JSON
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseDTO> registerCustomer( @RequestPart("data") @Valid CustomerDTO customerDTO,
+                                                        @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         try {
             // Log incoming request for debugging
             System.out.println("Received customerDTO: " + customerDTO);
-
+            if (profileImage != null && !profileImage.isEmpty()) {
+                String imageUrl = userService.storeProfileImage(customerDTO.getEmail(), profileImage);
+                customerDTO.setProfileImage(imageUrl);
+            }
             // Validate required fields
             if (customerDTO.getEmail() == null || customerDTO.getPassword() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)

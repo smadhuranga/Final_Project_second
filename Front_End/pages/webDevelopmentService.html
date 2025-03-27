@@ -255,6 +255,54 @@
                 overflow-x: auto;
             }
         }
+
+        /* Add Chat Styles */
+        .chat-message {
+            max-width: 80%;
+            margin: 1rem;
+            padding: 1rem;
+            border-radius: 15px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .received {
+            background: rgba(255,255,255,0.1);
+            align-self: flex-start;
+        }
+
+        .sent {
+            background: var(--accent-yellow);
+            color: var(--bg-black);
+            align-self: flex-end;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .typing-indicator {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            font-style: italic;
+        }
+
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-right: 3px;
+            background: var(--accent-yellow);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
     </style>
 </head>
 <body>
@@ -398,144 +446,272 @@
             </div>
         </div>
     </section>
-
+    <div class="modal fade" id="chatModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="sellerName">Chat with <span class="accent-yellow"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" style="height: 60vh; overflow-y: auto;" id="chatMessages">
+                    <!-- Messages will be loaded here -->
+                </div>
+                <div class="modal-footer border-secondary">
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-black text-white border-accent"
+                               placeholder="Type your message..." id="messageInput">
+                        <button class="btn btn-accent" type="button" id="sendMessage">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script>
-        // Seller Data and Filtering
+
+        // Authentication and Core Functions
+        $.ajaxSetup({
+            beforeSend: function(xhr) {
+                const token = localStorage.getItem('jwtToken');
+                if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+            }
+        });
+
+        function checkAuthStatus() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            if (!jwtToken) redirectToLogin();
+
+            try {
+                const payload = JSON.parse(atob(jwtToken.split('.')[1]));
+                if (payload.exp * 1000 < Date.now()) redirectToLogin();
+            } catch (e) {
+                redirectToLogin();
+            }
+            return true;
+        }
+
+        function redirectToLogin() {
+            localStorage.clear();
+            window.location.href = '../index.html';
+        }
+
+        function initializePage() {
+            checkAuthStatus();
+            initializeAnimations();
+            loadSellers();
+        }
+
+        function initializeAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('animated');
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        }
+        // Chat Manager
+        let currentChat = {
+            sellerId: null,
+            lastMessageId: 0,
+            isTyping: false
+        };
+
+        // Initialize Chat
+        function initChat(sellerId, sellerName) {
+            currentChat.sellerId = sellerId;
+            $('#sellerName span').text(sellerName);
+            loadChatHistory();
+            $('#chatModal').modal('show');
+            startChatPolling();
+        }
+
+        // Load Chat History
+        async function loadChatHistory() {
+            try {
+                const response = await $.ajax({
+                    url: `/api/chat/${currentChat.sellerId}/history`,
+                    method: 'GET'
+                });
+
+                $('#chatMessages').html(response.messages.map(msg => `
+                <div class="chat-message ${msg.sender === 'user' ? 'sent' : 'received'}">
+                    <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                    <p class="mb-0">${msg.content}</p>
+                </div>
+            `).join(''));
+
+                currentChat.lastMessageId = response.lastMessageId;
+                scrollChatToBottom();
+            } catch (error) {
+                showAlert('Error loading chat history', 'danger');
+            }
+        }
+
+        // Send Message
+        async function sendMessage() {
+            const message = $('#messageInput').val().trim();
+            if (!message) return;
+
+            try {
+                await $.ajax({
+                    url: `/api/chat/${currentChat.sellerId}/send`,
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ content: message })
+                });
+
+                $('#messageInput').val('');
+                loadChatHistory();
+            } catch (error) {
+                showAlert('Error sending message', 'danger');
+            }
+        }
+
+        // Real-Time Updates
+        function startChatPolling() {
+            currentChat.pollInterval = setInterval(async () => {
+                try {
+                    const response = await $.ajax({
+                        url: `/api/chat/${currentChat.sellerId}/updates?last=${currentChat.lastMessageId}`
+                    });
+
+                    if (response.messages.length > 0) {
+                        response.messages.forEach(msg => {
+                            $('#chatMessages').append(`
+                            <div class="chat-message ${msg.sender === 'user' ? 'sent' : 'received'}">
+                                <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>
+                                <p class="mb-0">${msg.content}</p>
+                            </div>
+                        `);
+                        });
+                        currentChat.lastMessageId = response.lastMessageId;
+                        scrollChatToBottom();
+                    }
+
+                    // Handle typing indicator
+                    if (response.isTyping && !currentChat.isTyping) {
+                        showTypingIndicator();
+                    } else if (!response.isTyping && currentChat.isTyping) {
+                        hideTypingIndicator();
+                    }
+                } catch (error) {
+                    console.error('Polling error:', error);
+                }
+            }, 3000);
+        }
+
+        function scrollChatToBottom() {
+            const chatBody = document.getElementById('chatMessages');
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+        $(document).ready(() => {
+            initializePage();
+
+            // Navbar Scroll Effect
+            window.addEventListener('scroll', () => {
+                document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);
+            });
+
+            // Search Functionality
+            $('#searchInput').on('input', function() {
+                const term = $(this).val().toLowerCase();
+                $('.service-highlight-card').each(function() {
+                    $(this).toggle($(this).text().toLowerCase().includes(term));
+                });
+            });
+        });
+        // Typing Indicators
+        function showTypingIndicator() {
+            currentChat.isTyping = true;
+            $('#chatMessages').append(`
+            <div class="typing-indicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot" style="animation-delay: 0.2s"></div>
+                <div class="typing-dot" style="animation-delay: 0.4s"></div>
+            </div>
+        `);
+            scrollChatToBottom();
+        }
+
+        function hideTypingIndicator() {
+            currentChat.isTyping = false;
+            $('#chatMessages .typing-indicator').last().remove();
+        }
+
+        // Event Listeners
+        $(document).on('click', '.chat-seller', function() {
+            const sellerId = $(this).data('id');
+            const sellerName = $(this).closest('tr').find('h5').text();
+            initChat(sellerId, sellerName);
+        });
+
+        $('#sendMessage').click(sendMessage);
+        $('#messageInput').keypress(e => e.which === 13 && sendMessage());
+
+        // Handle Modal Close
+        $('#chatModal').on('hidden.bs.modal', () => {
+            clearInterval(currentChat.pollInterval);
+            currentChat = { sellerId: null, lastMessageId: 0 };
+        });
+
+        // Typing Detection
+        let typingTimeout;
+        $('#messageInput').on('input', () => {
+            if (!currentChat.sellerId) return;
+
+            // Send typing notification
+            $.ajax({
+                url: `/api/chat/${currentChat.sellerId}/typing`,
+                method: 'POST'
+            });
+
+            // Reset timeout
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                $.ajax({
+                    url: `/api/chat/${currentChat.sellerId}/typing`,
+                    method: 'DELETE'
+                });
+            }, 2000);
+        });
+
+        // Update Seller Data Structure
         const sellers = [
-            { 
+            {
+                id: 1,
                 name: "Sarah Johnson",
                 exp: 5,
                 rate: 85,
                 projects: 47,
                 skills: ["UI/UX", "Responsive Design"]
             },
-            { 
-                name: "Mike Chen",
-                exp: 8,
-                rate: 120,
-                projects: 112,
-                skills: ["E-commerce", "WordPress"]
-            },
-            { 
-                name: "Emma Wilson",
-                exp: 3,
-                rate: 65,
-                projects: 29,
-                skills: ["Landing Pages", "SEO"]
-            },
-            { 
-                name: "David Kim",
-                exp: 6,
-                rate: 95,
-                projects: 68,
-                skills: ["Web Apps", "React"]
-            }
+            // ... other sellers
         ];
 
+        // Update renderTable function to use template
         function renderTable(data) {
-            const tbody = document.getElementById('sellersTable');
-            tbody.innerHTML = data.map(seller => `
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="avatar me-3"><i class="fas fa-user-circle fa-2x"></i></div>
-                            <div>
-                                <h5 class="mb-0">${seller.name}</h5>
-                                <small>${seller.skills.join(', ')}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="exp-badge">${seller.exp}+ years</span></td>
-                    <td><span class="price-badge">$${seller.rate}/hr</span></td>
-                    <td>${seller.projects}+</td>
-                    <td>
-                        ${seller.skills.map(skill => `<span class="badge bg-dark me-1">${skill}</span>`).join('')}
-                    </td>
-                </tr>
-            `).join('');
+            const template = $('#sellerRowTemplate').html();
+            const compiled = data.map(seller => {
+                return template
+                    .replace(/{{name}}/g, seller.name)
+                    .replace(/{{exp}}/g, seller.exp)
+                    .replace(/{{rate}}/g, seller.rate)
+                    .replace(/{{projects}}/g, seller.projects)
+                    .replace(/{{skills}}/g, seller.skills.join(', '))
+                    .replace(/{{id}}/g, seller.id)
+                    .replace(/{{#skills}}(.+?){{\/skills}}/gs, (m, p1) =>
+                        seller.skills.map(skill => p1.replace(/{{.}}/g, skill)).join('')
+                    );
+            }).join('');
+
+            $('#sellersTable').html(compiled);
         }
-
-        function filterSellers() {
-            const priceFilter = parseInt(document.getElementById('filterPrice').value);
-            const expFilter = parseInt(document.getElementById('filterExperience').value);
-            const projectsFilter = parseInt(document.getElementById('filterProjects').value);
-
-            let filtered = sellers;
-
-            if (priceFilter) {
-                filtered = filtered.filter(seller => {
-                    if (priceFilter === 50) return seller.rate < 50;
-                    if (priceFilter === 100) return seller.rate >= 50 && seller.rate <= 100;
-                    if (priceFilter === 150) return seller.rate >= 100 && seller.rate <= 150;
-                    if (priceFilter === 200) return seller.rate > 150;
-                });
-            }
-
-            if (expFilter) {
-                filtered = filtered.filter(seller => {
-                    if (expFilter === 2) return seller.exp <= 2;
-                    if (expFilter === 5) return seller.exp > 2 && seller.exp <= 5;
-                    if (expFilter === 10) return seller.exp > 5;
-                });
-            }
-
-            if (projectsFilter) {
-                filtered = filtered.filter(seller => seller.projects >= projectsFilter);
-            }
-
-            renderTable(filtered);
-        }
-
-        // Event Listeners
-        document.querySelectorAll('.filter-select').forEach(select => {
-            select.addEventListener('change', filterSellers);
-        });
-
-        // Initial Render
-        renderTable(sellers);
-
-        // Scroll Animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, { threshold: 0.1 });
-
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-        // Parallax Effect
-        document.addEventListener('mousemove', (e) => {
-            document.querySelectorAll('.portfolio-item img').forEach(img => {
-                const speed = 3;
-                const x = (window.innerWidth - e.pageX * speed) / 100;
-                const y = (window.innerHeight - e.pageY * speed) / 100;
-                img.style.transform = `translate(${x}px, ${y}px) scale(1.05)`;
-            });
-        });
-
-        // Smooth Scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-
-        // AJAX Example
-        /*
-        fetch('https://api.example.com/sellers')
-            .then(response => response.json())
-            .then(data => {
-                renderTable(data);
-            })
-            .catch(error => console.error('Error:', error));
-        */
     </script>
 </body>
 </html>

@@ -305,37 +305,40 @@
                 <i class="fas fa-lock input-icon"></i>
                 <input type="password" id="regPassword" placeholder="Password" required minlength="6">
             </div>
+            <div class="form-group">
+                <i class="fas fa-phone input-icon"></i>
+                <input type="tel" id="regPhone" placeholder="Phone (optional)">
+            </div>
+            <div class="form-group">
+                <i class="fas fa-map-marker-alt input-icon"></i>
+                <input type="text" id="regAddress" placeholder="Address (optional)">
+            </div>
+
+            <!-- Profile Image Upload (Common) -->
+            <div class="file-upload">
+                <label for="profileImage" class="file-upload-label">
+                    <i class="fas fa-image"></i>
+                    <p>Upload Profile Image</p>
+                </label>
+                <input type="file" id="profileImage" accept="image/*" hidden>
+            </div>
 
             <!-- Seller Specific Fields -->
             <div class="seller-fields">
                 <div class="form-group">
                     <i class="fas fa-id-card input-icon"></i>
-                    <input type="text" id="nic" placeholder="NIC Number*" required>
+                    <input type="text" id="nic" placeholder="NIC Number*">
                 </div>
                 <div class="form-group">
-                    <i class="fas fa-building input-icon"></i>
-                    <input type="text" id="businessName" placeholder="Business Name">
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-phone input-icon"></i>
-                    <input type="tel" id="businessPhone" placeholder="Business Phone">
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-map-marker-alt input-icon"></i>
-                    <input type="text" id="businessAddress" placeholder="Business Address">
+                    <i class="fas fa-comment input-icon"></i>
+                    <textarea id="bio" placeholder="Bio (optional, max 500 characters)" maxlength="500"></textarea>
                 </div>
                 <div class="form-group">
                     <i class="fas fa-certificate input-icon"></i>
-                    <textarea id="qualifications" placeholder="Professional Qualifications (one per line)"></textarea>
-                </div>
-                <div class="file-upload">
-                    <label for="profileImage" class="file-upload-label">
-                        <i class="fas fa-image"></i>
-                        <p>Upload Business Logo</p>
-                    </label>
-                    <input type="file" id="profileImage" accept="image/*" hidden>
+                    <textarea id="qualifications" placeholder="Professional Qualifications (one per line, optional)"></textarea>
                 </div>
             </div>
+
             <button class="btn btn-primary">Create Account</button>
             <div class="toggle-forms">
                 <span>Already have an account? </span>
@@ -456,24 +459,7 @@
                                     logout();
                                     showErrorToast('Unknown user type - contact support');
                             }
-                            // window.location.href = './pages/home.html';
-                        // validateTokenAfterLogin(() => {
-                        //     switch (response.data.userType.toUpperCase()) {  // Fixed property name
-                        //         case 'CUSTOMER':
-                        //             window.location.href = './pages/home.html';
-                        //
-                        //             break;
-                        //         case 'ADMIN':
-                        //             window.location.href = './pages/adminController.html';
-                        //             break;
-                        //         case 'COORDINATOR':
-                        //             window.location.href = './pages/coordinatorController.html';
-                        //             break;  // Added break statement
-                        //         default:
-                        //             logout();
-                        //             showErrorToast('Unknown user type - contact support');
-                        //     }
-                        // })
+
                     },
                     error: function(xhr) {
                         $('#loginPassword').val('');
@@ -492,20 +478,40 @@
 // Add this function to your login page script
             function validateTokenAfterLogin() {
                 const token = localStorage.getItem('jwtToken');
-                if (!token) return;
-
-                // Verify token structure
-                const tokenParts = token.split('.');
-                if (tokenParts.length !== 3) {
+                if (!token) {
                     logout();
                     return;
                 }
 
-                // Verify token expiration
-                const payload = JSON.parse(atob(tokenParts[1]));
-                if (Date.now() >= payload.exp * 1000) {
+                // Split the token into parts
+                const tokenParts = token.split('.');
+                if (tokenParts.length !== 3) {
                     logout();
+                    showErrorToast('Invalid token format');
                     return;
+                }
+
+                try {
+                    // Convert base64url to base64 and handle padding
+                    const base64Url = tokenParts[1];
+                    const base64 = base64Url
+                        .replace(/-/g, '+')
+                        .replace(/_/g, '/');
+
+                    // Add padding
+                    const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');
+
+                    const payload = JSON.parse(atob(padded));
+
+                    // Check expiration
+                    if (Date.now() >= payload.exp * 1000) {
+                        logout();
+                        showErrorToast('Session expired');
+                    }
+                } catch (e) {
+                    console.error('Token validation failed:', e);
+                    logout();
+                    showErrorToast('Invalid authentication token');
                 }
             }
 
@@ -513,118 +519,22 @@
 
 
 
-
-
-//             // Add logout function at the top level
-//             function logout() {
-//                 localStorage.removeItem('jwtToken');
-//                 localStorage.removeItem('user');
-//                 window.location.href = './index.html';
-//             }
-//
-// // Updated login handler
-//             $('#loginForm form').submit(function(e) {
-//                 e.preventDefault();
-//                 const $form = $(this);
-//                 const $btn = $form.find('button').prop('disabled', true);
-//
-//                 // Clear previous errors
-//                 $form.find('.error-text').remove();
-//
-//                 $.ajax({
-//                     type: "POST",
-//                     url: "http://localhost:8080/api/v1/auth/login",
-//                     contentType: "application/json",
-//                     data: JSON.stringify({
-//                         email: $('#loginEmail').val().trim(),
-//                         password: $('#loginPassword').val()
-//                     }),
-//                     success: function(response) {
-//                         // Validate response structure
-//                         if (!response?.data?.token || !response.data.userType) {
-//                             showErrorToast('Invalid server response');
-//                             return;
-//                         }
-//
-//                         // Store authentication data
-//                         localStorage.setItem('jwtToken', response.data.token);
-//                         localStorage.setItem('user', JSON.stringify({
-//                             email: response.data.email,
-//                             type: response.data.userType,
-//                             profileImage: response.data.profileImage || 'default-avatar.jpg'
-//                         }));
-//
-//                         // Verify token with server before redirect
-//                         validateTokenAfterLogin(() => {
-//                             switch(response.data.userType.toUpperCase()) {
-//                                 case 'CUSTOMER':
-//                                     window.location.href = './pages/home.html';
-//                                     break;
-//                                 case 'ADMIN':
-//                                     window.location.href = './pages/adminController.html';
-//                                     break;
-//                                 case 'COORDINATOR':
-//                                     window.location.href = './pages/coordinatorController.html';
-//                                     break;
-//                                 default:
-//                                     logout();
-//                                     showErrorToast('Unknown user type');
-//                             }
-//                         });
-//                     },
-//                     error: function(xhr) {
-//                         $('#loginPassword').val('');
-//                         let errorMsg = xhr.responseJSON?.message || 'Login failed. Check credentials';
-//                         if (xhr.status === 401) {
-//                             errorMsg = 'Invalid email or password';
-//                         }
-//                         showErrorToast(errorMsg);
-//                     },
-//                     complete: function() {
-//                         $btn.prop('disabled', false);
-//                     }
-//                 });
-//             });
-//
-// // Server-side token validation
-//             function validateTokenAfterLogin(callback) {
-//                 const token = localStorage.getItem('jwtToken');
-//                 if (!token) {
-//                     logout();
-//                     return;
-//                 }
-//
-//                 $.ajax({
-//                     url: 'http://localhost:8080/api/v1/auth/validate-token',
-//                     method: 'GET',
-//                     headers: {
-//                         'Authorization': 'Bearer ' + token
-//                     },
-//                     success: function(response) {
-//                         if (response.valid) {
-//                             callback();
-//                         } else {
-//                             logout();
-//                             showErrorToast('Session validation failed');
-//                         }
-//                     },
-//                     error: function() {
-//                         logout();
-//                         showErrorToast('Could not verify session');
-//                     }
-//                 });
-//             }
-//
-//
-
-
-
             // Registration Form Submission
             $('#registerForm form').submit(function(e) {
                 e.preventDefault();
                 const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');
+
+                // Manual validation for seller
+                if(isSeller) {
+                    if($('#nic').val().trim() === '') {
+                        showErrorToast('NIC Number is required for sellers');
+                        return;
+                    }
+                }
+
                 if (isSeller) handleSellerRegistration();
                 else handleCustomerRegistration();
+
             });
 
             // Forgot Password Form Submission
@@ -658,26 +568,41 @@
             $('.user-type-btn').removeClass('active');
             $(element).addClass('active');
             const isSeller = $(element).text().includes('Seller');
+
+            // Toggle seller fields and required attributes
             $('.seller-fields').toggle(isSeller);
-            $('#nic').prop('required', isSeller);
+            $('#nic').prop('required', isSeller); // Dynamic required attribute
+
+            // Update name field label
+            const nameInput = $('#regName');
+            nameInput.attr('placeholder', isSeller ? 'Business Name*' : 'Full Name*');
+
+            // Clear NIC field when switching to customer
+            if(!isSeller) $('#nic').val('');
         }
 
         // Seller registration handler
         function handleSellerRegistration() {
             const formData = new FormData();
             const sellerData = {
-                name: $('#regName').val(),
-                email: $('#regEmail').val(),
+                name: $('#regName').val().trim(),
+                email: $('#regEmail').val().trim(),
                 password: $('#regPassword').val(),
-                nic: $('#nic').val(),
-                phone: $('#businessPhone').val(),
-                address: $('#businessAddress').val(),
-                qualifications: $('#qualifications').val().split('\n')
+                nic: $('#nic').val().trim(),
+                phone: $('#regPhone').val().trim(),
+                address: $('#regAddress').val().trim(),
+                bio: $('#bio').val().trim(),
+                qualifications: $('#qualifications').val().split('\n').filter(q => q.trim() !== ''),
+                type: 'SELLER' // Add this line to include the user type
             };
 
-            formData.append('data', new Blob([JSON.stringify(sellerData)], {
-                type: "application/json"
-            }));
+            // Validate required fields
+            if (!sellerData.nic) {
+                showErrorToast('NIC Number is required for sellers');
+                return;
+            }
+
+            formData.append('data', new Blob([JSON.stringify(sellerData)], { type: "application/json" }));
 
             const profileImage = $('#profileImage')[0].files[0];
             if (profileImage) {
@@ -693,36 +618,50 @@
                 success: function(response) {
                     localStorage.setItem('jwtToken', response.accessToken);
                     localStorage.setItem('user', JSON.stringify(response.user));
-                    window.location.href = './pages/sellerHome.html';
+                    window.location.href = 'index.html';
                 },
                 error: function(xhr) {
                     const error = xhr.responseJSON || {};
-                    alert(error.message || `Registration failed: ${xhr.statusText}`);
+                    showErrorToast(error.message || `Registration failed: ${xhr.statusText}`);
                 }
             });
         }
 
         // Customer registration handler
         function handleCustomerRegistration() {
+            const formData = new FormData();
             const customerData = {
                 name: $('#regName').val(),
                 email: $('#regEmail').val(),
-                password: $('#regPassword').val()
+                password: $('#regPassword').val(),
+                phone: $('#regPhone').val(),
+                address: $('#regAddress').val(),
+                type: 'CUSTOMER'
             };
+
+            formData.append('data', new Blob([JSON.stringify(customerData)], {
+                type: "application/json"
+            }));
+
+            const profileImage = $('#profileImage')[0].files[0];
+            if (profileImage) {
+                formData.append('profileImage', profileImage);
+            }
 
             $.ajax({
                 type: "POST",
                 url: "http://localhost:8080/api/v1/customers/register",
-                contentType: "application/json",
-                data: JSON.stringify(customerData),
+                data: formData,
+                processData: false,
+                contentType: false,
                 success: function(response) {
                     localStorage.setItem('jwtToken', response.accessToken);
                     localStorage.setItem('user', JSON.stringify(response.user));
-                    window.location.href = './pages/home.html';
+                    window.location.href = 'index.html';
                 },
                 error: function(xhr) {
                     const error = xhr.responseJSON || {};
-                    alert(error.message || `Registration failed: ${xhr.statusText}`);
+                    showErrorToast(error.message || `Registration failed: ${xhr.statusText}`);
                 }
             });
         }
@@ -733,6 +672,13 @@
             $('body').append(toast);
             setTimeout(() => toast.addClass('show'), 10);
             setTimeout(() => toast.remove(), 5000);
+        }
+        function logout() {
+            // Clear all authentication-related items
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('user');
+            // Redirect to login page
+            window.location.href = '/index.html';
         }
     </script>
 </body>

@@ -126,6 +126,7 @@ package lk.ijse.back_end.config;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -166,6 +167,11 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
@@ -175,35 +181,6 @@ public class WebSecurityConfig {
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
     }
-
-//    @Bean
-//    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http
-//                .csrf(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(   "/api/v1/customers/register",
-//                                "/api/v1/sellers/register",
-//                                "/uploads/**",
-//                                "/login.html",
-//                                "/pages/**",
-//                                "/css/**",
-//                                "/js/**",
-//                                "/images/**",
-//                                "/api/v1/auth/**",
-//                                "/api/v1/auth/validate-token").permitAll()
-//                        .requestMatchers(HttpMethod.OPTIONS, "/api/v1/customers/**" , "/pages/adminController.html").authenticated(
-//
-//                        )
-//                        .anyRequest().authenticated()
-//                )
-//                .sessionManagement(session -> session
-//                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                )
-//                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

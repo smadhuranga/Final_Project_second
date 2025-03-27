@@ -6,6 +6,7 @@ import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.repository.RatingRepo;
 import lk.ijse.back_end.service.OrderService;
 import lk.ijse.back_end.service.RatingService;
+import lk.ijse.back_end.service.ServiceService;
 import lk.ijse.back_end.service.UserService;
 import lk.ijse.back_end.util.JwtUtil;
 import lk.ijse.back_end.util.OrderStatus;
@@ -13,6 +14,7 @@ import lk.ijse.back_end.util.UserType;
 import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -35,34 +37,31 @@ public class SellerController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
     private final RatingService ratingService;
-    private final OrderService orderService;  // Add this
+    private final OrderService orderService;
+    private final ServiceService serviceService;
 
     @Autowired
     public SellerController(UserService userService,
                             JwtUtil jwtUtil,
                             RatingService ratingService,
-                            OrderService orderService) {  // Add this parameter
+                            OrderService orderService,
+                            ServiceService serviceService) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.ratingService = ratingService;
-        this.orderService = orderService;  // Initialize here
+        this.orderService = orderService;
+        this.serviceService = serviceService;
     }
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> registerSeller(
-            @Valid @ModelAttribute SellerDTO sellerDTO,
+            @Valid @RequestPart("data") SellerDTO sellerDTO,
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
 
         try {
-            // Validate required fields
-            if (sellerDTO.getEmail() == null || sellerDTO.getPassword() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(new ResponseDTO(VarList.Bad_Request, "Email and password are required", null));
-            }
-
-            // Handle file upload
+            // Handle file upload to Cloudinary
             if (profileImage != null && !profileImage.isEmpty()) {
-//                String fileName = fileStorageService.storeFile(profileImage);
-//                sellerDTO.setProfileImage("/uploads/" + fileName);
+                String imageUrl = userService.storeProfileImage(sellerDTO.getEmail(), profileImage);
+                sellerDTO.setProfileImage(imageUrl);
             }
 
             // Set server-side values
@@ -78,7 +77,6 @@ public class SellerController {
 
             switch (result) {
                 case VarList.Created -> {
-                    // Create UserDTO for token generation
                     UserDTO authUserDTO = new UserDTO();
                     authUserDTO.setEmail(sellerDTO.getEmail());
                     authUserDTO.setType(sellerDTO.getType());
@@ -108,14 +106,11 @@ public class SellerController {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(VarList.Internal_Server_Error, "Registration failed: " + e.getMessage(), null));
         }
     }
 
-    // SellerController.java
-    // SellerController.java
     @GetMapping("/dashboard")
     public ResponseEntity<ResponseDTO<Map<String, Object>>> getSellerDashboard(
             @AuthenticationPrincipal UserDetails userDetails) {
@@ -142,35 +137,10 @@ public class SellerController {
         }
     }
 
-    private double calculateTotalEarnings(SellerDTO seller) {
-        List<OrderDTO> completedOrders = orderService.getOrdersBySellerAndStatus(
-                seller.getId(), // Use Long ID instead of email
-                OrderStatus.COMPLETED
-        );
-        return completedOrders.stream()
-                .mapToDouble(OrderDTO::getAmount)
-                .sum();
-    }
 
-    private int countActiveOrders(SellerDTO seller) {
-        return orderService.countOrdersBySellerAndStatus(
-                seller.getId(), // Use Long ID instead of email
-                OrderStatus.ACTIVE
-        );
-    }
 
-    private double calculateAverageRating(SellerDTO seller) {
-        if (seller.getRatingIds() == null || seller.getRatingIds().isEmpty()) {
-            return 0.0;
-        }
 
-        double total = seller.getRatingIds().stream()
-                .mapToDouble(ratingId -> ratingService.getRatingValue(ratingId))
-                .filter(value -> value > 0)
-                .sum();
 
-        return total / seller.getRatingIds().size();
-    }
 
 
 
@@ -191,10 +161,22 @@ public class SellerController {
     }
 
     // ServiceController.java
-    @GetMapping
-    public ResponseEntity<ResponseDTO<List<ServiceDTO>>> getAllServices() {
-        // Return all services
-        return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Services fetched successfully", null));
+
+
+    @GetMapping("/services")
+    public ResponseEntity<ResponseDTO<List<ServiceDTO>>> getServicesByCategory(
+            @RequestParam Long categoryId) {
+
+        try {
+            // 2. Call via autowired instance
+            List<ServiceDTO> services = serviceService.getServicesByCategoryId(categoryId);
+            return ResponseEntity.ok(
+                    new ResponseDTO<>(VarList.OK, "Services fetched successfully", services)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
     }
 
     @PostMapping
@@ -202,4 +184,66 @@ public class SellerController {
         // Create service logic
         return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Service created successfully", null));
     }
+    @PostMapping(value = "/upload-profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> uploadProfileImage(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new ResponseDTO(VarList.Bad_Request, "File cannot be empty", null));
+            }
+
+            String contentType = file.getContentType();
+            if (contentType == null || !contentType.startsWith("image/")) {
+                return ResponseEntity.badRequest()
+                        .body(new ResponseDTO(VarList.Bad_Request, "Only image files are allowed", null));
+            }
+
+            String email = userDetails.getUsername();
+            String imageUrl = userService.storeProfileImage(email, file);
+
+            // Update seller's profile image URL in database
+            SellerDTO seller = (SellerDTO) userService.findUserByEmail(email);
+            seller.setProfileImage(imageUrl);
+            userService.updateUser(seller);
+
+            return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Image uploaded successfully", imageUrl));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Error processing image: " + e.getMessage(), null));
+        }
+    }
+
+    // Helper methods
+    private double calculateTotalEarnings(SellerDTO seller) {
+        List<OrderDTO> completedOrders = orderService.getOrdersBySellerAndStatus(
+                seller.getId(),
+                OrderStatus.COMPLETED
+        );
+        return completedOrders.stream()
+                .mapToDouble(OrderDTO::getAmount)
+                .sum();
+    }
+
+    private int countActiveOrders(SellerDTO seller) {
+        return orderService.countOrdersBySellerAndStatus(
+                seller.getId(),
+                OrderStatus.ACTIVE
+        );
+    }
+
+    private double calculateAverageRating(SellerDTO seller) {
+        if (seller.getRatingIds() == null || seller.getRatingIds().isEmpty()) {
+            return 0.0;
+        }
+
+        double total = seller.getRatingIds().stream()
+                .mapToDouble(ratingId -> ratingService.getRatingValue(ratingId))
+                .filter(value -> value > 0)
+                .sum();
+
+        return total / seller.getRatingIds().size();
+    }
+
 }

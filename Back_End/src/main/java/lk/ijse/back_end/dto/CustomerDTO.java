@@ -1,5 +1,6 @@
 package lk.ijse.back_end.dto;
 
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,8 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerDTO extends UserDTO {
-    private List<Long> orderIds;
-
+    @Null(message = "Order IDs must be null during registration")
+    private List<Long> orderIds = null;
 
 
 

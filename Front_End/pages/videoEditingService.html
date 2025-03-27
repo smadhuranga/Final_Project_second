@@ -15,6 +15,21 @@
             --accent-yellow: #FFD700;
             --accent-green: #00FF00;
         }
+        .service-hero, .sellers-section {
+            display: block !important;
+            opacity: 1 !important;
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         body {
             background-color: var(--bg-black);
@@ -167,6 +182,52 @@
             opacity: 1;
             transform: translateY(0);
         }
+
+        /* Chat Message Styling */
+        .chat-message {
+            max-width: 80%;
+            margin: 10px;
+            padding: 15px;
+            border-radius: 15px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .user-message {
+            background: var(--accent-green);
+            color: #000;
+            margin-left: auto;
+        }
+
+        .seller-message {
+            background: rgba(255,255,255,0.1);
+            margin-right: auto;
+        }
+
+        .message-timestamp {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 5px;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Chat Scrollbar Styling */
+        .chat-messages-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages-container::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .chat-messages-container::-webkit-scrollbar-thumb {
+            background: var(--accent-yellow);
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
@@ -311,29 +372,266 @@
         </div>
     </section>
 
+    <!-- Add Chat Modal to your HTML -->
+    <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="chatModalLabel">Chat with <span id="sellerName"></span></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="chatMessages" class="chat-messages-container mb-3" style="height: 400px; overflow-y: auto;">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                    <div class="input-group">
+                    <textarea id="messageInput" class="form-control bg-dark text-light"
+                              placeholder="Type your message..." rows="2" style="resize: none;"></textarea>
+                        <button id="sendMessageBtn" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // AJAX Data Fetching
-        async function fetchEditors() {
+
+        function checkAuthStatus() {
             try {
-                const response = await fetch('https://api.example.com/editors');
-                const data = await response.json();
-                renderEditors(data);
-                setupFilters(data);
+                const jwtToken = localStorage.getItem('jwtToken');
+                if (!jwtToken) {
+                    logout();
+                    return false;
+                }
+
+                // Verify token structure
+                const tokenParts = jwtToken.split('.');
+                if (tokenParts.length !== 3) {
+                    logout();
+                    return false;
+                }
+
+                // Verify token expiration
+                const tokenPayload = JSON.parse(atob(tokenParts[1]));
+                if (tokenPayload.exp * 1000 < Date.now()) {
+                    logout();
+                    return false;
+                }
+
+                return true;
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Auth check error:', error);
+                logout();
+                return false;
+            }
+        }
+        function logout() {
+            localStorage.removeItem('jwtToken');
+            window.location.href = '../index.html';
+        }
+        // Chat Manager
+        const ChatManager = {
+            currentSeller: null,
+            pollInterval: null,
+
+            init: function() {
+                $(document).on('click', '.btn-chat', (e) => this.openChat(e));
+                $('#sendMessageBtn').click(() => this.sendMessage());
+                $('#messageInput').keypress(e => {
+                    if (e.which === 13 && !e.shiftKey) {
+                        e.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+            },
+
+            openChat: async function(e) {
+                const sellerId = $(e.currentTarget).data('seller-id');
+                const sellerName = $(e.currentTarget).data('seller-name');
+
+                this.currentSeller = { id: sellerId, name: sellerName };
+                $('#sellerName').text(sellerName);
+                $('#chatMessages').empty();
+
+                try {
+                    await this.loadChatHistory();
+                    $('#chatModal').modal('show');
+                    this.startPolling();
+                } catch (error) {
+                    console.error('Error opening chat:', error);
+                    showErrorToast('Failed to load chat');
+                }
+            },
+
+            loadChatHistory: async function() {
+                const response = await $.ajax({
+                    url: `/api/chat/${this.currentSeller.id}`,
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    }
+                });
+
+                this.renderMessages(response.messages);
+                this.scrollToBottom();
+            },
+
+            renderMessages: function(messages) {
+                messages.forEach(msg => {
+                    const isUser = msg.sender === 'user';
+                    const time = new Date(msg.timestamp).toLocaleTimeString([], {
+                        hour: '2-digit', minute: '2-digit'
+                    });
+
+                    const messageHtml = `
+                <div class="chat-message ${isUser ? 'user-message' : 'seller-message'}">
+                    <div>${msg.content}</div>
+                    <small class="message-timestamp">${time}</small>
+                </div>
+            `;
+
+                    $('#chatMessages').append(messageHtml);
+                });
+            },
+
+            sendMessage: async function() {
+                const content = $('#messageInput').val().trim();
+                if (!content) return;
+
+                try {
+                    await $.ajax({
+                        url: '/api/chat/send',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            recipientId: this.currentSeller.id,
+                            content: content
+                        }),
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                        }
+                    });
+
+                    $('#messageInput').val('');
+                    this.loadChatHistory();
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                    showErrorToast('Failed to send message');
+                }
+            },
+
+            startPolling: function() {
+                this.pollInterval = setInterval(() => {
+                    if ($('#chatModal').is(':visible')) {
+                        this.loadChatHistory();
+                    }
+                }, 5000);
+            },
+
+            scrollToBottom: function() {
+                const container = $('#chatMessages');
+                container.scrollTop(container[0].scrollHeight);
+            }
+        };
+
+        // Update Seller Table Rendering
+
+        // Initialize Chat Manager when document is ready
+        $(document).ready(() => {
+            ChatManager.init();
+
+            // View Seller Handler
+            $(document).on('click', '.btn-view', function() {
+                const sellerId = $(this).data('seller-id');
+                window.location.href = `/seller-profile.html?id=${sellerId}`;
+            });
+
+            // Handle JWT expiration
+            $(document).ajaxError(function(event, jqXHR) {
+                if (jqXHR.status === 401) {
+                    localStorage.removeItem('jwtToken');
+                    showErrorToast('Session expired. Redirecting to login...');
+                    setTimeout(() => window.location.href = '/login.html', 2000);
+                }
+            });
+        });
+
+
+        // Home Page Specific Scripts
+        $(document).ready(function() {
+            // Initialize common auth functions
+            if (!checkAuthStatus()) return;
+            initializeScrollAnimations();
+
+
+            // Load initial content
+            loadEditors();
+
+            // Navigation handler
+            $('.nav-link').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this).attr('href');
+                if(target === '#home') {
+                    loadHomeContent();
+                }
+                // Add other navigation targets as needed
+            });
+
+            // Search functionality
+            $('#searchInput').on('input', function() {
+                const searchTerm = $(this).val().toLowerCase();
+                filterEditors(searchTerm);
+            });
+
+            // Initialize chat manager
+            ChatManager.init();
+        });
+
+        async function loadEditors() {
+            try {
+                const response = await $.ajax({
+                    url: 'http://localhost:8080/api/v1/sellers',
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('jwtToken')}`
+                    },
+                    error: function(xhr) {
+                        if(xhr.status === 401) {
+                            logout();
+                        }
+                    }
+                });
+
+                if(response.data && response.data.length > 0) {
+                    renderEditors(response.data);
+                    initializeFilterHandlers(response.data);
+                } else {
+                    showAlert('No editors found', 'warning');
+                }
+            } catch (error) {
+                console.error('Error loading editors:', error);
+                showAlert('Failed to load editors', 'danger');
             }
         }
 
-        // Render Editors
         function renderEditors(data) {
-            const tbody = document.getElementById('editorsTable');
-            tbody.innerHTML = data.map(editor => `
-                <tr>
+            const tbody = $('#editorsTable');
+            tbody.empty();
+
+            data.forEach(editor => {
+                const row = `
+                <tr class="animate-on-scroll">
                     <td>
                         <div class="d-flex align-items-center">
-                            <i class="fas fa-user-circle fa-2x me-3"></i>
+                            <img src="${editor.profileImage}" class="rounded-circle me-3"
+                                style="width: 40px; height: 40px; object-fit: cover;" alt="${editor.name}">
                             <div>
                                 <h5 class="mb-0">${editor.name}</h5>
                                 <small>${editor.skills.join(', ')}</small>
@@ -344,57 +642,100 @@
                     <td><span class="price-badge">$${editor.rate}/hr</span></td>
                     <td>${editor.projects}+</td>
                     <td>
-                        ${editor.skills.map(skill => `<span class="badge bg-dark me-1">${skill}</span>`).join('')}
+                        <button class="btn btn-sm btn-outline-primary me-2 btn-view"
+                                data-seller-id="${editor.id}">
+                            <i class="fas fa-eye me-2"></i>View
+                        </button>
+                        <button class="btn btn-sm btn-primary btn-chat"
+                                data-seller-id="${editor.id}"
+                                data-seller-name="${editor.name}">
+                            <i class="fas fa-comment me-2"></i>Chat
+                        </button>
                     </td>
                 </tr>
-            `).join('');
+            `;
+                tbody.append(row);
+            });
+
+            // Re-initialize scroll animations for new elements
+            initializeScrollAnimations();
         }
 
-        // Filter Functionality
-        function setupFilters(data) {
-            const filters = document.querySelectorAll('.filter-select');
-            
-            filters.forEach(filter => {
-                filter.addEventListener('change', () => {
-                    const price = parseInt(document.getElementById('filterPrice').value);
-                    const experience = parseInt(document.getElementById('filterExperience').value);
-                    const projects = parseInt(document.getElementById('filterProjects').value);
+        function initializeFilterHandlers(editors) {
+            $('#filterPrice, #filterExperience, #filterProjects').on('change', function() {
+                const priceFilter = $('#filterPrice').val();
+                const expFilter = $('#filterExperience').val();
+                const projectsFilter = $('#filterProjects').val();
 
-                    const filtered = data.filter(editor => {
-                        const priceMatch = !price || 
-                            (price === 30 && editor.rate < 30) ||
-                            (price === 50 && editor.rate >= 30 && editor.rate <= 50) ||
-                            (price === 75 && editor.rate > 50 && editor.rate <= 75) ||
-                            (price === 100 && editor.rate > 75);
-
-                        const expMatch = !experience || 
-                            (experience === 2 && editor.exp <= 2) ||
-                            (experience === 5 && editor.exp > 2 && editor.exp <= 5) ||
-                            (experience === 10 && editor.exp > 5);
-
-                        const projectsMatch = !projects || editor.projects >= projects;
-
-                        return priceMatch && expMatch && projectsMatch;
-                    });
-
-                    renderEditors(filtered);
+                const filtered = editors.filter(editor => {
+                    return (
+                        (!priceFilter || checkPriceFilter(editor.rate, priceFilter)) &&
+                        (!expFilter || checkExpFilter(editor.exp, expFilter)) &&
+                        (!projectsFilter || checkProjectsFilter(editor.projects, projectsFilter))
+                    );
                 });
+
+                renderEditors(filtered);
             });
         }
 
-        // Initial Data Load
-        fetchEditors();
+        function checkPriceFilter(rate, filter) {
+            const price = parseInt(filter);
+            if(price === 30) return rate < 30;
+            if(price === 50) return rate >= 30 && rate <= 50;
+            if(price === 75) return rate > 50 && rate <= 75;
+            if(price === 100) return rate > 75;
+            return true;
+        }
 
-        // Scroll Animations
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
+        function checkExpFilter(exp, filter) {
+            const years = parseInt(filter);
+            if(years === 2) return exp <= 2;
+            if(years === 5) return exp > 2 && exp <= 5;
+            if(years === 10) return exp > 5;
+            return true;
+        }
+
+        function checkProjectsFilter(projects, filter) {
+            const minProjects = parseInt(filter);
+            return projects >= minProjects;
+        }
+
+        function filterEditors(searchTerm) {
+            $('.seller-table tr').each(function() {
+                const text = $(this).text().toLowerCase();
+                $(this).toggle(text.includes(searchTerm));
             });
-        }, { threshold: 0.1 });
+        }
 
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
+        function loadHomeContent() {
+            $('html, body').animate({ scrollTop: 0 }, 'smooth');
+            $('.service-hero, .sellers-section').fadeIn();
+        }
+
+        // Initialize all animations and handlers
+        function initializeScrollAnimations() {
+            if (!('IntersectionObserver' in window)) {
+                console.warn('Intersection Observer not supported');
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            const elements = document.querySelectorAll('.animate-on-scroll');
+            if (elements.length === 0) {
+                console.warn('No elements found for scroll animation');
+                return;
+            }
+
+            elements.forEach(el => observer.observe(el));
+        }
     </script>
 </body>
 </html>
