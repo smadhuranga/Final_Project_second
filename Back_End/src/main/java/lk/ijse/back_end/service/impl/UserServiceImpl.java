@@ -144,6 +144,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     private UserDTO convertToDTO(User user) {
+        if(user instanceof Seller) {
+            return modelMapper.map(user, SellerDTO.class);
+        }
         return switch (user.getType()) {
             case CUSTOMER -> convertCustomer((Customer) user);
             case SELLER -> convertSeller((Seller) user);
@@ -259,5 +262,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return users.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    public UserDTO getUserById(Long id) {
+        return userRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }

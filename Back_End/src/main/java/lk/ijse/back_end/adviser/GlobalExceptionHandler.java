@@ -3,6 +3,7 @@ package lk.ijse.back_end.adviser;
 import io.jsonwebtoken.JwtException;
 import lk.ijse.back_end.dto.ResponseDTO;
 import lk.ijse.back_end.util.VarList;
+import org.hibernate.ResourceClosedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,5 +34,8 @@ public class GlobalExceptionHandler {
                         null
                 ));
     }
+
+
+
 
 }

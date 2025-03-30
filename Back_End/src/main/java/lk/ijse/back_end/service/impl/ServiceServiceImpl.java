@@ -67,4 +67,38 @@ public class ServiceServiceImpl implements ServiceService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<ServiceDTO> getAllServices() {
+        List<lk.ijse.back_end.entity.Service> services = serviceRepository.findAll();
+        return services.stream()
+                .map(service -> modelMapper.map(service, ServiceDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public int updateService(ServiceDTO serviceDTO) {
+        try {
+            lk.ijse.back_end.entity.Service existingService = serviceRepository.findById(serviceDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("Service not found"));
+
+            modelMapper.map(serviceDTO, existingService);
+            serviceRepository.save(existingService);
+            return VarList.OK;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VarList.Internal_Server_Error;
+        }
+    }
+
+    @Override
+    public int deleteService(Long id) {
+        try {
+            serviceRepository.deleteById(id);
+            return VarList.OK;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VarList.Internal_Server_Error;
+        }
+    }
 }

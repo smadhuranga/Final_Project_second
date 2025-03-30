@@ -270,6 +270,23 @@
         .status-toggle {
             cursor: pointer;
         }
+
+
+        .is-invalid {
+            border-color: var(--danger-red) !important;
+            box-shadow: 0 0 0 0.25rem rgba(255, 68, 68, 0.25);
+        }
+
+        .invalid-feedback {
+            color: var(--danger-red);
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .is-invalid ~ .invalid-feedback {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -289,6 +306,10 @@
             </a>
             <a class="nav-link" href="#projects" data-section="projects">
                 <i class="fas fa-tasks me-2"></i> Project Management
+            </a>
+            <!-- In the sidebar nav -->
+            <a class="nav-link" href="#services" data-section="services">
+                <i class="fas fa-cogs me-2"></i> Service Management
             </a>
 
         </nav>
@@ -476,6 +497,64 @@
             </tbody>
         </table>
     </section>
+    <!-- Service Management Section -->
+    <section id="services" class="content-section d-none">
+        <div class="d-flex justify-content-between mb-4">
+            <h2>Service Management</h2>
+            <div class="d-flex gap-2">
+                <button class="btn btn-admin btn-edit" data-bs-toggle="modal" data-bs-target="#serviceModal">
+                    <i class="fas fa-plus me-2"></i>Add Service
+                </button>
+                <button class="btn btn-admin btn-edit" data-bs-toggle="modal" data-bs-target="#categoryModal">
+                    <i class="fas fa-folder-plus me-2"></i>Add Category
+                </button>
+            </div>
+        </div>
+
+        <ul class="nav nav-tabs mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#servicesTab">Services</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#categoriesTab">Categories</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="servicesTab">
+                <table class="table table-custom table-hover" id="servicesTable">
+                    <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Delivery Time</th>
+                        <th>Seller</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Data populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane fade" id="categoriesTab">
+                <table class="table table-custom table-hover" id="categoriesTable">
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Data populated via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
 
 </div>
 
@@ -532,6 +611,92 @@
                         <i class="fas fa-paper-plane"></i>
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Service Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm">
+                    <input type="hidden" id="serviceId">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" id="serviceTitle" required>
+                        <div class="invalid-feedback">Please enter a valid title</div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="serviceDescription" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="mb-3">
+                            <label class="form-label">Price</label>
+                            <input type="number" class="form-control" id="servicePrice" step="0.01" required>
+                            <div class="invalid-feedback">Please enter a valid price</div>
+                        </div>
+                        <!-- Update your service form fields -->
+                        <div class="mb-3">
+                            <label class="form-label">Delivery Time</label>
+                            <input type="text" class="form-control" id="serviceDeliveryTime" required>
+                            <div class="invalid-feedback">Please enter delivery time</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-select" id="serviceCategory" required>
+                                <option value="">Loading categories...</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a category</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Seller</label>
+                            <select class="form-select" id="serviceSeller" required>
+                                <option value="">Loading sellers...</option>
+                            </select>
+                            <div class="invalid-feedback">Please select a seller</div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-admin btn-edit" id="saveService">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Category Modal -->
+<div class="modal fade" id="categoryModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Manage Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="categoryForm">
+                    <input type="hidden" id="categoryId">
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea class="form-control" id="categoryDescription" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-admin btn-edit" id="saveCategory">Save</button>
             </div>
         </div>
     </div>
@@ -758,16 +923,17 @@
         initializeCharts();
 
         // Utility Functions
-        function showAlert(message, type = 'success') {
+        // Replace the existing showAlert declaration with:
+        window.showAlert = function(message, type = 'success') {
             const alert = $(`
-                <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            `);
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `);
             $('.admin-main').prepend(alert);
             setTimeout(() => alert.alert('close'), 3000);
-        }
+        };
 
         window.showSellerHistory = function(sellerId) {
             $.ajax({
@@ -953,6 +1119,519 @@
     $(document).ready(function() {
         initializeUserTables();
         // ... rest of your existing initialization code ...
+    });
+
+    // Add to the existing JavaScript
+
+    let servicesTable, categoriesTable;
+    let categoryMap = {};
+    let sellerMap = {};
+
+    function initializeServiceTables() {
+        // Fetch categories and sellers first
+        Promise.all([
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/admin/categories',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                }
+            }),
+            $.ajax({
+                url: 'http://localhost:8080/api/v1/admin/users?type=SELLER',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                }
+            })
+        ]).then(([categoriesResponse, sellersResponse]) => {
+            // Create category mapping
+            categoryMap = {};
+            categoriesResponse.data.forEach(category => {
+                categoryMap[category.id] = category.name;
+            });
+
+            // Create seller mapping
+            sellerMap = {};
+            sellersResponse.data.forEach(seller => {
+                sellerMap[seller.id] = seller.name;
+            });
+
+            // Initialize Services Table
+            servicesTable = $('#servicesTable').DataTable({
+                ajax: {
+                    url: 'http://localhost:8080/api/v1/admin/services',
+                    dataSrc: 'data',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                    }
+                },
+                columns: [
+                    { data: 'title' },
+                    {
+                        data: 'categoryId',
+                        render: function(data) {
+                            return data ? (categoryMap[data] || 'N/A') : 'N/A';
+                        }
+                    },
+                    {
+                        data: 'price',
+                        render: function(data) {
+                            return data ? '$' + data.toFixed(2) : 'N/A';
+                        }
+                    },
+                    { data: 'deliveryTime' },
+                    {
+                        data: 'sellerId',
+                        render: function(data) {
+                            return data ? (sellerMap[data] || 'N/A') : 'N/A';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                        <button class="btn btn-admin btn-edit me-2" onclick="editService(${row.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-admin btn-delete" onclick="deleteService(${row.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                        }
+                    }
+                ]
+            });
+
+            // Initialize Categories Table
+            categoriesTable = $('#categoriesTable').DataTable({
+                ajax: {
+                    url: 'http://localhost:8080/api/v1/admin/categories',
+                    dataSrc: 'data',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                    }
+                },
+                columns: [
+                    { data: 'name' },
+                    { data: 'description' },
+                    {
+                        data: null,
+                        render: function(data, type, row) {
+                            return `
+                        <button class="btn btn-admin btn-edit me-2" onclick="editCategory(${row.id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-admin btn-delete" onclick="deleteCategory(${row.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                        }
+                    }
+                ]
+            });
+
+        }).catch(error => {
+            console.error('Error initializing service tables:', error);
+            showAlert('Failed to load service data', 'danger');
+        });
+    }
+
+    // Remove the old async getCategoryName and getSellerName functions
+    // function initializeServiceTables() {
+    //     // Services Table
+    //     servicesTable = $('#servicesTable').DataTable({
+    //         ajax: {
+    //             url: 'http://localhost:8080/api/v1/admin/services',
+    //             dataSrc: 'data',
+    //             beforeSend: function(xhr) {
+    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+    //             }
+    //         },
+    //         columns: [
+    //             { data: 'title' },
+    //             {
+    //                 data: 'categoryId',
+    //                 render: function(data) {
+    //                     return data ? getCategoryName(data) : 'N/A';
+    //                 }
+    //             },
+    //             {
+    //                 data: 'price',
+    //                 render: function(data) {
+    //                     return data ? '$' + data.toFixed(2) : 'N/A';
+    //                 }
+    //             },
+    //             { data: 'deliveryTime' },
+    //             {
+    //                 data: 'sellerId',
+    //                 render: function(data) {
+    //                     return data ? getSellerName(data) : 'N/A';
+    //                 }
+    //             },
+    //             {
+    //                 data: null,
+    //                 render: function(data, type, row) {
+    //                     return `
+    //                     <button class="btn btn-admin btn-edit me-2" onclick="editService(${row.id})">
+    //                         <i class="fas fa-edit"></i>
+    //                     </button>
+    //                     <button class="btn btn-admin btn-delete" onclick="deleteService(${row.id})">
+    //                         <i class="fas fa-trash"></i>
+    //                     </button>
+    //                 `;
+    //                 }
+    //             }
+    //         ]
+    //     });
+    //
+    //     // Categories Table
+    //     categoriesTable = $('#categoriesTable').DataTable({
+    //         ajax: {
+    //             url: 'http://localhost:8080/api/v1/admin/categories',
+    //             dataSrc: 'data',
+    //             beforeSend: function(xhr) {
+    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+    //             }
+    //         },
+    //         columns: [
+    //             { data: 'name' },
+    //             { data: 'description' },
+    //             {
+    //                 data: null,
+    //                 render: function(data, type, row) {
+    //                     return `
+    //                     <button class="btn btn-admin btn-edit me-2" onclick="editCategory(${row.id})">
+    //                         <i class="fas fa-edit"></i>
+    //                     </button>
+    //                     <button class="btn btn-admin btn-delete" onclick="deleteCategory(${row.id})">
+    //                         <i class="fas fa-trash"></i>
+    //                     </button>
+    //                 `;
+    //                 }
+    //             }
+    //         ]
+    //     });
+    // }
+
+    // Helper functions
+    // Replace getCategoryName and getSellerName with:
+    // async function getCategoryName(categoryId) {
+    //     try {
+    //         const response = await $.ajax({
+    //             url: `http://localhost:8080/api/v1/admin/categories/${categoryId}`,
+    //             beforeSend: function(xhr) {
+    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+    //             }
+    //         });
+    //         return response.data.name || 'N/A';
+    //     } catch (error) {
+    //         console.error('Error loading category:', error);
+    //         return 'N/A';
+    //     }
+    // }
+
+    // async function getSellerName(sellerId) {
+    //     try {
+    //         const response = await $.ajax({
+    //             url: `http://localhost:8080/api/v1/admin/users/${sellerId}`,
+    //             beforeSend: function(xhr) {
+    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+    //             }
+    //         });
+    //         return response.data.name || 'N/A';
+    //     } catch (error) {
+    //         console.error('Error loading seller:', error);
+    //         return 'N/A';
+    //     }
+    // }
+
+    async function getSellerName(sellerId) {
+        try {
+            const response = await $.ajax({
+                url: `http://localhost:8080/api/v1/admin/users/${sellerId}`,
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                }
+            });
+            return response.data.name;
+        } catch (error) {
+            return 'N/A';
+        }
+    }
+
+    // Service CRUD operations
+    function editService(id) {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/admin/services/${id}`,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+            },
+            success: function(service) {
+                // Load dropdown data first
+                loadServiceModalData().then(() => {
+                    // Set form values after dropdowns are populated
+                    $('#serviceId').val(service.id);
+                    $('#serviceTitle').val(service.title);
+                    $('#serviceDescription').val(service.description);
+                    $('#servicePrice').val(service.price);
+                    $('#serviceDeliveryTime').val(service.deliveryTime);
+                    $('#serviceCategory').val(service.categoryId);
+                    $('#serviceSeller').val(service.sellerId);
+
+                    $('#serviceModal').modal('show');
+                });
+            }
+        });
+    }
+
+    function deleteService(id) {
+        if (confirm('Are you sure you want to delete this service?')) {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/admin/services/${id}`,
+                method: 'DELETE',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                },
+                success: function() {
+                    servicesTable.ajax.reload();
+                    showAlert('Service deleted successfully', 'success');
+                }
+            });
+        }
+    }
+
+    // Modify the saveService click handler
+    $('#saveService').click(function() {
+        // Clear previous errors
+        $('.is-invalid').removeClass('is-invalid');
+
+        // Validate inputs
+        const serviceData = {
+            id: $('#serviceId').val(),
+            title: $('#serviceTitle').val().trim(),
+            description: $('#serviceDescription').val().trim(),
+            price: $('#servicePrice').val(),
+            deliveryTime: $('#serviceDeliveryTime').val().trim(),
+            categoryId: $('#serviceCategory').val(),
+            sellerId: $('#serviceSeller').val()
+        };
+
+        // Enhanced validation
+        let isValid = true;
+
+        if (!serviceData.title) {
+            $('#serviceTitle').addClass('is-invalid');
+            isValid = false;
+        }
+
+        if (!serviceData.price || isNaN(serviceData.price) || serviceData.price <= 0) {
+            $('#servicePrice').addClass('is-invalid');
+            isValid = false;
+        }
+
+        if (!serviceData.deliveryTime) {
+            $('#serviceDeliveryTime').addClass('is-invalid');
+            isValid = false;
+        }
+
+        if (!serviceData.categoryId) {
+            $('#serviceCategory').addClass('is-invalid');
+            isValid = false;
+        }
+
+        if (!serviceData.sellerId) {
+            $('#serviceSeller').addClass('is-invalid');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            showAlert('Please fill all required fields correctly', 'danger');
+            return;
+        }
+
+        // Convert numeric fields
+        serviceData.price = parseFloat(serviceData.price);
+        serviceData.categoryId = parseInt(serviceData.categoryId);
+        serviceData.sellerId = parseInt(serviceData.sellerId);
+
+        const method = serviceData.id ? 'PUT' : 'POST';
+        const url = serviceData.id
+            ? `http://localhost:8080/api/v1/admin/services/${serviceData.id}`
+            : 'http://localhost:8080/api/v1/admin/services';
+
+        $.ajax({
+            url: url,
+            method: method,
+            contentType: 'application/json',
+            data: JSON.stringify(serviceData),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+            },
+            success: function() {
+                $('#serviceModal').modal('hide');
+                servicesTable.ajax.reload();
+                showAlert('Service saved successfully', 'success');
+            },
+            error: function(xhr) {
+                const response = xhr.responseJSON;
+                let errorMessage = 'Failed to save service';
+
+                if (xhr.status === 400) {
+                    if (response && response.message) {
+                        errorMessage = response.message;
+                        // Handle duplicate title error
+                        if (errorMessage.toLowerCase().includes('title')) {
+                            $('#serviceTitle').addClass('is-invalid');
+                        }
+                    }
+                    else if (response && response.errors) {
+                        errorMessage = response.errors.join(', ');
+                    }
+                }
+                showAlert(errorMessage, 'danger');
+            }
+        });
+    });
+    // Category CRUD operations
+    function editCategory(id) {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/admin/categories/${id}`,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+            },
+            success: function(category) {
+                $('#categoryId').val(category.id);
+                $('#categoryName').val(category.name);
+                $('#categoryDescription').val(category.description);
+                $('#categoryModal').modal('show');
+            }
+        });
+    }
+
+    function deleteCategory(id) {
+        if (confirm('Are you sure you want to delete this category?')) {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/admin/categories/${id}`,
+                method: 'DELETE',
+                beforeSend: function(xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                },
+                success: function() {
+                    categoriesTable.ajax.reload();
+                    showAlert('Category deleted successfully', 'success');
+                }
+            });
+        }
+    }
+
+    $('#saveCategory').click(function() {
+        const categoryData = {
+            id: $('#categoryId').val(),
+            name: $('#categoryName').val(),
+            description: $('#categoryDescription').val()
+        };
+
+        const method = categoryData.id ? 'PUT' : 'POST';
+        const url = categoryData.id
+            ? `http://localhost:8080/api/v1/admin/categories/${categoryData.id}`
+            : 'http://localhost:8080/api/v1/admin/categories';
+
+        $.ajax({
+            url: url,
+            method: method,
+            contentType: 'application/json',
+            data: JSON.stringify(categoryData),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+            },
+            success: function() {
+                $('#categoryModal').modal('hide');
+                categoriesTable.ajax.reload();
+                showAlert('Category saved successfully', 'success');
+            }
+        });
+    });
+    // Add this function to load dropdown data
+
+    // Add this event listener for modal show
+    $('#serviceModal').on('show.bs.modal', function() {
+        // Load dropdown data first
+        loadServiceModalData().then(() => {
+            if (!$('#serviceId').val()) {
+                $('#serviceForm')[0].reset();
+                $('#serviceCategory, #serviceSeller').val('');
+            }
+        }).catch(error => {
+            console.error('Error loading modal data:', error);
+            showAlert('Failed to load required data', 'danger');
+            $('#serviceModal').modal('hide');
+        });
+    });
+
+    // Modified loadServiceModalData with Promise
+    // Modify loadServiceModalData function
+    function loadServiceModalData() {
+        return new Promise((resolve, reject) => {
+            Promise.all([
+                $.ajax({
+                    url: 'http://localhost:8080/api/v1/admin/categories',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                    }
+                }),
+                $.ajax({
+                    url: 'http://localhost:8080/api/v1/admin/users?type=SELLER',
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+                    }
+                })
+            ]).then(([categories, sellers]) => {
+                // Populate categories
+                $('#serviceCategory').empty().append(
+                    '<option value="">Select Category</option>' +
+                    categories.data.map(c => `<option value="${c.id}">${c.name}</option>`).join('')
+                );
+
+                // Populate sellers
+                $('#serviceSeller').empty().append(
+                    '<option value="">Select Seller</option>' +
+                    sellers.data.filter(u => u.type === 'SELLER')
+                        .map(s => `<option value="${s.id}">${s.name}</option>`).join('')
+                );
+                resolve();
+            }).catch(error => {
+                showAlert('Failed to load required data', 'danger');
+                reject(error);
+            });
+        });
+    }
+
+    // ================== EDIT SERVICE ==================
+    window.editService = function(id) {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/admin/services/${id}`,
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+            },
+            success: function(service) {
+                loadServiceModalData().then(() => {
+                    $('#serviceId').val(service.id);
+                    $('#serviceTitle').val(service.title);
+                    $('#serviceDescription').val(service.description);
+                    $('#servicePrice').val(service.price);
+                    $('#serviceDeliveryTime').val(service.deliveryTime);
+                    $('#serviceCategory').val(service.categoryId);
+                    $('#serviceSeller').val(service.sellerId);
+                    $('#serviceModal').modal('show');
+                });
+            }
+        });
+    }
+
+
+
+    // Initialize service tables when the section is shown
+    $('a[href="#services"]').click(function() {
+        initializeServiceTables();
     });
 </script>
 </body>

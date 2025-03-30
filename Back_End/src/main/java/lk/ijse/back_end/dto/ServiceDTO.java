@@ -13,8 +13,8 @@ public class ServiceDTO {
     private Long id;
     private String title;
     private String description;
-    private BigDecimal price;
+    private Double price;  // or BigDecimal
     private String deliveryTime;
-    private Long sellerId;
     private Long categoryId;
+    private Long sellerId;
 }
