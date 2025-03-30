@@ -208,7 +208,7 @@ public class WebSecurityConfig {
 
                         // Admin endpoints (require ADMIN role)
 
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN" , "COORDINATOR")
                         .requestMatchers("/api/v1/sellers/dashboard").hasAnyRole("SELLER", "ADMIN")
 
                         // OPTIONS requests for specific paths
@@ -236,7 +236,13 @@ public class WebSecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // Allow all headers
         configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
-        configuration.setExposedHeaders(List.of("Authorization" , "Content-Type")); // Expose Authorization header if needed
+        configuration.setAllowedHeaders(Arrays.asList(
+                "Authorization", "Content-Type", "X-Requested-With", "Accept"
+        ));
+
+        configuration.setExposedHeaders(Arrays.asList(
+                "Authorization", "Content-Disposition"
+        )); // Expose Authorization header if needed
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration); // Apply to all paths

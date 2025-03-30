@@ -311,6 +311,9 @@
             <a class="nav-link" href="#services" data-section="services">
                 <i class="fas fa-cogs me-2"></i> Service Management
             </a>
+            <a class="nav-link logout-link" href="#" id="logoutButton">
+                <i class="fas fa-sign-out-alt me-2"></i> Log Out
+            </a>
 
         </nav>
     </div>
@@ -724,12 +727,11 @@
         function checkAuthStatus() {
             const jwtToken = localStorage.getItem('jwtToken');
             if (!jwtToken) {
-                window.location.href = '../index.html';
+                logout();
                 return false;
             }
 
-            // Verify token is not expired
-            const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+            // Existing token expiration check...
             if (tokenPayload.exp * 1000 < Date.now()) {
                 logout();
                 return false;
@@ -1234,115 +1236,18 @@
             showAlert('Failed to load service data', 'danger');
         });
     }
+    function logout() {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('user');
+        window.location.href = '../index.html'; // Adjust path as needed
+    }
 
-    // Remove the old async getCategoryName and getSellerName functions
-    // function initializeServiceTables() {
-    //     // Services Table
-    //     servicesTable = $('#servicesTable').DataTable({
-    //         ajax: {
-    //             url: 'http://localhost:8080/api/v1/admin/services',
-    //             dataSrc: 'data',
-    //             beforeSend: function(xhr) {
-    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
-    //             }
-    //         },
-    //         columns: [
-    //             { data: 'title' },
-    //             {
-    //                 data: 'categoryId',
-    //                 render: function(data) {
-    //                     return data ? getCategoryName(data) : 'N/A';
-    //                 }
-    //             },
-    //             {
-    //                 data: 'price',
-    //                 render: function(data) {
-    //                     return data ? '$' + data.toFixed(2) : 'N/A';
-    //                 }
-    //             },
-    //             { data: 'deliveryTime' },
-    //             {
-    //                 data: 'sellerId',
-    //                 render: function(data) {
-    //                     return data ? getSellerName(data) : 'N/A';
-    //                 }
-    //             },
-    //             {
-    //                 data: null,
-    //                 render: function(data, type, row) {
-    //                     return `
-    //                     <button class="btn btn-admin btn-edit me-2" onclick="editService(${row.id})">
-    //                         <i class="fas fa-edit"></i>
-    //                     </button>
-    //                     <button class="btn btn-admin btn-delete" onclick="deleteService(${row.id})">
-    //                         <i class="fas fa-trash"></i>
-    //                     </button>
-    //                 `;
-    //                 }
-    //             }
-    //         ]
-    //     });
-    //
-    //     // Categories Table
-    //     categoriesTable = $('#categoriesTable').DataTable({
-    //         ajax: {
-    //             url: 'http://localhost:8080/api/v1/admin/categories',
-    //             dataSrc: 'data',
-    //             beforeSend: function(xhr) {
-    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
-    //             }
-    //         },
-    //         columns: [
-    //             { data: 'name' },
-    //             { data: 'description' },
-    //             {
-    //                 data: null,
-    //                 render: function(data, type, row) {
-    //                     return `
-    //                     <button class="btn btn-admin btn-edit me-2" onclick="editCategory(${row.id})">
-    //                         <i class="fas fa-edit"></i>
-    //                     </button>
-    //                     <button class="btn btn-admin btn-delete" onclick="deleteCategory(${row.id})">
-    //                         <i class="fas fa-trash"></i>
-    //                     </button>
-    //                 `;
-    //                 }
-    //             }
-    //         ]
-    //     });
-    // }
+    // Add click handler for logout button
+    $(document).on('click', '#logoutButton', function(e) {
+        e.preventDefault();
+        logout();
+    });
 
-    // Helper functions
-    // Replace getCategoryName and getSellerName with:
-    // async function getCategoryName(categoryId) {
-    //     try {
-    //         const response = await $.ajax({
-    //             url: `http://localhost:8080/api/v1/admin/categories/${categoryId}`,
-    //             beforeSend: function(xhr) {
-    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
-    //             }
-    //         });
-    //         return response.data.name || 'N/A';
-    //     } catch (error) {
-    //         console.error('Error loading category:', error);
-    //         return 'N/A';
-    //     }
-    // }
-
-    // async function getSellerName(sellerId) {
-    //     try {
-    //         const response = await $.ajax({
-    //             url: `http://localhost:8080/api/v1/admin/users/${sellerId}`,
-    //             beforeSend: function(xhr) {
-    //                 xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
-    //             }
-    //         });
-    //         return response.data.name || 'N/A';
-    //     } catch (error) {
-    //         console.error('Error loading seller:', error);
-    //         return 'N/A';
-    //     }
-    // }
 
     async function getSellerName(sellerId) {
         try {

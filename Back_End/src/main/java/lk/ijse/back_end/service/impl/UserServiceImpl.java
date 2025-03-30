@@ -9,6 +9,7 @@ import lk.ijse.back_end.entity.*;
 import lk.ijse.back_end.repository.UserRepo;
 import lk.ijse.back_end.service.UserService;
 import lk.ijse.back_end.util.CustomUserDetails;
+import lk.ijse.back_end.util.UserType;
 import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,5 +269,37 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepository.findById(id)
                 .map(this::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public int deleteUser(Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return VarList.OK;
+        } else {
+            return VarList.Not_Found;
+        }
+    }
+    public List<CustomerDTO> getAllCustomers() {
+        return userRepository.findByType(UserType.CUSTOMER)
+                .stream()
+                .map(user -> modelMapper.map(user, CustomerDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<SellerDTO> getAllSellers() {
+        return userRepository.findByType(UserType.SELLER)
+                .stream()
+                .map(user -> modelMapper.map(user, SellerDTO.class))
+                .collect(Collectors.toList());
+    }
+    public int toggleUserStatus(Long userId) {
+        return userRepository.findById(userId)
+                .map(user -> {
+                    user.setActive(!user.isActive());
+                    userRepository.save(user);
+                    return VarList.OK;
+                })
+                .orElse(VarList.Not_Found);
     }
 }

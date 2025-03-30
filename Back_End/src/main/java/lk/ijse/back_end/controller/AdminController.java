@@ -25,6 +25,8 @@ public class AdminController {
     @Autowired
     private ServiceService serviceService;
 
+
+
     @GetMapping("/users")
     public ResponseEntity<ResponseDTO<List<UserDTO>>> getAllUsers() {
         try {
@@ -188,6 +190,28 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO<>(VarList.Internal_Server_Error, "Error: " + e.getMessage(), null));
+        }
+    }
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<ResponseDTO> deleteUser(@PathVariable Long id) {
+        try {
+            if (id == null || id <= 0) {
+                return ResponseEntity.badRequest()
+                        .body(new ResponseDTO(VarList.Bad_Request, "Invalid user ID", null));
+            }
+
+            int result = userService.deleteUser(id);
+            if (result == VarList.OK) {
+                return ResponseEntity.ok(
+                        new ResponseDTO(VarList.OK, "User deleted successfully", null));
+            }
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(VarList.Not_Found, "User not found", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error,
+                            "Error deleting user: " + e.getMessage(), null));
         }
     }
 }

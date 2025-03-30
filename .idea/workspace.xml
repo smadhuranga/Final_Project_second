@@ -4,18 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/ServiceDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/ServiceDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/dto/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/ServiceCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/ServiceCategory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/entity/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/adminController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/adminController.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -172,7 +163,8 @@
       <workItem from="1743263021187" duration="3920000" />
       <workItem from="1743311247677" duration="25000" />
       <workItem from="1743311369598" duration="20977000" />
-      <workItem from="1743350884822" duration="5100000" />
+      <workItem from="1743350884822" duration="15618000" />
+      <workItem from="1743398336380" duration="3592000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -310,7 +302,23 @@
       <option name="project" value="LOCAL" />
       <updated>1743345816187</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1743356065944</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1743356065944</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html">
+      <option name="closed" value="true" />
+      <created>1743399608685</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1743399608685</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,6 +340,7 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Front_End/index.html&#10;#&#9;Front_End/pages/adminController.html" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/entity/Orders.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/OrderStatus.java" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html" />
   </component>
 </project>
