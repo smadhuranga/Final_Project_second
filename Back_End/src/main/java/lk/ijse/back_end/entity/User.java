@@ -30,5 +30,10 @@ public class User {
     @Column(name = "user_type", insertable = false, updatable = false)
     private UserType type;
 
+
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true;
     private LocalDateTime createdAt = LocalDateTime.now();
+
 }
