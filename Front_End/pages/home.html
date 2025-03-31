@@ -1036,6 +1036,7 @@
         $.ajaxSetup({
             beforeSend: function(xhr) {
                 const token = localStorage.getItem('jwtToken');
+                console.log(token)
                 if (token) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + token);
                 }

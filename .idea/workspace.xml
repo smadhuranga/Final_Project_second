@@ -4,9 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html">
+    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/test.html" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -164,7 +172,8 @@
       <workItem from="1743311247677" duration="25000" />
       <workItem from="1743311369598" duration="20977000" />
       <workItem from="1743350884822" duration="15618000" />
-      <workItem from="1743398336380" duration="4581000" />
+      <workItem from="1743398336380" duration="16349000" />
+      <workItem from="1743433700216" duration="3728000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -326,7 +335,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743405374444</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1743406298473</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1743406298473</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -347,8 +364,8 @@
     <MESSAGE value="load profile done" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/JwtFilter.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java&#10;#&#9;Front_End/index.html&#10;#&#9;Front_End/pages/adminController.html" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/entity/Orders.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/util/OrderStatus.java" />
-    <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html" />
     <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html" />
   </component>
 </project>

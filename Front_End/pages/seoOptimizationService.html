@@ -422,103 +422,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        // Configuration
+        const API_BASE = 'http://localhost:8080/api/v1/';
+        let allSellers = [];
+        let currentSeller = null;
+        let chatInterval = null;
 
-        // Add this function to handle token validation
-        function validateToken() {
-            return checkAuthStatus(); // Utilize existing auth check
-        }
-
-        // Corrected document ready handler
-        $(document).ready(function() {
-            if (!validateToken()) {
-                return;
-            }
-            initScrollAnimations(); // Corrected function name
-            handleNavigation();
-
-            // Show default section
-            const hash = window.location.hash.substring(1) || 'home';
-            showSection(hash);
-        });
-
-        // ... (Keep rest of the existing script)
-
-        // Modified initializePage with error handling
-        async function initializePage() {
-            if (!checkAuthStatus()) return;
-
-            try {
-                const response = await $.ajax({
-                    url: '/api/seo-specialists',
-                    method: 'GET'
-                });
-
-                specialistsData = response.data;
-                renderSpecialists(specialistsData);
-                setupFilters();
-                setupSearch();
-                initScrollAnimations();
-            } catch (error) {
-                showAlert('Failed to load specialists. Please try again later.', 'danger');
-                // Render empty state
-                $('#specialistsTable').html(`<tr><td colspan="5" class="text-center">No specialists available at the moment.</td></tr>`);
-            }
-        }
-
-        // Enhanced Navigation Handler
-        function handleNavigation() {
-            // Remove existing click handlers
-            $('.nav-link').off('click');
-
-            // Add new handlers
-            $('.nav-link').click(function(e) {
-                e.preventDefault();
-                const target = $(this).attr('href');
-
-                if(target === '#home') {
-                    window.location.href = 'home.html';
-                } else {
-                    showSection(target.substring(1));
-                }
-            });
-        }
-
-        // Modified showSection function for SEO page
-        function showSection(sectionId) {
-            if (!checkAuthStatus()) return;
-
-            // Hide all sections
-            $('main section').hide();
-
-            // Show requested section
-            $(`#${sectionId}`).show();
-
-            // Handle scroll animations
-            initScrollAnimations();
-
-            // Special handling for specialists section
-            if(sectionId === 'specialists') {
-                initializePage();
-            }
-        }
-
-        // Modified document ready
-        $(document).ready(function() {
-            validateToken();
-            initializeScrollAnimations();
-            handleNavigation();
-            loadProfileData();
-
-            // Show default section
-            const hash = window.location.hash.substring(1) || 'home';
-            showSection(hash);
-        });
-
-        // Update navbar scroll effect
-        window.addEventListener('scroll', () => {
-            document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);
-        });
-        // Global JWT Configuration
+        // Configure global AJAX settings
         $.ajaxSetup({
             beforeSend: function(xhr) {
                 const token = localStorage.getItem('jwtToken');
@@ -527,35 +437,81 @@
                 }
             },
             error: function(xhr) {
-                if (xhr.status === 401) logout();
+                if (xhr.status === 401) {
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '/login';
+                }
             }
         });
 
         // Authentication Functions
         function checkAuthStatus() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            if (!jwtToken) {
+                showToast('Please login to access this feature', 'warning');
+                window.location.href = '/login';
+                return false;
+            }
+
             try {
-                const jwtToken = localStorage.getItem('jwtToken');
-                if (!jwtToken) throw new Error('No token found');
-
-                const payload = JSON.parse(atob(jwtToken.split('.')[1]));
-                if (payload.exp * 1000 < Date.now()) throw new Error('Token expired');
-
+                const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
+                if (tokenPayload.exp * 1000 < Date.now()) {
+                    showToast('Session expired. Please login again.', 'danger');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '/login';
+                    return false;
+                }
                 return true;
             } catch (error) {
-                logout();
+                showToast('Invalid authentication token', 'danger');
+                localStorage.removeItem('jwtToken');
+                window.location.href = '/login';
                 return false;
             }
         }
 
-        function logout() {
-            localStorage.removeItem('jwtToken');
-            window.location.href = '../index.html';
+        // Seller Management
+        async function initializePage() {
+            if (!checkAuthStatus()) return;
+
+            try {
+                const response = await $.ajax({
+                    url: API_BASE + 'admin/users?type=SELLER', // Changed endpoint to generic sellers
+                    method: 'GET'
+                });
+
+                allSellers = processSellerData(response.data);
+                console.log('All Sellers:', allSellers);
+                renderSpecialists(allSellers);
+                setupFilters();
+                setupSearch();
+                initScrollAnimations();
+            } catch (error) {
+                if (error.status === 401) {
+                    showToast('Session expired. Please login again.', 'danger');
+                    localStorage.removeItem('jwtToken');
+                    window.location.href = '/login';
+                } else {
+                    showToast('Failed to load specialists. Please try again later.', 'danger');
+                    $('#specialistsTable').html(`<tr><td colspan="5" class="text-center">No specialists available</td></tr>`);
+                }
+            }
         }
 
-        // Main Data Handling
-        let specialistsData = [];
-
-
+        function processSellerData(apiData) {
+            return apiData
+                .filter(seller => seller.type === 'SELLER') // Add type filter
+                .map(seller => ({
+                    id: seller.id,
+                    name: seller.name,
+                    experience: seller.experienceYears || 0,
+                    rate: seller.hourlyRate || 0,
+                    projects: seller.completedProjects || 0,
+                    skills: seller.skills || [],
+                    portfolio: seller.portfolioUrl || '#',
+                    rating: seller.rating || '4.5'
+                }));
+        }
 
         // Render Functions
         function renderSpecialists(data) {
@@ -571,15 +527,15 @@
                         </div>
                     </div>
                 </td>
-                <td><span class="exp-badge">${specialist.exp}+ years</span></td>
+                <td><span class="exp-badge">${specialist.experience}+ years</span></td>
                 <td><span class="price-badge">$${specialist.rate}/hr</span></td>
                 <td>${specialist.projects}+</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-warning me-2 view-seller"
+                    <button class="btn btn-sm btn-outline-primary view-seller"
                             data-id="${specialist.id}">
-                        <i class="fas fa-eye me-1"></i>View
+                        <i class="fas fa-eye me-1"></i>Portfolio
                     </button>
-                    <button class="btn btn-sm btn-warning start-chat"
+                    <button class="btn btn-sm btn-outline-success chat-seller ms-2"
                             data-id="${specialist.id}"
                             data-name="${escapeHTML(specialist.name)}">
                         <i class="fas fa-comment me-1"></i>Chat
@@ -589,20 +545,22 @@
         `).join(''));
         }
 
+        // Rest of the script remains the same as previous version
+        // [Keep all other functions from the previous script version]
         // Filter System
         function setupFilters() {
-            $('.filter-select').off('change').on('change', filterSpecialists);
+            $('.filter-select').off('change').on('change', applyFilters);
         }
 
-        function filterSpecialists() {
+        function applyFilters() {
             const price = parseInt($('#filterPrice').val());
             const experience = parseInt($('#filterExperience').val());
             const projects = parseInt($('#filterProjects').val());
 
-            const filtered = specialistsData.filter(specialist => {
-                const priceMatch = !price || checkPriceRange(specialist.rate, price);
-                const expMatch = !experience || checkExperience(specialist.exp, experience);
-                const projectsMatch = !projects || specialist.projects >= projects;
+            const filtered = allSellers.filter(seller => {
+                const priceMatch = !price || checkPriceRange(seller.rate, price);
+                const expMatch = !experience || checkExperience(seller.experience, experience);
+                const projectsMatch = !projects || seller.projects >= projects;
 
                 return priceMatch && expMatch && projectsMatch;
             });
@@ -633,18 +591,15 @@
         function setupSearch() {
             $('#searchInput').off('input').on('input', function() {
                 const term = $(this).val().toLowerCase();
-                const filtered = specialistsData.filter(specialist =>
-                    specialist.name.toLowerCase().includes(term) ||
-                    specialist.skills.some(skill => skill.toLowerCase().includes(term))
+                const filtered = allSellers.filter(seller =>
+                    seller.name.toLowerCase().includes(term) ||
+                    seller.skills.some(skill => skill.toLowerCase().includes(term))
                 );
                 renderSpecialists(filtered);
             });
         }
 
         // Chat System
-        let chatInterval;
-        let currentSeller = null;
-
         $(document).on('click', '.start-chat', function() {
             if (!checkAuthStatus()) return;
 
@@ -655,7 +610,6 @@
 
             $('.chat-modal').addClass('active');
             $('#sellerName').text(currentSeller.name);
-
             loadChatHistory();
             chatInterval = setInterval(loadChatHistory, 3000);
         });
@@ -663,22 +617,21 @@
         async function loadChatHistory() {
             try {
                 const response = await $.ajax({
-                    url: `/api/chats/${currentSeller.id}`,
+                    url: API_BASE + `chat/${currentSeller.id}`,
                     method: 'GET'
                 });
 
                 $('#chatMessages').html(response.data.map(msg => `
-                <div class="message ${msg.sender === 'user' ? 'sent' : ''}">
-                    <div class="msg-text">${escapeHTML(msg.text)}</div>
+                <div class="message ${msg.senderType === 'user' ? 'sent' : ''}">
+                    <div class="msg-text">${escapeHTML(msg.content)}</div>
                     <div class="msg-time">
                         ${new Date(msg.timestamp).toLocaleTimeString()}
                     </div>
                 </div>
             `).join(''));
-
                 scrollChatToBottom();
             } catch (error) {
-                showAlert('Error loading chat history', 'danger');
+                showToast('Error loading chat history', 'danger');
             }
         }
 
@@ -688,7 +641,7 @@
 
             try {
                 await $.ajax({
-                    url: '/api/chats/send',
+                    url: API_BASE + 'chat/send',
                     method: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -700,22 +653,18 @@
                 $('#messageInput').val('');
                 loadChatHistory();
             } catch (error) {
-                showAlert('Error sending message', 'danger');
+                showToast('Error sending message', 'danger');
             }
         }
 
         // Seller Details Modal
         $(document).on('click', '.view-seller', async function() {
             try {
-                const response = await $.ajax({
-                    url: `/api/sellers/${$(this).data('id')}`,
-                    method: 'GET'
-                });
+                const sellerId = $(this).data('id');
+                const seller = allSellers.find(s => s.id === sellerId);
 
-                const seller = response.data;
-                $('#sellerModal img').attr('src', seller.profileImage)
+                $('#sellerModal img').attr('src', seller.portfolio)
                     .on('error', () => $(this).attr('src', '/images/default-avatar.jpg'));
-
                 $('#sellerFullName').text(seller.name);
                 $('#sellerExpertise').text(seller.skills.join(', '));
                 $('#sellerRating').text(seller.rating);
@@ -723,7 +672,7 @@
 
                 new bootstrap.Modal('#sellerModal').show();
             } catch (error) {
-                showAlert('Error loading seller details', 'danger');
+                showToast('Error loading seller details', 'danger');
             }
         });
 
@@ -736,15 +685,19 @@
                 .replace(/'/g, '&#039;');
         }
 
-        function showAlert(message, type) {
-            const alert = $(`
-            <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        function showToast(message, type = 'success') {
+            const toast = $(`
+            <div class="toast align-items-center border-0 bg-${type} position-fixed bottom-0 end-0 m-3">
+                <div class="d-flex">
+                    <div class="toast-body text-white">${message}</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto"
+                            data-bs-dismiss="toast"></button>
+                </div>
             </div>
         `);
-            $('body').append(alert);
-            setTimeout(() => alert.alert('close'), 5000);
+            $('body').append(toast);
+            new bootstrap.Toast(toast[0]).show();
+            setTimeout(() => toast.remove(), 3000);
         }
 
         function scrollChatToBottom() {
@@ -784,5 +737,369 @@
             });
         });
     </script>
+
+<!--    <script>-->
+
+<!--        // Add this function to handle token validation-->
+<!--        function validateToken() {-->
+<!--            return checkAuthStatus(); // Utilize existing auth check-->
+<!--        }-->
+
+<!--        // Corrected document ready handler-->
+<!--        $(document).ready(function() {-->
+<!--            if (!validateToken()) {-->
+<!--                return;-->
+<!--            }-->
+<!--            initScrollAnimations(); // Corrected function name-->
+<!--            handleNavigation();-->
+
+<!--            // Show default section-->
+<!--            const hash = window.location.hash.substring(1) || 'home';-->
+<!--            showSection(hash);-->
+<!--        });-->
+
+<!--        // ... (Keep rest of the existing script)-->
+
+<!--        // Modified initializePage with error handling-->
+<!--        async function initializePage() {-->
+<!--            if (!checkAuthStatus()) return;-->
+
+<!--            try {-->
+<!--                const response = await $.ajax({-->
+<!--                    url: '/api/seo-specialists',-->
+<!--                    method: 'GET'-->
+<!--                });-->
+
+<!--                specialistsData = response.data;-->
+<!--                renderSpecialists(specialistsData);-->
+<!--                setupFilters();-->
+<!--                setupSearch();-->
+<!--                initScrollAnimations();-->
+<!--            } catch (error) {-->
+<!--                showAlert('Failed to load specialists. Please try again later.', 'danger');-->
+<!--                // Render empty state-->
+<!--                $('#specialistsTable').html(`<tr><td colspan="5" class="text-center">No specialists available at the moment.</td></tr>`);-->
+<!--            }-->
+<!--        }-->
+
+<!--        // Enhanced Navigation Handler-->
+<!--        function handleNavigation() {-->
+<!--            // Remove existing click handlers-->
+<!--            $('.nav-link').off('click');-->
+
+<!--            // Add new handlers-->
+<!--            $('.nav-link').click(function(e) {-->
+<!--                e.preventDefault();-->
+<!--                const target = $(this).attr('href');-->
+
+<!--                if(target === '#home') {-->
+<!--                    window.location.href = 'home.html';-->
+<!--                } else {-->
+<!--                    showSection(target.substring(1));-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Modified showSection function for SEO page-->
+<!--        function showSection(sectionId) {-->
+<!--            if (!checkAuthStatus()) return;-->
+
+<!--            // Hide all sections-->
+<!--            $('main section').hide();-->
+
+<!--            // Show requested section-->
+<!--            $(`#${sectionId}`).show();-->
+
+<!--            // Handle scroll animations-->
+<!--            initScrollAnimations();-->
+
+<!--            // Special handling for specialists section-->
+<!--            if(sectionId === 'specialists') {-->
+<!--                initializePage();-->
+<!--            }-->
+<!--        }-->
+
+<!--        // Modified document ready-->
+<!--        $(document).ready(function() {-->
+<!--            validateToken();-->
+<!--            initializeScrollAnimations();-->
+<!--            handleNavigation();-->
+<!--            loadProfileData();-->
+
+<!--            // Show default section-->
+<!--            const hash = window.location.hash.substring(1) || 'home';-->
+<!--            showSection(hash);-->
+<!--        });-->
+
+<!--        // Update navbar scroll effect-->
+<!--        window.addEventListener('scroll', () => {-->
+<!--            document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);-->
+<!--        });-->
+<!--        // Global JWT Configuration-->
+<!--        $.ajaxSetup({-->
+<!--            beforeSend: function(xhr) {-->
+<!--                const token = localStorage.getItem('jwtToken');-->
+<!--                if (token) {-->
+<!--                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);-->
+<!--                }-->
+<!--            },-->
+<!--            error: function(xhr) {-->
+<!--                if (xhr.status === 401) logout();-->
+<!--            }-->
+<!--        });-->
+
+<!--        // Authentication Functions-->
+<!--        function checkAuthStatus() {-->
+<!--            try {-->
+<!--                const jwtToken = localStorage.getItem('jwtToken');-->
+<!--                if (!jwtToken) throw new Error('No token found');-->
+
+<!--                const payload = JSON.parse(atob(jwtToken.split('.')[1]));-->
+<!--                if (payload.exp * 1000 < Date.now()) throw new Error('Token expired');-->
+
+<!--                return true;-->
+<!--            } catch (error) {-->
+<!--                logout();-->
+<!--                return false;-->
+<!--            }-->
+<!--        }-->
+
+<!--        function logout() {-->
+<!--            localStorage.removeItem('jwtToken');-->
+<!--            window.location.href = '../index.html';-->
+<!--        }-->
+
+<!--        // Main Data Handling-->
+<!--        let specialistsData = [];-->
+
+
+
+<!--        // Render Functions-->
+<!--        function renderSpecialists(data) {-->
+<!--            const tbody = $('#specialistsTable');-->
+<!--            tbody.empty().html(data.map(specialist => `-->
+<!--            <tr>-->
+<!--                <td>-->
+<!--                    <div class="d-flex align-items-center">-->
+<!--                        <i class="fas fa-user-tie fa-2x me-3"></i>-->
+<!--                        <div>-->
+<!--                            <h5 class="mb-0">${escapeHTML(specialist.name)}</h5>-->
+<!--                            <small>${escapeHTML(specialist.skills.join(', '))}</small>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </td>-->
+<!--                <td><span class="exp-badge">${specialist.exp}+ years</span></td>-->
+<!--                <td><span class="price-badge">$${specialist.rate}/hr</span></td>-->
+<!--                <td>${specialist.projects}+</td>-->
+<!--                <td>-->
+<!--                    <button class="btn btn-sm btn-outline-warning me-2 view-seller"-->
+<!--                            data-id="${specialist.id}">-->
+<!--                        <i class="fas fa-eye me-1"></i>View-->
+<!--                    </button>-->
+<!--                    <button class="btn btn-sm btn-warning start-chat"-->
+<!--                            data-id="${specialist.id}"-->
+<!--                            data-name="${escapeHTML(specialist.name)}">-->
+<!--                        <i class="fas fa-comment me-1"></i>Chat-->
+<!--                    </button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        `).join(''));-->
+<!--        }-->
+
+<!--        // Filter System-->
+<!--        function setupFilters() {-->
+<!--            $('.filter-select').off('change').on('change', filterSpecialists);-->
+<!--        }-->
+
+<!--        function filterSpecialists() {-->
+<!--            const price = parseInt($('#filterPrice').val());-->
+<!--            const experience = parseInt($('#filterExperience').val());-->
+<!--            const projects = parseInt($('#filterProjects').val());-->
+
+<!--            const filtered = specialistsData.filter(specialist => {-->
+<!--                const priceMatch = !price || checkPriceRange(specialist.rate, price);-->
+<!--                const expMatch = !experience || checkExperience(specialist.exp, experience);-->
+<!--                const projectsMatch = !projects || specialist.projects >= projects;-->
+
+<!--                return priceMatch && expMatch && projectsMatch;-->
+<!--            });-->
+
+<!--            renderSpecialists(filtered);-->
+<!--        }-->
+
+<!--        function checkPriceRange(rate, priceFilter) {-->
+<!--            const ranges = {-->
+<!--                50: rate < 50,-->
+<!--                100: rate >= 50 && rate <= 100,-->
+<!--                150: rate > 100 && rate <= 150,-->
+<!--                200: rate > 150-->
+<!--            };-->
+<!--            return ranges[priceFilter];-->
+<!--        }-->
+
+<!--        function checkExperience(exp, expFilter) {-->
+<!--            const ranges = {-->
+<!--                2: exp <= 2,-->
+<!--                5: exp > 2 && exp <= 5,-->
+<!--                10: exp > 5-->
+<!--            };-->
+<!--            return ranges[expFilter];-->
+<!--        }-->
+
+<!--        // Search System-->
+<!--        function setupSearch() {-->
+<!--            $('#searchInput').off('input').on('input', function() {-->
+<!--                const term = $(this).val().toLowerCase();-->
+<!--                const filtered = specialistsData.filter(specialist =>-->
+<!--                    specialist.name.toLowerCase().includes(term) ||-->
+<!--                    specialist.skills.some(skill => skill.toLowerCase().includes(term))-->
+<!--                );-->
+<!--                renderSpecialists(filtered);-->
+<!--            });-->
+<!--        }-->
+
+<!--        // Chat System-->
+<!--        let chatInterval;-->
+<!--        let currentSeller = null;-->
+
+<!--        $(document).on('click', '.start-chat', function() {-->
+<!--            if (!checkAuthStatus()) return;-->
+
+<!--            currentSeller = {-->
+<!--                id: $(this).data('id'),-->
+<!--                name: $(this).data('name')-->
+<!--            };-->
+
+<!--            $('.chat-modal').addClass('active');-->
+<!--            $('#sellerName').text(currentSeller.name);-->
+
+<!--            loadChatHistory();-->
+<!--            chatInterval = setInterval(loadChatHistory, 3000);-->
+<!--        });-->
+
+<!--        async function loadChatHistory() {-->
+<!--            try {-->
+<!--                const response = await $.ajax({-->
+<!--                    url: `/api/chats/${currentSeller.id}`,-->
+<!--                    method: 'GET'-->
+<!--                });-->
+
+<!--                $('#chatMessages').html(response.data.map(msg => `-->
+<!--                <div class="message ${msg.sender === 'user' ? 'sent' : ''}">-->
+<!--                    <div class="msg-text">${escapeHTML(msg.text)}</div>-->
+<!--                    <div class="msg-time">-->
+<!--                        ${new Date(msg.timestamp).toLocaleTimeString()}-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            `).join(''));-->
+
+<!--                scrollChatToBottom();-->
+<!--            } catch (error) {-->
+<!--                showAlert('Error loading chat history', 'danger');-->
+<!--            }-->
+<!--        }-->
+
+<!--        async function sendMessage() {-->
+<!--            const message = $('#messageInput').val().trim();-->
+<!--            if (!message) return;-->
+
+<!--            try {-->
+<!--                await $.ajax({-->
+<!--                    url: '/api/chats/send',-->
+<!--                    method: 'POST',-->
+<!--                    contentType: 'application/json',-->
+<!--                    data: JSON.stringify({-->
+<!--                        sellerId: currentSeller.id,-->
+<!--                        message: message-->
+<!--                    })-->
+<!--                });-->
+
+<!--                $('#messageInput').val('');-->
+<!--                loadChatHistory();-->
+<!--            } catch (error) {-->
+<!--                showAlert('Error sending message', 'danger');-->
+<!--            }-->
+<!--        }-->
+
+<!--        // Seller Details Modal-->
+<!--        $(document).on('click', '.view-seller', async function() {-->
+<!--            try {-->
+<!--                const response = await $.ajax({-->
+<!--                    url: `/api/sellers/${$(this).data('id')}`,-->
+<!--                    method: 'GET'-->
+<!--                });-->
+
+<!--                const seller = response.data;-->
+<!--                $('#sellerModal img').attr('src', seller.profileImage)-->
+<!--                    .on('error', () => $(this).attr('src', '/images/default-avatar.jpg'));-->
+
+<!--                $('#sellerFullName').text(seller.name);-->
+<!--                $('#sellerExpertise').text(seller.skills.join(', '));-->
+<!--                $('#sellerRating').text(seller.rating);-->
+<!--                $('#sellerProjects').text(seller.projects);-->
+
+<!--                new bootstrap.Modal('#sellerModal').show();-->
+<!--            } catch (error) {-->
+<!--                showAlert('Error loading seller details', 'danger');-->
+<!--            }-->
+<!--        });-->
+
+<!--        // Utility Functions-->
+<!--        function escapeHTML(str) {-->
+<!--            return str.replace(/&/g, '&amp;')-->
+<!--                .replace(/</g, '&lt;')-->
+<!--                .replace(/>/g, '&gt;')-->
+<!--                .replace(/"/g, '&quot;')-->
+<!--                .replace(/'/g, '&#039;');-->
+<!--        }-->
+
+<!--        function showAlert(message, type) {-->
+<!--            const alert = $(`-->
+<!--            <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">-->
+<!--                ${message}-->
+<!--                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>-->
+<!--            </div>-->
+<!--        `);-->
+<!--            $('body').append(alert);-->
+<!--            setTimeout(() => alert.alert('close'), 5000);-->
+<!--        }-->
+
+<!--        function scrollChatToBottom() {-->
+<!--            const chatBody = document.getElementById('chatMessages');-->
+<!--            chatBody.scrollTop = chatBody.scrollHeight;-->
+<!--        }-->
+
+<!--        function initScrollAnimations() {-->
+<!--            const observer = new IntersectionObserver(entries => {-->
+<!--                entries.forEach(entry => {-->
+<!--                    if (entry.isIntersecting) {-->
+<!--                        entry.target.classList.add('animated');-->
+<!--                    }-->
+<!--                });-->
+<!--            }, { threshold: 0.1 });-->
+
+<!--            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));-->
+<!--        }-->
+
+<!--        // Initialization-->
+<!--        $(document).ready(() => {-->
+<!--            initializePage();-->
+
+<!--            // Chat Input Handling-->
+<!--            $('#messageInput').keypress(e => {-->
+<!--                if (e.which === 13 && !e.shiftKey) {-->
+<!--                    e.preventDefault();-->
+<!--                    sendMessage();-->
+<!--                }-->
+<!--            });-->
+
+<!--            // Chat Modal Cleanup-->
+<!--            $('.chat-modal .btn-close').click(() => {-->
+<!--                clearInterval(chatInterval);-->
+<!--                $('.chat-modal').removeClass('active');-->
+<!--                currentSeller = null;-->
+<!--            });-->
+<!--        });-->
+<!--    </script>-->
 </body>
 </html>

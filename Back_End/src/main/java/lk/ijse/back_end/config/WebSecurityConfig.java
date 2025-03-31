@@ -208,7 +208,7 @@ public class WebSecurityConfig {
 
                         // Admin endpoints (require ADMIN role)
 
-                        .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN" , "COORDINATOR")
+                        .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN" , "COORDINATOR", "CUSTOMER")
                         .requestMatchers("/api/v1/sellers/dashboard").hasAnyRole("SELLER", "ADMIN")
 
                         // OPTIONS requests for specific paths
@@ -230,7 +230,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500" ,  "http://127.0.0.1:5500"
+        configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500" ,  "http://127.0.0.1:5500", "http://localhost:3000"
                 // WebStorm/IntelliJ preview
                  )); // Exact origin, no wildcard
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
