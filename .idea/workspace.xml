@@ -164,7 +164,7 @@
       <workItem from="1743311247677" duration="25000" />
       <workItem from="1743311369598" duration="20977000" />
       <workItem from="1743350884822" duration="15618000" />
-      <workItem from="1743398336380" duration="3592000" />
+      <workItem from="1743398336380" duration="4581000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -318,7 +318,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743399608685</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java&#10;#&#9;Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceCategoryServiceImpl.java&#10;#&#9;Front_End/pages/adminController.html">
+      <option name="closed" value="true" />
+      <created>1743405374444</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1743405374444</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
