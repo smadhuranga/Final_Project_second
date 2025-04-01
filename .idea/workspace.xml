@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
-      <change afterPath="$PROJECT_DIR$/Front_End/pages/portfolio.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" afterDir="false" />
-    </list>
+    <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -75,7 +64,7 @@
     &quot;com.codeium.enabled&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/supunmadhuranga/Documents/Final Project&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/supunmadhuranga/Downloads/Final_Project_second-main 2&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -176,6 +165,8 @@
       <workItem from="1743433700216" duration="4042000" />
       <workItem from="1743445418241" duration="9285000" />
       <workItem from="1743454796685" duration="6243000" />
+      <workItem from="1743532317969" duration="93000" />
+      <workItem from="1743532504004" duration="136000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
