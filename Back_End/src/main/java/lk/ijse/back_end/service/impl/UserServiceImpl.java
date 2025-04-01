@@ -14,6 +14,7 @@ import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -83,6 +84,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .map(this::convertToDTO)
                 .orElse(null);
     }
+//    @Override
+//public UserDTO searchUser(String email) {
+//        User user = null;
+//        try {
+//            user = userRepository.findByEmail(email)
+//                    .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
+//        } catch (ChangeSetPersister.NotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
+//    userDTO.setProfileImage(user.getProfileImage()); // Your actual profile picture field
+//    return userDTO;
+//}
 
     @Override
     public int saveUser(UserDTO userDTO) {

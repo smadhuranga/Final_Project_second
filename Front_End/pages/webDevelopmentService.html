@@ -499,243 +499,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!--    <script>-->
-<!--        // Configuration-->
-<!--        const API_BASE = 'http://localhost:8080/api/v1/';-->
-<!--        let allSellers = [];-->
-<!--        let currentChatSeller = null;-->
-
-<!--        // Authentication Setup-->
-<!--        $.ajaxSetup({-->
-<!--            beforeSend: function(xhr) {-->
-<!--                const token = localStorage.getItem('jwtToken');-->
-<!--                if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);-->
-<!--            }-->
-<!--        });-->
-
-<!--        // Initialization-->
-<!--        $(document).ready(() => {-->
-<!--            checkAuthStatus();-->
-<!--            initializeAnimations();-->
-<!--            setupEventListeners();-->
-<!--            fetchSellers();-->
-<!--        });-->
-
-<!--        // Core Functions-->
-<!--        function checkAuthStatus() {-->
-<!--            const token = localStorage.getItem('jwtToken');-->
-<!--            if (!token) redirectToLogin();-->
-
-<!--            try {-->
-<!--                const payload = JSON.parse(atob(token.split('.')[1]));-->
-<!--                if (payload.exp * 1000 < Date.now()) redirectToLogin();-->
-<!--            } catch (e) {-->
-<!--                redirectToLogin();-->
-<!--            }-->
-<!--        }-->
-
-<!--        function redirectToLogin() {-->
-<!--            localStorage.clear();-->
-<!--            window.location.href = '../index.html';-->
-<!--        }-->
-
-<!--        // Seller Management-->
-<!--        async function fetchSellers() {-->
-<!--            try {-->
-<!--                const response = await $.ajax({-->
-<!--                    url: API_BASE + 'admin/users?type=SELLER',-->
-<!--                    method: 'GET'-->
-<!--                });-->
-
-<!--                allSellers = processSellerData(response.data);-->
-<!--                renderSellers(allSellers);-->
-<!--            } catch (error) {-->
-<!--                handleApiError(error, 'Failed to load sellers');-->
-<!--            }-->
-<!--        }-->
-
-<!--        function processSellerData(apiData) {-->
-<!--            return apiData.map(seller => ({-->
-<!--                id: seller.id,-->
-<!--                name: seller.name,-->
-<!--                experience: seller.yearsExperience || 0,-->
-<!--                rate: seller.hourlyRate || 0,-->
-<!--                projects: seller.completedProjects || 0,-->
-<!--                skills: seller.skills || [],-->
-<!--                rating: seller.rating || 0,-->
-<!--                portfolio: seller.portfolioUrl || '#'-->
-<!--            }));-->
-<!--        }-->
-
-<!--        function renderSellers(sellers) {-->
-<!--            const $tbody = $('#sellersTable');-->
-<!--            $tbody.empty();-->
-
-<!--            sellers.forEach(seller => {-->
-<!--                $tbody.append(`-->
-<!--                <tr>-->
-<!--                    <td>-->
-<!--                        <h5 class="mb-0">${seller.name}</h5>-->
-<!--                        <small class="text-muted">${seller.skills[0] || 'Web Design'}</small>-->
-<!--                    </td>-->
-<!--                    <td><span class="exp-badge">${seller.experience}+ years</span></td>-->
-<!--                    <td><span class="price-badge">$${seller.rate}/hr</span></td>-->
-<!--                    <td>${seller.projects}+</td>-->
-<!--                    <td>${seller.skills.map(skill =>-->
-<!--                    `<span class="seller-badge">${skill}</span>`).join(' ')}-->
-<!--                    </td>-->
-<!--                    <td>-->
-<!--                        <button class="btn btn-accent chat-seller"-->
-<!--                                data-id="${seller.id}">-->
-<!--                            <i class="fas fa-comments me-2"></i>Chat-->
-<!--                        </button>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--            `);-->
-<!--            });-->
-<!--        }-->
-
-<!--        // Filter Functionality-->
-<!--        function applyFilters() {-->
-<!--            const priceFilter = $('#filterPrice').val();-->
-<!--            const expFilter = $('#filterExperience').val();-->
-<!--            const projectFilter = $('#filterProjects').val();-->
-
-<!--            const filtered = allSellers.filter(seller => {-->
-<!--                const priceMatch = !priceFilter ||-->
-<!--                    (priceFilter === '50' ? seller.rate < 50 :-->
-<!--                        priceFilter === '100' ? seller.rate >= 50 && seller.rate <= 100 :-->
-<!--                            priceFilter === '150' ? seller.rate > 100 && seller.rate <= 150 :-->
-<!--                                seller.rate > 150);-->
-
-<!--                const expMatch = !expFilter ||-->
-<!--                    (expFilter === '2' ? seller.experience <= 2 :-->
-<!--                        expFilter === '5' ? seller.experience > 2 && seller.experience <= 5 :-->
-<!--                            seller.experience > 5);-->
-
-<!--                const projectMatch = !projectFilter ||-->
-<!--                    (projectFilter === '10' ? seller.projects >= 10 :-->
-<!--                        projectFilter === '50' ? seller.projects >= 50 :-->
-<!--                            seller.projects >= 100);-->
-
-<!--                return priceMatch && expMatch && projectMatch;-->
-<!--            });-->
-
-<!--            renderSellers(filtered);-->
-<!--        }-->
-
-<!--        // Chat System-->
-<!--        async function initChat(sellerId, sellerName) {-->
-<!--            try {-->
-<!--                currentChatSeller = allSellers.find(s => s.id === sellerId);-->
-<!--                $('#sellerName span').text(sellerName);-->
-<!--                await loadChatHistory(sellerId);-->
-<!--                $('#chatModal').modal('show');-->
-<!--                startChatPolling();-->
-<!--            } catch (error) {-->
-<!--                handleApiError(error, 'Failed to start chat');-->
-<!--            }-->
-<!--        }-->
-
-<!--        async function loadChatHistory(sellerId) {-->
-<!--            try {-->
-<!--                const response = await $.ajax({-->
-<!--                    url: API_BASE + `chat/${sellerId}/history`,-->
-<!--                    method: 'GET'-->
-<!--                });-->
-
-<!--                $('#chatMessages').html(response.messages.map(msg => `-->
-<!--                <div class="chat-message ${msg.sender === 'user' ? 'sent' : 'received'}">-->
-<!--                    <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>-->
-<!--                    <p class="mb-0">${msg.content}</p>-->
-<!--                </div>-->
-<!--            `).join(''));-->
-
-<!--                scrollChatToBottom();-->
-<!--            } catch (error) {-->
-<!--                handleApiError(error, 'Failed to load chat history');-->
-<!--            }-->
-<!--        }-->
-
-<!--        async function sendMessage() {-->
-<!--            const message = $('#messageInput').val().trim();-->
-<!--            if (!message || !currentChatSeller) return;-->
-
-<!--            try {-->
-<!--                await $.ajax({-->
-<!--                    url: API_BASE + 'chat/send',-->
-<!--                    method: 'POST',-->
-<!--                    contentType: 'application/json',-->
-<!--                    data: JSON.stringify({-->
-<!--                        sellerId: currentChatSeller.id,-->
-<!--                        content: message-->
-<!--                    })-->
-<!--                });-->
-
-<!--                $('#messageInput').val('');-->
-<!--                await loadChatHistory(currentChatSeller.id);-->
-<!--            } catch (error) {-->
-<!--                handleApiError(error, 'Failed to send message');-->
-<!--            }-->
-<!--        }-->
-
-<!--        // UI Helpers-->
-<!--        function initializeAnimations() {-->
-<!--            const observer = new IntersectionObserver((entries) => {-->
-<!--                entries.forEach(entry => {-->
-<!--                    if (entry.isIntersecting) entry.target.classList.add('animated');-->
-<!--                });-->
-<!--            }, { threshold: 0.1 });-->
-
-<!--            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));-->
-<!--        }-->
-
-<!--        function setupEventListeners() {-->
-<!--            // Navbar scroll effect-->
-<!--            $(window).scroll(() => {-->
-<!--                $('.navbar').toggleClass('navbar-scrolled', $(window).scrollTop() > 50);-->
-<!--            });-->
-
-<!--            // Filter events-->
-<!--            $('#filterPrice, #filterExperience, #filterProjects').on('change', applyFilters);-->
-
-<!--            // Chat events-->
-<!--            $(document).on('click', '.chat-seller', (e) => {-->
-<!--                const sellerId = $(e.currentTarget).data('id');-->
-<!--                const sellerName = $(e.currentTarget).closest('tr').find('h5').text();-->
-<!--                initChat(sellerId, sellerName);-->
-<!--            });-->
-
-<!--            $('#sendMessage').click(sendMessage);-->
-<!--            $('#messageInput').keypress(e => e.which === 13 && sendMessage());-->
-<!--        }-->
-
-<!--        function handleApiError(error, defaultMsg) {-->
-<!--            console.error(error);-->
-<!--            if (error.status === 401) redirectToLogin();-->
-<!--            showToast(error.responseJSON?.message || defaultMsg, 'danger');-->
-<!--        }-->
-
-<!--        function showToast(message, type = 'success') {-->
-<!--            const toast = $(`-->
-<!--            <div class="toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3">-->
-<!--                <div class="d-flex">-->
-<!--                    <div class="toast-body">${message}</div>-->
-<!--                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        `);-->
-
-<!--            $('body').append(toast);-->
-<!--            new bootstrap.Toast(toast[0]).show();-->
-<!--            setTimeout(() => toast.remove(), 3000);-->
-<!--        }-->
-
-<!--        function scrollChatToBottom() {-->
-<!--            const chatBody = document.getElementById('chatMessages');-->
-<!--            chatBody.scrollTop = chatBody.scrollHeight;-->
-<!--        }-->
-<!--    </script>-->
 
     <script>
         // Configuration
@@ -834,31 +597,36 @@
 
             sellers.forEach(seller => {
                 $tbody.append(`
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>
-                            <div>
-                                <h5 class="mb-0">${seller.name}</h5>
-                                <small class="text-muted">${seller.skills[0] || 'Content'} Specialist</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${seller.experience}+ years</td>
-                    <td>$${seller.rate}/hr</td>
-                    <td>${seller.projects}+</td>
-                    <td>${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}</td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary view-seller" onclick="viewPortfolio('${seller.portfolio}')">
-                            <i class="fas fa-eye me-1"></i>Portfolio
-                        </button>
-                        <button class="btn btn-sm btn-outline-success chat-seller ms-2" onclick="openChat('${seller.id}')">
-                            <i class="fas fa-comments me-1"></i>Chat
-                        </button>
-                    </td>
-                </tr>
-            `);
+        <tr>
+            <td>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>
+                    <div>
+                        <h5 class="mb-0">${seller.name}</h5>
+                        <small class="text-muted">${seller.skills[0] || 'Content'} Specialist</small>
+                    </div>
+                </div>
+            </td>
+            <td>${seller.experience}+ years</td>
+            <td>$${seller.rate}/hr</td>
+            <td>${seller.projects}+</td>
+            <td>${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary view-seller" onclick="viewPortfolio('${seller.email}')">
+                    <i class="fas fa-eye me-1"></i>Portfolio
+                </button>
+                <button class="btn btn-sm btn-outline-success chat-seller ms-2" onclick="openChat('${seller.id}')">
+                    <i class="fas fa-comments me-1"></i>Chat
+                </button>
+            </td>
+        </tr>
+    `);
             });
+        }
+
+        function viewPortfolio(email) {
+            // Redirect to the portfolio page with the seller's email as a query parameter
+            window.location.href = `portfolio.html?id=${encodeURIComponent(email)}`;
         }
 
         // Chat System
@@ -960,9 +728,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function viewPortfolio(url) {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
+
 
         // Initialization
         $(document).ready(function() {
@@ -995,246 +761,5 @@
         }
     </script>
 
-<!--    <script>-->
-
-<!--        // Authentication and Core Functions-->
-<!--        $.ajaxSetup({-->
-<!--            beforeSend: function(xhr) {-->
-<!--                const token = localStorage.getItem('jwtToken');-->
-<!--                if (token) xhr.setRequestHeader('Authorization', 'Bearer ' + token);-->
-<!--            }-->
-<!--        });-->
-
-<!--        function checkAuthStatus() {-->
-<!--            const jwtToken = localStorage.getItem('jwtToken');-->
-<!--            if (!jwtToken) redirectToLogin();-->
-
-<!--            try {-->
-<!--                const payload = JSON.parse(atob(jwtToken.split('.')[1]));-->
-<!--                if (payload.exp * 1000 < Date.now()) redirectToLogin();-->
-<!--            } catch (e) {-->
-<!--                redirectToLogin();-->
-<!--            }-->
-<!--            return true;-->
-<!--        }-->
-
-<!--        function redirectToLogin() {-->
-<!--            localStorage.clear();-->
-<!--            window.location.href = '../index.html';-->
-<!--        }-->
-
-<!--        function initializePage() {-->
-<!--            checkAuthStatus();-->
-<!--            initializeAnimations();-->
-<!--            loadSellers();-->
-<!--        }-->
-
-<!--        function initializeAnimations() {-->
-<!--            const observer = new IntersectionObserver((entries) => {-->
-<!--                entries.forEach(entry => {-->
-<!--                    if (entry.isIntersecting) entry.target.classList.add('animated');-->
-<!--                });-->
-<!--            }, { threshold: 0.1 });-->
-
-<!--            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));-->
-<!--        }-->
-<!--        // Chat Manager-->
-<!--        let currentChat = {-->
-<!--            sellerId: null,-->
-<!--            lastMessageId: 0,-->
-<!--            isTyping: false-->
-<!--        };-->
-
-<!--        // Initialize Chat-->
-<!--        function initChat(sellerId, sellerName) {-->
-<!--            currentChat.sellerId = sellerId;-->
-<!--            $('#sellerName span').text(sellerName);-->
-<!--            loadChatHistory();-->
-<!--            $('#chatModal').modal('show');-->
-<!--            startChatPolling();-->
-<!--        }-->
-
-<!--        // Load Chat History-->
-<!--        async function loadChatHistory() {-->
-<!--            try {-->
-<!--                const response = await $.ajax({-->
-<!--                    url: `/api/chat/${currentChat.sellerId}/history`,-->
-<!--                    method: 'GET'-->
-<!--                });-->
-
-<!--                $('#chatMessages').html(response.messages.map(msg => `-->
-<!--                <div class="chat-message ${msg.sender === 'user' ? 'sent' : 'received'}">-->
-<!--                    <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>-->
-<!--                    <p class="mb-0">${msg.content}</p>-->
-<!--                </div>-->
-<!--            `).join(''));-->
-
-<!--                currentChat.lastMessageId = response.lastMessageId;-->
-<!--                scrollChatToBottom();-->
-<!--            } catch (error) {-->
-<!--                showAlert('Error loading chat history', 'danger');-->
-<!--            }-->
-<!--        }-->
-
-<!--        // Send Message-->
-<!--        async function sendMessage() {-->
-<!--            const message = $('#messageInput').val().trim();-->
-<!--            if (!message) return;-->
-
-<!--            try {-->
-<!--                await $.ajax({-->
-<!--                    url: `/api/chat/${currentChat.sellerId}/send`,-->
-<!--                    method: 'POST',-->
-<!--                    contentType: 'application/json',-->
-<!--                    data: JSON.stringify({ content: message })-->
-<!--                });-->
-
-<!--                $('#messageInput').val('');-->
-<!--                loadChatHistory();-->
-<!--            } catch (error) {-->
-<!--                showAlert('Error sending message', 'danger');-->
-<!--            }-->
-<!--        }-->
-
-<!--        // Real-Time Updates-->
-<!--        function startChatPolling() {-->
-<!--            currentChat.pollInterval = setInterval(async () => {-->
-<!--                try {-->
-<!--                    const response = await $.ajax({-->
-<!--                        url: `/api/chat/${currentChat.sellerId}/updates?last=${currentChat.lastMessageId}`-->
-<!--                    });-->
-
-<!--                    if (response.messages.length > 0) {-->
-<!--                        response.messages.forEach(msg => {-->
-<!--                            $('#chatMessages').append(`-->
-<!--                            <div class="chat-message ${msg.sender === 'user' ? 'sent' : 'received'}">-->
-<!--                                <small>${new Date(msg.timestamp).toLocaleTimeString()}</small>-->
-<!--                                <p class="mb-0">${msg.content}</p>-->
-<!--                            </div>-->
-<!--                        `);-->
-<!--                        });-->
-<!--                        currentChat.lastMessageId = response.lastMessageId;-->
-<!--                        scrollChatToBottom();-->
-<!--                    }-->
-
-<!--                    // Handle typing indicator-->
-<!--                    if (response.isTyping && !currentChat.isTyping) {-->
-<!--                        showTypingIndicator();-->
-<!--                    } else if (!response.isTyping && currentChat.isTyping) {-->
-<!--                        hideTypingIndicator();-->
-<!--                    }-->
-<!--                } catch (error) {-->
-<!--                    console.error('Polling error:', error);-->
-<!--                }-->
-<!--            }, 3000);-->
-<!--        }-->
-
-<!--        function scrollChatToBottom() {-->
-<!--            const chatBody = document.getElementById('chatMessages');-->
-<!--            chatBody.scrollTop = chatBody.scrollHeight;-->
-<!--        }-->
-<!--        $(document).ready(() => {-->
-<!--            initializePage();-->
-
-<!--            // Navbar Scroll Effect-->
-<!--            window.addEventListener('scroll', () => {-->
-<!--                document.querySelector('.navbar').classList.toggle('navbar-scrolled', window.scrollY > 50);-->
-<!--            });-->
-
-<!--            // Search Functionality-->
-<!--            $('#searchInput').on('input', function() {-->
-<!--                const term = $(this).val().toLowerCase();-->
-<!--                $('.service-highlight-card').each(function() {-->
-<!--                    $(this).toggle($(this).text().toLowerCase().includes(term));-->
-<!--                });-->
-<!--            });-->
-<!--        });-->
-<!--        // Typing Indicators-->
-<!--        function showTypingIndicator() {-->
-<!--            currentChat.isTyping = true;-->
-<!--            $('#chatMessages').append(`-->
-<!--            <div class="typing-indicator">-->
-<!--                <div class="typing-dot"></div>-->
-<!--                <div class="typing-dot" style="animation-delay: 0.2s"></div>-->
-<!--                <div class="typing-dot" style="animation-delay: 0.4s"></div>-->
-<!--            </div>-->
-<!--        `);-->
-<!--            scrollChatToBottom();-->
-<!--        }-->
-
-<!--        function hideTypingIndicator() {-->
-<!--            currentChat.isTyping = false;-->
-<!--            $('#chatMessages .typing-indicator').last().remove();-->
-<!--        }-->
-
-<!--        // Event Listeners-->
-<!--        $(document).on('click', '.chat-seller', function() {-->
-<!--            const sellerId = $(this).data('id');-->
-<!--            const sellerName = $(this).closest('tr').find('h5').text();-->
-<!--            initChat(sellerId, sellerName);-->
-<!--        });-->
-
-<!--        $('#sendMessage').click(sendMessage);-->
-<!--        $('#messageInput').keypress(e => e.which === 13 && sendMessage());-->
-
-<!--        // Handle Modal Close-->
-<!--        $('#chatModal').on('hidden.bs.modal', () => {-->
-<!--            clearInterval(currentChat.pollInterval);-->
-<!--            currentChat = { sellerId: null, lastMessageId: 0 };-->
-<!--        });-->
-
-<!--        // Typing Detection-->
-<!--        let typingTimeout;-->
-<!--        $('#messageInput').on('input', () => {-->
-<!--            if (!currentChat.sellerId) return;-->
-
-<!--            // Send typing notification-->
-<!--            $.ajax({-->
-<!--                url: `/api/chat/${currentChat.sellerId}/typing`,-->
-<!--                method: 'POST'-->
-<!--            });-->
-
-<!--            // Reset timeout-->
-<!--            clearTimeout(typingTimeout);-->
-<!--            typingTimeout = setTimeout(() => {-->
-<!--                $.ajax({-->
-<!--                    url: `/api/chat/${currentChat.sellerId}/typing`,-->
-<!--                    method: 'DELETE'-->
-<!--                });-->
-<!--            }, 2000);-->
-<!--        });-->
-
-<!--        // Update Seller Data Structure-->
-<!--        const sellers = [-->
-<!--            {-->
-<!--                id: 1,-->
-<!--                name: "Sarah Johnson",-->
-<!--                exp: 5,-->
-<!--                rate: 85,-->
-<!--                projects: 47,-->
-<!--                skills: ["UI/UX", "Responsive Design"]-->
-<!--            },-->
-<!--            // ... other sellers-->
-<!--        ];-->
-
-<!--        // Update renderTable function to use template-->
-<!--        function renderTable(data) {-->
-<!--            const template = $('#sellerRowTemplate').html();-->
-<!--            const compiled = data.map(seller => {-->
-<!--                return template-->
-<!--                    .replace(/{{name}}/g, seller.name)-->
-<!--                    .replace(/{{exp}}/g, seller.exp)-->
-<!--                    .replace(/{{rate}}/g, seller.rate)-->
-<!--                    .replace(/{{projects}}/g, seller.projects)-->
-<!--                    .replace(/{{skills}}/g, seller.skills.join(', '))-->
-<!--                    .replace(/{{id}}/g, seller.id)-->
-<!--                    .replace(/{{#skills}}(.+?){{\/skills}}/gs, (m, p1) =>-->
-<!--                        seller.skills.map(skill => p1.replace(/{{.}}/g, skill)).join('')-->
-<!--                    );-->
-<!--            }).join('');-->
-
-<!--            $('#sellersTable').html(compiled);-->
-<!--        }-->
-<!--    </script>-->
 </body>
 </html>

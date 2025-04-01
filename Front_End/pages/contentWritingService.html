@@ -567,7 +567,7 @@
                         </td>
                         <td>
                             <button class="btn btn-sm btn-outline-primary view-seller"
-                                    onclick="viewPortfolio('${seller.portfolio}')">
+                                    onclick="viewPortfolio('${seller.id}')">
                                 <i class="fas fa-eye me-1"></i>Portfolio
                             </button>
                             <button class="btn btn-sm btn-outline-success chat-seller ms-2"
@@ -680,8 +680,9 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function viewPortfolio(url) {
-            window.open(url, '_blank', 'noopener,noreferrer');
+        function viewPortfolio(sellerId) {
+            const encodedEmail = encodeURIComponent(sellerId); // Encode special characters
+            window.open(`portfolio.html?id=${encodedEmail}`, '_blank');
         }
 
         // Initialization
@@ -720,209 +721,6 @@
             document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
         }
     </script>
-<!--    <script>-->
-<!--        // Global AJAX Configuration-->
-<!--        $.ajaxSetup({-->
-<!--            beforeSend: function(xhr) {-->
-<!--                const token = localStorage.getItem('jwtToken');-->
-<!--                if (token) {-->
-<!--                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);-->
-<!--                }-->
-<!--            }-->
-<!--        });-->
 
-<!--        // Session Management-->
-<!--        let currentSeller = null;-->
-
-<!--        function checkAuthStatus() {-->
-<!--            const jwtToken = localStorage.getItem('jwtToken');-->
-<!--            if (!jwtToken) {-->
-<!--                showToast('Please login to access this feature', 'warning');-->
-<!--                return false;-->
-<!--            }-->
-
-<!--            // Verify token expiration-->
-<!--            const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));-->
-<!--            if (tokenPayload.exp * 1000 < Date.now()) {-->
-<!--                showToast('Session expired. Please login again.', 'danger');-->
-<!--                return false;-->
-<!--            }-->
-<!--            return true;-->
-<!--        }-->
-
-<!--        // Seller Data Management-->
-<!--        let allSellers = [];-->
-
-<!--        function fetchSellers() {-->
-<!--            $.ajax({-->
-<!--                url: '/api/sellers',-->
-<!--                method: 'GET',-->
-<!--                success: function(response) {-->
-<!--                    allSellers = response.data;-->
-<!--                    applyFilters();-->
-<!--                },-->
-<!--                error: function(xhr) {-->
-<!--                    showToast('Failed to load sellers: ' + xhr.responseJSON?.message, 'danger');-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        function applyFilters() {-->
-<!--            const minExp = parseInt($('#minExp').val()) || 0;-->
-<!--            const maxRate = parseInt($('#maxRate').val()) || Infinity;-->
-<!--            const minProjects = parseInt($('#minProjects').val()) || 0;-->
-
-<!--            const filtered = allSellers.filter(seller =>-->
-<!--                seller.experience >= minExp &&-->
-<!--                seller.rate <= maxRate &&-->
-<!--                seller.projects >= minProjects-->
-<!--            );-->
-
-<!--            renderSellers(filtered);-->
-<!--        }-->
-
-<!--        function renderSellers(sellers) {-->
-<!--            $('#sellersBody').html(sellers.map(seller => `-->
-<!--        <tr>-->
-<!--            <td>-->
-<!--                <div class="d-flex align-items-center">-->
-<!--                    <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>-->
-<!--                    <div>-->
-<!--                        <h5 class="mb-0">${seller.name}</h5>-->
-<!--                        <small class="text-muted">${seller.skills[0]} Specialist</small>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </td>-->
-<!--            <td>${seller.experience}+ years</td>-->
-<!--            <td>$${seller.rate}/hr</td>-->
-<!--            <td>${seller.projects}+</td>-->
-<!--            <td>${seller.skills.map(skill =>-->
-<!--                `<span class="seller-badge">${skill}</span>`-->
-<!--            ).join('')}</td>-->
-<!--            <td>-->
-<!--                <button class="btn btn-sm btn-yellow me-2" onclick="viewPortfolio('${seller.portfolio}')">-->
-<!--                    <i class="fas fa-eye me-1"></i>Portfolio-->
-<!--                </button>-->
-<!--                <button class="btn btn-sm btn-green" onclick="openChat(${seller.id})">-->
-<!--                    <i class="fas fa-comments me-1"></i>Chat-->
-<!--                </button>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--    `).join(''));-->
-<!--        }-->
-
-<!--        // Chat System-->
-<!--        async function openChat(sellerId) {-->
-<!--            if (!checkAuthStatus()) return;-->
-
-<!--            currentSeller = allSellers.find(s => s.id === sellerId);-->
-<!--            $('#sellerName').text(currentSeller.name);-->
-<!--            await loadChatHistory(sellerId);-->
-<!--            $('#chatModal').modal('show');-->
-<!--        }-->
-
-<!--        async function loadChatHistory(sellerId) {-->
-<!--            try {-->
-<!--                const response = await $.ajax({-->
-<!--                    url: `/api/chat/${sellerId}`,-->
-<!--                    method: 'GET'-->
-<!--                });-->
-
-<!--                $('#chatMessages').html(response.messages.map(msg => `-->
-<!--            <div class="message ${msg.senderType === 'user' ? 'user-message' : 'seller-message'}">-->
-<!--                <div class="message-content">${msg.content}</div>-->
-<!--                <small class="message-time">-->
-<!--                    ${new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}-->
-<!--                </small>-->
-<!--            </div>-->
-<!--        `).join(''));-->
-
-<!--                $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);-->
-<!--            } catch (error) {-->
-<!--                showToast('Failed to load chat history', 'danger');-->
-<!--            }-->
-<!--        }-->
-
-<!--        $('#sendMessage').click(async function() {-->
-<!--            const message = $('#messageInput').val().trim();-->
-<!--            if (!message || !currentSeller) return;-->
-
-<!--            try {-->
-<!--                const response = await $.ajax({-->
-<!--                    url: '/api/chat/send',-->
-<!--                    method: 'POST',-->
-<!--                    contentType: 'application/json',-->
-<!--                    data: JSON.stringify({-->
-<!--                        sellerId: currentSeller.id,-->
-<!--                        message: message-->
-<!--                    })-->
-<!--                });-->
-
-<!--                $('#chatMessages').append(`-->
-<!--            <div class="message user-message">-->
-<!--                <div class="message-content">${message}</div>-->
-<!--                <small class="message-time">-->
-<!--                    ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}-->
-<!--                </small>-->
-<!--            </div>-->
-<!--        `);-->
-
-<!--                $('#messageInput').val('');-->
-<!--                $('#chatMessages').scrollTop($('#chatMessages')[0].scrollHeight);-->
-<!--            } catch (error) {-->
-<!--                showToast('Failed to send message', 'danger');-->
-<!--            }-->
-<!--        });-->
-
-<!--        // UI Helpers-->
-<!--        function showToast(message, type = 'success') {-->
-<!--            const toast = $(`-->
-<!--        <div class="toast align-items-center border-0 bg-${type} position-fixed bottom-0 end-0 m-3">-->
-<!--            <div class="d-flex">-->
-<!--                <div class="toast-body text-white">${message}</div>-->
-<!--                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>-->
-<!--            </div>-->
-<!--        </div>-->
-<!--    `);-->
-
-<!--            $('body').append(toast);-->
-<!--            new bootstrap.Toast(toast[0]).show();-->
-<!--            setTimeout(() => toast.remove(), 3000);-->
-<!--        }-->
-
-<!--        // Event Listeners-->
-<!--        $(document).ready(function() {-->
-<!--            fetchSellers();-->
-
-<!--            // Filter Inputs-->
-<!--            $('#minExp, #maxRate, #minProjects').on('input', function() {-->
-<!--                applyFilters();-->
-<!--            });-->
-
-<!--            // Message Input Enter Key-->
-<!--            $('#messageInput').keypress(function(e) {-->
-<!--                if (e.which === 13 && !e.shiftKey) {-->
-<!--                    e.preventDefault();-->
-<!--                    $('#sendMessage').click();-->
-<!--                }-->
-<!--            });-->
-
-<!--            // Scroll Animations-->
-<!--            const observer = new IntersectionObserver((entries) => {-->
-<!--                entries.forEach(entry => {-->
-<!--                    if (entry.isIntersecting) {-->
-<!--                        entry.target.classList.add('animated');-->
-<!--                    }-->
-<!--                });-->
-<!--            }, { threshold: 0.1 });-->
-
-<!--            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));-->
-<!--        });-->
-
-<!--        // Portfolio Viewer-->
-<!--        function viewPortfolio(url) {-->
-<!--            window.open(url, '_blank', 'noopener,noreferrer');-->
-<!--        }-->
-<!--    </script>-->
 </body>
 </html>

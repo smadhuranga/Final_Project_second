@@ -513,30 +513,34 @@
 
             sellers.forEach(seller => {
                 $tbody.append(`
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>
-                            <div>
-                                <h5 class="mb-0">${seller.name}</h5>
-                                <small class="text-muted">${seller.skills[0] || 'Content'} Specialist</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${seller.experience}+ years</td>
-                    <td>$${seller.rate}/hr</td>
-                    <td>${seller.projects}+</td>
-                    <td>
-                        <button class="btn btn-sm btn-outline-primary view-seller" onclick="viewPortfolio('${seller.portfolio}')">
-                            <i class="fas fa-eye me-1"></i>Portfolio
-                        </button>
-                        <button class="btn btn-sm btn-outline-success chat-seller ms-2" onclick="openChat('${seller.id}')">
-                            <i class="fas fa-comments me-1"></i>Chat
-                        </button>
-                    </td>
-                </tr>
-            `);
+        <tr>
+            <td>
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>
+                    <div>
+                        <h5 class="mb-0">${seller.name}</h5>
+                        <small class="text-muted">${seller.skills[0] || 'Content'} Specialist</small>
+                    </div>
+                </div>
+            </td>
+            <td>${seller.experience}+ years</td>
+            <td>$${seller.rate}/hr</td>
+            <td>${seller.projects}+</td>
+            <td>
+                <button class="btn btn-sm btn-outline-primary view-seller" onclick="viewPortfolio('${seller.email}')">
+                    <i class="fas fa-eye me-1"></i>Portfolio
+                </button>
+                <button class="btn btn-sm btn-outline-success chat-seller ms-2" onclick="openChat('${seller.id}')">
+                    <i class="fas fa-comments me-1"></i>Chat
+                </button>
+            </td>
+        </tr>
+    `);
             });
+        }
+        function viewPortfolio(email) {
+            // Redirect to the portfolio page using the seller's email
+            window.location.href = `portfolio.html?id=${encodeURIComponent(email)}`;
         }
 
         // Chat System
@@ -638,9 +642,7 @@
             setTimeout(() => toast.remove(), 3000);
         }
 
-        function viewPortfolio(url) {
-            window.open(url, '_blank', 'noopener,noreferrer');
-        }
+
 
         // Initialization
         $(document).ready(function() {
