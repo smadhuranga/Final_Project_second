@@ -1,10 +1,9 @@
 package lk.ijse.back_end.controller;
 
 import lk.ijse.back_end.dto.*;
+import lk.ijse.back_end.service.UserService;
 import lk.ijse.back_end.service.impl.UserServiceImpl;
-import lk.ijse.back_end.util.JwtUtil;
-import lk.ijse.back_end.util.UserType;
-import lk.ijse.back_end.util.VarList;
+import lk.ijse.back_end.util.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.ZoneId;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -34,17 +34,25 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final UserServiceImpl userServiceImpl;
 
+    private final OtpUtil otpUtil;
+    private final EmailUtil emailUtil;
+    private final UserService userService;
+
     @Autowired
     public AuthController(JwtUtil jwtUtil,
                           AuthenticationManager authenticationManager,
                           UserDetailsService userDetailsService,
                           PasswordEncoder passwordEncoder,
-                          UserServiceImpl userServiceImpl) {
+                          UserServiceImpl userServiceImpl,OtpUtil otpUtil, EmailUtil emailUtil, UserService userService) {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.passwordEncoder = passwordEncoder;
         this.userServiceImpl = userServiceImpl;
+        this.otpUtil = otpUtil;
+        this.emailUtil = emailUtil;
+        this.userService = userService;
+
     }
 
     @PostMapping("/login")
@@ -127,4 +135,73 @@ public class AuthController {
         }
     }
 
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ResponseDTO> sendPasswordResetOtp(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            if (email == null || email.isEmpty()) {
+                return ResponseEntity.badRequest()
+                        .body(new ResponseDTO(VarList.Bad_Request, "Email is required", null));
+            }
+
+            UserDTO user = userService.searchUser(email);
+            if (user == null || !user.getEmail().equals(email)) {
+                // Return different status code for non-existing users
+                return ResponseEntity.ok()
+                        .body(new ResponseDTO(VarList.OK, "If the email exists, OTP has been sent", null));
+            }
+
+            String otp = otpUtil.generateOtp(email);
+            emailUtil.sendOtpEmail(email, otp, "password reset");
+
+            return ResponseEntity.ok()
+                    .body(new ResponseDTO(VarList.OK, "OTP has been sent to your email", null));
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Error processing request", null));
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ResponseDTO> resetPassword(@RequestBody PasswordResetRequest request) {
+        try {
+            // Validate OTP first
+            if (!otpUtil.validateOtp(request.getEmail(), request.getOtp())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ResponseDTO(VarList.Unauthorized, "Invalid or expired OTP", null));
+            }
+
+            // Update password
+            int result = userService.resetPassword(request.getEmail(), request.getNewPassword());
+            if (result == VarList.OK) {
+                otpUtil.removeOtp(request.getEmail());
+                return ResponseEntity.ok()
+                        .body(new ResponseDTO(VarList.OK, "Password reset successful", null));
+            }
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(result, "Password reset failed", null));
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ResponseDTO(VarList.Internal_Server_Error,
+                            "Error resetting password: " + e.getMessage(), null));
+        }
+    }
+
+    public static class PasswordResetRequest {
+        private String email;
+        private String otp;
+        private String newPassword;
+
+        // Add proper getters and setters
+        public String getEmail() { return email; }
+        public void setEmail(String email) { this.email = email; }
+        public String getOtp() { return otp; }
+        public void setOtp(String otp) { this.otp = otp; }
+        public String getNewPassword() { return newPassword; }
+        public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    }
 }

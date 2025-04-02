@@ -126,6 +126,7 @@ package lk.ijse.back_end.config;
 
 
 import jakarta.servlet.http.HttpServletRequest;
+import lk.ijse.back_end.util.OtpUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -162,6 +163,12 @@ public class WebSecurityConfig {
     public WebSecurityConfig(JwtFilter jwtFilter) {
         this.jwtFilter = jwtFilter;
     }
+
+    @Bean
+    public OtpUtil otpUtil() {
+        return new OtpUtil();
+    }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

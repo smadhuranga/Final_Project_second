@@ -17,6 +17,7 @@ public interface UserService extends UserDetailsService {
 
     List<UserDTO> getAllUsers();
     int deleteUser(Long id);
+    int resetPassword(String email, String newPassword);
 }
 
 

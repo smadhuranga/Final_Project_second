@@ -317,4 +317,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 })
                 .orElse(VarList.Not_Found);
     }
+    @Override
+    public int resetPassword(String email, String newPassword) {
+        try {
+            UserDTO user = findUserByEmail(email);
+            if (user == null) return VarList.Not_Found;
+
+            user.setPassword(passwordEncoder.encode(newPassword));
+            return updateUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VarList.Internal_Server_Error;
+        }
+    }
+
 }

@@ -233,6 +233,25 @@
         .error-toast.show {
             opacity: 1;
         }
+
+        /* Add this to your style section */
+        /* Add this to ensure smooth transitions */
+        #step1, #step2 {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .step {
+            display: block !important; /* Override any inline styles */
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .step.hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -349,23 +368,39 @@
 
 
     <!-- Forgot Password Form -->
+    <!-- Update the Forgot Password Form in HTML -->
     <div class="container hidden" id="forgotForm">
         <h2><i class="fas fa-key"></i>Reset Password</h2>
         <form>
-            <div class="form-group">
-                <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="forgotEmail" placeholder="Email Address" required>
-               
+            <!-- Step 1: Email Input -->
+            <div class="step" id="step1">
+                <div class="form-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="forgotEmail" placeholder="Email Address" required>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="sendPasswordResetOtp()">Send OTP</button>
             </div>
-            <button class="btn btn-primary">Send Reset Link</button>
+
+            <!-- Step 2: OTP and New Password -->
+            <div class="step" id="step2" style="display: none;">
+                <div class="form-group">
+                    <i class="fas fa-shield-alt input-icon"></i>
+                    <input type="text" id="resetOtp" placeholder="Enter OTP" required>
+                </div>
+                <div class="form-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="resetPassword" placeholder="New Password" required minlength="6">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="handlePasswordReset()">Reset Password</button>
+            </div>
+
             <div class="toggle-forms">
-                <span class="toggle-link" onclick="showForm('loginForm')">
-                    <i class="fas fa-arrow-left"></i> Back to Login
-                </span>
+            <span class="toggle-link" onclick="showForm('loginForm')">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </span>
             </div>
         </form>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // Initialize on DOM ready
@@ -537,31 +572,128 @@
 
             });
 
+
+
+
+
+
+
             // Forgot Password Form Submission
-            $('#forgotForm form').submit(function(e) {
-                e.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/api/forgot-password",
-                    data: {
-                        email: $('#forgotEmail').val()
-                    },
-                    success: function(response) {
-                        alert('Password reset link sent to your email');
-                        showForm('loginForm');
-                    },
-                    error: function(xhr) {
-                        alert(xhr.responseJSON?.message || 'Password reset failed');
-                    }
-                });
-            });
+            // Update the Forgot Password functions
+
+// Keep existing code below unchanged
+
+
         });
+
+
+
+
+        // Move these OUTSIDE the $(document).ready() block
+        let currentResetEmail = null;
+
+        function sendPasswordResetOtp() {
+            const email = $('#forgotEmail').val().trim();
+
+            if (!email || !validateEmail(email)) {
+                showErrorToast('Please enter a valid email address');
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/v1/auth/forgot-password",
+                contentType: "application/json",
+                data: JSON.stringify({ email: email }),
+                success: function(response) {
+                    // Change from response.code to response.status
+                    if(response.status === 200) {
+                        currentResetEmail = email;
+                        $('#step1').hide();
+                        $('#step2').show();
+                    }
+                    showErrorToast(response.message);
+                },
+                error: function(xhr) {
+                    const errorMsg = xhr.responseJSON?.message || 'Error sending OTP';
+                    showErrorToast(errorMsg);
+                    $('#step1').show();
+                    $('#step2').hide();
+                }
+            });
+        }
+
+        function handlePasswordReset() {
+            const otp = $('#resetOtp').val().trim();
+            const newPassword = $('#resetPassword').val();
+
+            if (!otp || otp.length !== 4) {
+                showErrorToast('Please enter a valid 4-digit OTP');
+                return;
+            }
+
+            if (!newPassword || newPassword.length < 6) {
+                showErrorToast('Password must be at least 6 characters');
+                return;
+            }
+
+            const requestData = {
+                email: currentResetEmail,
+                otp: otp,
+                newPassword: newPassword
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/v1/auth/reset-password",
+                contentType: "application/json",
+                data: JSON.stringify(requestData),
+                success: function(response) {
+                    if(response.code === 200) {
+                        // Clear form fields
+                        $('#forgotEmail, #resetOtp, #resetPassword').val('');
+                        // Show success message
+                        alert('Password reset successfully! Please login with your new password');
+                        // Return to login
+                        showForm('loginForm');
+                    } else {
+                        showErrorToast(response.message || 'Password reset failed');
+                    }
+                },
+                error: function(xhr) {
+                    const error = xhr.responseJSON || {};
+                    let errorMsg = error.message || 'Password reset failed';
+
+                    if(xhr.status === 401) {
+                        errorMsg = 'Invalid or expired OTP';
+                    } else if(xhr.status === 404) {
+                        errorMsg = 'User not found';
+                    }
+
+                    showErrorToast(errorMsg);
+                    // Keep step2 visible for corrections
+                    $('#step2').show();
+                }
+            });
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(String(email).toLowerCase());
+        }
+
 
         // Form visibility control
         function showForm(formId) {
             $('.container').addClass('hidden');
             $('#' + formId).removeClass('hidden');
         }
+
+
+
+
+
+
 
         // User type toggle
         function toggleUserType(element) {
