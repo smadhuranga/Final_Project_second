@@ -58,7 +58,6 @@ public class SellerController {
             @RequestParam(value = "profileImage", required = false) MultipartFile profileImage) {
 
         try {
-            // Handle file upload to Cloudinary
             if (profileImage != null && !profileImage.isEmpty()) {
                 String imageUrl = userService.storeProfileImage(sellerDTO.getEmail(), profileImage);
                 sellerDTO.setProfileImage(imageUrl);
@@ -72,7 +71,6 @@ public class SellerController {
             sellerDTO.setRatingIds(Collections.emptyList());
             sellerDTO.setQualifications(Collections.emptyList());
 
-            // Save user and get result
             int result = userService.saveUser(sellerDTO);
 
             switch (result) {
@@ -137,31 +135,21 @@ public class SellerController {
         }
     }
 
-
-
-
-
-
-
-
-    @GetMapping("/me")
-    public ResponseEntity<ResponseDTO<SellerDTO>> getCurrentSeller(
+    @PutMapping("/me")
+    public ResponseEntity<ResponseDTO<SellerDTO>> updateSellerProfile(
+            @RequestBody SellerDTO sellerDTO,
             @AuthenticationPrincipal UserDetails userDetails) {
-
         try {
             String email = userDetails.getUsername();
-            SellerDTO seller = (SellerDTO) userService.findUserByEmail(email);
+            SellerDTO updatedSeller = userService.updateSellerProfile(email, sellerDTO);
             return ResponseEntity.ok(
-                    new ResponseDTO<>(VarList.OK, "Seller profile", seller)
+                    new ResponseDTO<>(VarList.OK, "Profile updated successfully", updatedSeller)
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
-
-    // ServiceController.java
-
 
     @GetMapping("/services")
     public ResponseEntity<ResponseDTO<List<ServiceDTO>>> getServicesByCategory(
@@ -181,7 +169,6 @@ public class SellerController {
 
     @PostMapping
     public ResponseEntity<ResponseDTO> createService(@RequestBody ServiceDTO serviceDTO) {
-        // Create service logic
         return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Service created successfully", null));
     }
     @PostMapping(value = "/upload-profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -202,8 +189,6 @@ public class SellerController {
 
             String email = userDetails.getUsername();
             String imageUrl = userService.storeProfileImage(email, file);
-
-            // Update seller's profile image URL in database
             SellerDTO seller = (SellerDTO) userService.findUserByEmail(email);
             seller.setProfileImage(imageUrl);
             userService.updateUser(seller);
@@ -215,7 +200,6 @@ public class SellerController {
         }
     }
 
-    // Helper methods
     private double calculateTotalEarnings(SellerDTO seller) {
         List<OrderDTO> completedOrders = orderService.getOrdersBySellerAndStatus(
                 seller.getId(),
@@ -245,5 +229,19 @@ public class SellerController {
 
         return total / seller.getRatingIds().size();
     }
+    @GetMapping("/me")
+    public ResponseEntity<ResponseDTO<SellerDTO>> getCurrentSeller(
+            @AuthenticationPrincipal UserDetails userDetails) {
 
+        try {
+            String email = userDetails.getUsername();
+            SellerDTO seller = (SellerDTO) userService.findUserByEmail(email);
+            return ResponseEntity.ok(
+                    new ResponseDTO<>(VarList.OK, "Seller profile", seller)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
+    }
 }

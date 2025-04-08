@@ -81,9 +81,5 @@ public class ServiceCategoryServiceImpl implements ServiceCategoryService {
             throw new ServiceException("Error fetching category", e);
         }
     }
-//    public ServiceCategoryDTO getCategoryById(Long id) {
-//        return categoryRepository.findById(id)
-//                .map(category -> modelMapper.map(category, ServiceCategoryDTO.class))
-//                .orElseThrow(() -> new RuntimeException("Category not found"));
-//    }
+
 }

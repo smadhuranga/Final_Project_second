@@ -1,7 +1,7 @@
 package lk.ijse.back_end.util;
 
 public enum UserType {
-    CUSTOMER,  // Uppercase enum value
+    CUSTOMER,
     SELLER,
     COORDINATOR,
     ADMIN

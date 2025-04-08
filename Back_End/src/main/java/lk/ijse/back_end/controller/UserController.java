@@ -69,7 +69,6 @@ public class UserController {
                             "Error deleting user: " + e.getMessage(), null));
         }
     }
-    // Get all customers (Admin endpoint)
     @GetMapping("/admin/customers")
     public ResponseEntity<ResponseDTO<List<CustomerDTO>>> getAllCustomers() {
         try {
@@ -83,7 +82,6 @@ public class UserController {
         }
     }
 
-    // Get all sellers (Admin endpoint)
     @GetMapping("/admin/sellers")
     public ResponseEntity<ResponseDTO<List<SellerDTO>>> getAllSellers() {
         try {
@@ -97,7 +95,6 @@ public class UserController {
         }
     }
 
-    // Toggle user status
     @PatchMapping("/admin/users/{id}/status")
     public ResponseEntity<ResponseDTO> toggleUserStatus(@PathVariable Long id) {
         try {

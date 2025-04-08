@@ -131,28 +131,7 @@ public class JwtFilter extends OncePerRequestFilter {
             return false;
         }
     }
-//    private void setSecurityContext(HttpServletRequest request, String token) {
-//        Claims claims = jwtUtil.getAllClaimsFromToken(token);
-//        String username = claims.getSubject();
-//        String userType = claims.get("roles", String.class);
-//
-//        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-//
-//        if (userDetails != null) {
-//            UsernamePasswordAuthenticationToken authentication =
-//                    new UsernamePasswordAuthenticationToken(
-//                            userDetails,
-//                            null,
-//                            Collections.singletonList(() -> "ROLE_" + userType)
-//                    );
-//
-//            authentication.setDetails(
-//                    new WebAuthenticationDetailsSource().buildDetails(request)
-//            );
-//
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        }
-//    }
+
 private void setSecurityContext(HttpServletRequest request, String token) {
     Claims claims = jwtUtil.getAllClaimsFromToken(token);
     String username = claims.getSubject();
@@ -206,7 +185,7 @@ private void setSecurityContext(HttpServletRequest request, String token) {
     }
 
     private String extractAndCleanToken(String header) {
-        return header.substring(7).trim(); // Remove "Bearer" prefix and whitespace
+        return header.substring(7).trim();
     }
 
 

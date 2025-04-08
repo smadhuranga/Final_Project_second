@@ -13,6 +13,6 @@ public class ChatMessageDTO {
     private Long id;
     private Long senderId;
     private Long receiverId;
-    private String message;
+    private String content;
     private LocalDateTime timestamp;
 }

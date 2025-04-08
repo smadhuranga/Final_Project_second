@@ -47,8 +47,7 @@ public class OrderController {
             @AuthenticationPrincipal UserDetails userDetails) {
 
         try {
-            // Implement order retrieval logic
-            List<OrderDTO> orders = Collections.emptyList(); // Replace with actual implementation
+            List<OrderDTO> orders = Collections.emptyList();
             return ResponseEntity.ok(
                     new ResponseDTO<>(VarList.OK, "Orders retrieved", orders)
             );

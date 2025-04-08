@@ -6,6 +6,7 @@ import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.entity.*;
+import lk.ijse.back_end.repository.SkillRepo;
 import lk.ijse.back_end.repository.UserRepo;
 import lk.ijse.back_end.service.UserService;
 import lk.ijse.back_end.util.CustomUserDetails;
@@ -39,19 +40,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
     private final Cloudinary cloudinary;
+    private final SkillRepo skillRepository;
 
-
-
-    // Remove any WebSecurityConfig dependencies
     @Autowired
     public UserServiceImpl(UserRepo userRepository,
                            ModelMapper modelMapper,
                            PasswordEncoder passwordEncoder,
-                           Cloudinary cloudinary) {
+                           Cloudinary cloudinary , SkillRepo skillRepository) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.cloudinary = cloudinary;
+        this.skillRepository = skillRepository;
     }
 
     @Override
@@ -84,27 +84,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .map(this::convertToDTO)
                 .orElse(null);
     }
-//    @Override
-//public UserDTO searchUser(String email) {
-//        User user = null;
-//        try {
-//            user = userRepository.findByEmail(email)
-//                    .orElseThrow(() -> new ChangeSetPersister.NotFoundException());
-//        } catch (ChangeSetPersister.NotFoundException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        UserDTO userDTO = modelMapper.map(user, UserDTO.class);
-//    userDTO.setProfileImage(user.getProfileImage()); // Your actual profile picture field
-//    return userDTO;
-//}
 
     @Override
     public int saveUser(UserDTO userDTO) {
         try {
             // Check if email already exists
             if (userRepository.existsByEmail(userDTO.getEmail())) {
-                return VarList.Conflict; // Changed from Not_Acceptable to match controller
+                return VarList.Conflict;
             }
 
             // Validate required fields
@@ -231,7 +217,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         try {
             // Upload parameters
             Map<String, Object> uploadParams = ObjectUtils.asMap(
-                    "public_id", "profile_images/" + email.replace("@", "_"), // Safe public ID
+                    "public_id", "profile_images/" + email.replace("@", "_"),
                     "overwrite", true,
                     "resource_type", "image",
                     "folder", "profile_images",
@@ -329,6 +315,42 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             e.printStackTrace();
             return VarList.Internal_Server_Error;
         }
+    }
+
+
+    @Override
+    public Long getUserIdByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .getId();
+    }
+
+    @Override
+    public SellerDTO updateSellerProfile(String email, SellerDTO sellerDTO) {
+        Seller seller = (Seller) userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Update basic fields
+        seller.setName(sellerDTO.getName());
+        seller.setEmail(sellerDTO.getEmail());
+        seller.setPhone(sellerDTO.getPhone());
+        seller.setAddress(sellerDTO.getAddress());
+        seller.setBio(sellerDTO.getBio());
+
+        // Update skill IDs - convert list of IDs to comma-separated string for storage
+        if (sellerDTO.getSkillIds() != null && !sellerDTO.getSkillIds().isEmpty()) {
+            // Validate skill IDs exist in database
+            List<Skill> existingSkills = skillRepository.findAllById(sellerDTO.getSkillIds());
+            if (existingSkills.size() != sellerDTO.getSkillIds().size()) {
+                throw new IllegalArgumentException("One or more skill IDs are invalid");
+            }
+            seller.setSkillIds(sellerDTO.getSkillIds());
+        } else {
+            seller.setSkillIds(Collections.emptyList());
+        }
+
+        Seller updatedSeller = userRepository.save(seller);
+        return convertSeller(updatedSeller);
     }
 
 }

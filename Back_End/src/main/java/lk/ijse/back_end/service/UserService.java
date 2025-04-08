@@ -1,5 +1,6 @@
 package lk.ijse.back_end.service;
 
+import lk.ijse.back_end.dto.SellerDTO;
 import lk.ijse.back_end.dto.UserDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,8 @@ public interface UserService extends UserDetailsService {
     List<UserDTO> getAllUsers();
     int deleteUser(Long id);
     int resetPassword(String email, String newPassword);
+    Long getUserIdByEmail(String email);
+    SellerDTO updateSellerProfile(String email, SellerDTO sellerDTO);
 }
 
 

@@ -24,7 +24,8 @@ public class AdminController {
     private UserServiceImpl userService;
     @Autowired
     private ServiceService serviceService;
-
+    @Autowired
+    private ServiceCategoryService categoryService;
 
 
     @GetMapping("/users")
@@ -40,7 +41,7 @@ public class AdminController {
         }
     }
 
-    // In AdminController.java
+
 
     @GetMapping("/services")
     public ResponseEntity<ResponseDTO<List<ServiceDTO>>> getAllServices() {
@@ -104,8 +105,7 @@ public class AdminController {
 
 
 
-    @Autowired
-    private ServiceCategoryService categoryService;
+
 
     // Category endpoints
     @GetMapping("/categories")

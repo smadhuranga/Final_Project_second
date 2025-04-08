@@ -67,21 +67,18 @@ public class AuthController {
             System.out.println("Login attempt for: " + authRequest.getEmail());
             System.out.println("Raw password received: " + authRequest.getPassword());
 
-            // Authenticate user credentials
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
             );
 
-            // Fetch UserDTO using UserServiceImpl
             UserDTO userDTO = userServiceImpl.searchUser(authRequest.getEmail());
             if (userDTO == null) {
                 throw new UsernameNotFoundException("User not found after authentication");
             }
 
-            // Generate JWT token
             String token = jwtUtil.generateToken(userDTO);
 
-            // Build response DTO
             AuthResponseDTO authResponse = new AuthResponseDTO();
             authResponse.setToken(token);
             authResponse.setEmail(userDTO.getEmail());
@@ -147,7 +144,6 @@ public class AuthController {
 
             UserDTO user = userService.searchUser(email);
             if (user == null || !user.getEmail().equals(email)) {
-                // Return different status code for non-existing users
                 return ResponseEntity.ok()
                         .body(new ResponseDTO(VarList.OK, "If the email exists, OTP has been sent", null));
             }
@@ -173,7 +169,6 @@ public class AuthController {
                         .body(new ResponseDTO(VarList.Unauthorized, "Invalid or expired OTP", null));
             }
 
-            // Update password
             int result = userService.resetPassword(request.getEmail(), request.getNewPassword());
             if (result == VarList.OK) {
                 otpUtil.removeOtp(request.getEmail());

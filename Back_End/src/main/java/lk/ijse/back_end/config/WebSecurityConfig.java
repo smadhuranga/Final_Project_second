@@ -174,6 +174,7 @@ public class WebSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
@@ -184,6 +185,7 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
     @Bean
     public MultipartResolver multipartResolver() {
         return new StandardServletMultipartResolver();
@@ -212,19 +214,15 @@ public class WebSecurityConfig {
                                 "/api/v1/services/**",
                                 "/api/v1/orders/**"
                         ).permitAll()
-
-                        // Admin endpoints (require ADMIN role)
-
                         .requestMatchers("/api/v1/admin/**").hasAnyRole("ADMIN" , "COORDINATOR", "CUSTOMER")
                         .requestMatchers("/api/v1/sellers/dashboard").hasAnyRole("SELLER", "ADMIN")
 
-                        // OPTIONS requests for specific paths
                         .requestMatchers(HttpMethod.OPTIONS,
                                 "/api/v1/customers/**",
                                 "/pages/adminController.html"
                         ).authenticated()
 
-                        // All other requests require authentication
+
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -238,21 +236,20 @@ public class WebSecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:63342", "http://localhost:8080" , "http://localhost:5500" ,  "http://127.0.0.1:5500", "http://localhost:3000"
-                // WebStorm/IntelliJ preview
-                 )); // Exact origin, no wildcard
+                 ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*")); // Allow all headers
-        configuration.setAllowCredentials(true); // Allow credentials (cookies, authorization headers, etc.)
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList(
                 "Authorization", "Content-Type", "X-Requested-With", "Accept"
         ));
 
         configuration.setExposedHeaders(Arrays.asList(
                 "Authorization", "Content-Disposition"
-        )); // Expose Authorization header if needed
+        ));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // Apply to all paths
+        source.registerCorsConfiguration("/**", configuration);
         return source;
     }
 

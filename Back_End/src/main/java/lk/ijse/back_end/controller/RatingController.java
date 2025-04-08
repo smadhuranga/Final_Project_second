@@ -24,5 +24,4 @@ public class RatingController {
         return ResponseEntity.ok(ratingService.getRatingValue(id));
     }
 
-    // Other endpoints
 }

@@ -43,24 +43,21 @@ public class CustomerController {
     }
 
     @PostMapping( path = "/register",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,  // Changed from APPLICATION_JSON
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResponseDTO> registerCustomer( @RequestPart("data") @Valid CustomerDTO customerDTO,
                                                         @RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
         try {
-            // Log incoming request for debugging
             System.out.println("Received customerDTO: " + customerDTO);
             if (profileImage != null && !profileImage.isEmpty()) {
                 String imageUrl = userService.storeProfileImage(customerDTO.getEmail(), profileImage);
                 customerDTO.setProfileImage(imageUrl);
             }
-            // Validate required fields
             if (customerDTO.getEmail() == null || customerDTO.getPassword() == null) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                         .body(new ResponseDTO(VarList.Bad_Request, "Email and password are required", null));
             }
 
-            // Set server-side values
             customerDTO.setCreatedAt(LocalDateTime.now());
             customerDTO.setOrderIds(Collections.emptyList());
 
@@ -68,11 +65,10 @@ public class CustomerController {
             int result = userService.saveUser(customerDTO);
             switch (result) {
                 case VarList.Created -> {
-                    // Create UserDTO for token generation (with encoded password)
                     UserDTO userDTO = new UserDTO();
                     userDTO.setEmail(customerDTO.getEmail());
-                    userDTO.setPassword(customerDTO.getPassword()); // Already encoded in service
-                    userDTO.setType(customerDTO.getType()); // Ensure type is set if required by JWT
+                    userDTO.setPassword(customerDTO.getPassword());
+                    userDTO.setType(customerDTO.getType());
 
                     String token = jwtUtil.generateToken(userDTO);
                     AuthResponseDTO authDTO = new AuthResponseDTO();
@@ -105,7 +101,6 @@ public class CustomerController {
         }
     }
 
-// Add these to your CustomerController.java
 
     @GetMapping("/me")
     public ResponseEntity<ResponseDTO> getCurrentCustomer(@AuthenticationPrincipal UserDetails userDetails) {
@@ -128,7 +123,6 @@ public class CustomerController {
             String email = userDetails.getUsername();
             CustomerDTO existingCustomer = (CustomerDTO) userService.findUserByEmail(email);
 
-            // Update only allowed fields
             if (request.containsKey("name")) {
                 existingCustomer.setName(request.get("name"));
             }
@@ -212,12 +206,9 @@ public class CustomerController {
         }
     }
 
-    // Add this DTO inside CustomerController.java
     private static class PasswordChangeRequest {
         private String currentPassword;
         private String newPassword;
-
-        // Getters and setters
         public String getCurrentPassword() { return currentPassword; }
         public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
         public String getNewPassword() { return newPassword; }

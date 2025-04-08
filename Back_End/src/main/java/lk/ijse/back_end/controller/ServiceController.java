@@ -64,8 +64,8 @@ public class ServiceController {
     @GetMapping
     public ResponseEntity<ResponseDTO<List<ServiceDTO>>> getAllServices() {
         try {
-            // Implement service retrieval logic based on your implementation
-            List<ServiceDTO> services = Collections.emptyList(); // Replace with actual implementation
+
+            List<ServiceDTO> services = Collections.emptyList();
             return ResponseEntity.ok(
                     new ResponseDTO<>(VarList.OK, "Services retrieved", services)
             );

@@ -26,5 +26,5 @@ public class Orders {
 
     private LocalDateTime orderDate = LocalDateTime.now();
     private String status;
-    private double amount; // Add this field for order amount
+    private double amount;
 }

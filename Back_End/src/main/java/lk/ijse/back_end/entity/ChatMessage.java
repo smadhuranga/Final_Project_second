@@ -12,14 +12,17 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id")
-    private User sender;
+    @Column(name = "sender_id", nullable = false)
+    private Long senderId;
 
-    @ManyToOne
-    @JoinColumn(name = "receiver_id")
-    private User receiver;
+    @Column(name = "receiver_id", nullable = false)
+    private Long receiverId;
 
-    private String message;
+    @Column(nullable = false)
+    private String content;
+
+    @Column(nullable = false)
     private LocalDateTime timestamp = LocalDateTime.now();
+
+    // Remove User relationships if not needed
 }

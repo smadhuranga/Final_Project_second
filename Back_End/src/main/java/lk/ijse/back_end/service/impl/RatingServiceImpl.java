@@ -38,9 +38,9 @@ public class RatingServiceImpl implements RatingService {
         try {
             Rating rating = modelMapper.map(ratingDTO, Rating.class);
             ratingRepo.save(rating);
-            return 1; // Use your VarList constants here
+            return 1;
         } catch (Exception e) {
-            return -1; // Use error code from VarList
+            return -1;
         }
     }
 
