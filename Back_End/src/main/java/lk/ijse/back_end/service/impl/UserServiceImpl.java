@@ -15,7 +15,6 @@ import lk.ijse.back_end.util.VarList;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -352,5 +351,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Seller updatedSeller = userRepository.save(seller);
         return convertSeller(updatedSeller);
     }
-
+    @Override
+    public int deleteUserByEmail(String email) {
+        try {
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isPresent()) {
+                userRepository.delete(userOptional.get());
+                return VarList.OK;
+            }
+            return VarList.Not_Found;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return VarList.Internal_Server_Error;
+        }
+    }
 }

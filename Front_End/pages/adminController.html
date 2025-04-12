@@ -777,8 +777,6 @@
             coordinators: null
         };
 
-        // Initialize all user tables (hidden by default)
-        // Modify your initializeUserTables function
 
 
         function getColumnsConfig(tableType) {
@@ -876,19 +874,32 @@
         }
 
         // Delete handler
+        // Update the delete button click handler
+        // Update the delete handler
         $(document).on('click', '.btn-delete', function() {
-            const row = $(this).closest('tr');
-            const userId = $(this).data('id');
-            const userType = row.data('type');
-            const table = userTables[userType];
+            const $row = $(this).closest('tr');
+            const userEmail = $row.find('td:eq(2)').text().trim(); // Email is in 3rd column (index 2)
 
-            if(confirm(`Delete this ${userType}?`)) {
+            if (!userEmail) {
+                showAlert('Invalid user email', 'danger');
+                return;
+            }
+
+            if (confirm("Are you sure you want to delete this user?")) {
                 $.ajax({
-                    url: `/api/${userType}s/${userId}`,
+                    url: `http://localhost:8080/api/v1/admin/users/by-email/${encodeURIComponent(userEmail)}`,
                     method: 'DELETE',
-                    success: () => {
-                        table.row(row).remove().draw();
-                        showAlert(`${userType} deleted successfully`, 'success');
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('Authorization',
+                            'Bearer ' + localStorage.getItem('jwtToken'));
+                    },
+                    success: function() {
+                        $('#usersTable').DataTable().ajax.reload();
+                        showAlert('User deleted successfully', 'success');
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.message || 'Error deleting user';
+                        showAlert(errorMsg, 'danger');
                     }
                 });
             }
@@ -925,7 +936,7 @@
         initializeCharts();
 
         // Utility Functions
-        // Replace the existing showAlert declaration with:
+
         window.showAlert = function(message, type = 'success') {
             const alert = $(`
         <div class="alert alert-${type} alert-dismissible fade show" role="alert">
@@ -1071,12 +1082,13 @@
                 {
                     data: null,
                     render: (data, type, row) => `
-                        <button class="btn btn-admin btn-delete me-2" data-id="${row.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                        <button class="btn btn-admin btn-edit" onclick="openChat('${row.type}', ${row.id})">
-                            <i class="fas fa-comment"></i>
-                        </button>
+                         <button class="btn btn-admin btn-delete me-2">
+                    <i class="fas fa-trash"></i>
+                </button>
+                <button class="btn btn-admin btn-edit"
+                        onclick="openChat('${row.type}', '${row.email}')">
+                    <i class="fas fa-comment"></i>
+                </button>
                     `
                 }
             ],

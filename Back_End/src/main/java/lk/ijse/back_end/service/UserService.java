@@ -21,6 +21,8 @@ public interface UserService extends UserDetailsService {
     int resetPassword(String email, String newPassword);
     Long getUserIdByEmail(String email);
     SellerDTO updateSellerProfile(String email, SellerDTO sellerDTO);
+
+    int deleteUserByEmail(String email);
 }
 
 
