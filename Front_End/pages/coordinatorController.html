@@ -7,155 +7,156 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <style>
-        :root {
-            --bg-black: #000000;
-            --text-white: #FFFFFF;
-            --accent-yellow: #FFD700;
-            --accent-green: #00FF00;
-            --danger-red: #ff4444;
-            --info-blue: #2196F3;
-        }
+    <link href="../assets/css/coordinator/coordinator.css" rel="stylesheet">
+<!--    <style>-->
+<!--        :root {-->
+<!--            &#45;&#45;bg-black: #000000;-->
+<!--            &#45;&#45;text-white: #FFFFFF;-->
+<!--            &#45;&#45;accent-yellow: #FFD700;-->
+<!--            &#45;&#45;accent-green: #00FF00;-->
+<!--            &#45;&#45;danger-red: #ff4444;-->
+<!--            &#45;&#45;info-blue: #2196F3;-->
+<!--        }-->
 
-        body {
-            background: linear-gradient(-45deg, 
-                rgba(0,0,0,0.95), 
-                rgba(20,20,20,0.95),
-                rgba(40,40,40,0.95));
-            color: var(--text-white);
-            font-family: 'Poppins', sans-serif;
-            min-height: 100vh;
-        }
+<!--        body {-->
+<!--            background: linear-gradient(-45deg, -->
+<!--                rgba(0,0,0,0.95), -->
+<!--                rgba(20,20,20,0.95),-->
+<!--                rgba(40,40,40,0.95));-->
+<!--            color: var(&#45;&#45;text-white);-->
+<!--            font-family: 'Poppins', sans-serif;-->
+<!--            min-height: 100vh;-->
+<!--        }-->
 
-        .admin-sidebar {
-            background: rgba(0, 0, 0, 0.9);
-            width: 250px;
-            min-height: 100vh;
-            position: fixed;
-            backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
-            border-right: 2px solid var(--accent-yellow);
-        }
+<!--        .admin-sidebar {-->
+<!--            background: rgba(0, 0, 0, 0.9);-->
+<!--            width: 250px;-->
+<!--            min-height: 100vh;-->
+<!--            position: fixed;-->
+<!--            backdrop-filter: blur(10px);-->
+<!--            transition: transform 0.3s ease;-->
+<!--            border-right: 2px solid var(&#45;&#45;accent-yellow);-->
+<!--        }-->
 
-        .admin-main {
-            margin-left: 250px;
-            padding: 2rem;
-        }
+<!--        .admin-main {-->
+<!--            margin-left: 250px;-->
+<!--            padding: 2rem;-->
+<!--        }-->
 
-        .admin-card {
-            transform: translateY(20px);
-            opacity: 0;
-            animation: slideUp 0.5s ease forwards;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--accent-yellow);
-            border-radius: 15px;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-        @keyframes slideUp {
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        .chat-container {
-            height: 60vh;
-            border: 1px solid var(--accent-yellow);
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        .chat-modal {
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
-        }
+<!--        .admin-card {-->
+<!--            transform: translateY(20px);-->
+<!--            opacity: 0;-->
+<!--            animation: slideUp 0.5s ease forwards;-->
+<!--            background: rgba(255, 255, 255, 0.05);-->
+<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
+<!--            border-radius: 15px;-->
+<!--            backdrop-filter: blur(10px);-->
+<!--            transition: all 0.3s ease;-->
+<!--            padding: 1.5rem;-->
+<!--            margin-bottom: 1.5rem;-->
+<!--        }-->
+<!--        @keyframes slideUp {-->
+<!--            to {-->
+<!--                transform: translateY(0);-->
+<!--                opacity: 1;-->
+<!--            }-->
+<!--        }-->
+<!--        .chat-container {-->
+<!--            height: 60vh;-->
+<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
+<!--            border-radius: 15px;-->
+<!--            overflow: hidden;-->
+<!--        }-->
+<!--        .chat-modal {-->
+<!--            background: rgba(0,0,0,0.8);-->
+<!--            backdrop-filter: blur(5px);-->
+<!--        }-->
 
-        .chat-messages {
-            height: calc(100% - 60px);
-            overflow-y: auto;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.7);
-        }
+<!--        .chat-messages {-->
+<!--            height: calc(100% - 60px);-->
+<!--            overflow-y: auto;-->
+<!--            padding: 1rem;-->
+<!--            background: rgba(0, 0, 0, 0.7);-->
+<!--        }-->
 
-        .message {
-            transform: scale(0.95);
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            margin: 10px;
-            padding: 10px;
-            max-width: 70%;
-        }
+<!--        .message {-->
+<!--            transform: scale(0.95);-->
+<!--            transition: all 0.3s ease;-->
+<!--            background: rgba(255, 255, 255, 0.05);-->
+<!--            border-radius: 10px;-->
+<!--            margin: 10px;-->
+<!--            padding: 10px;-->
+<!--            max-width: 70%;-->
+<!--        }-->
 
-        .customer-message {
-            background: rgba(0, 255, 0, 0.1);
-            margin-left: auto;
-        }
+<!--        .customer-message {-->
+<!--            background: rgba(0, 255, 0, 0.1);-->
+<!--            margin-left: auto;-->
+<!--        }-->
 
-        .seller-message {
-            background: rgba(255, 215, 0, 0.1);
-        }
-        .message:hover {
-            transform: scale(1);
-            box-shadow: 0 0 15px rgba(255,215,0,0.2);
-        }
+<!--        .seller-message {-->
+<!--            background: rgba(255, 215, 0, 0.1);-->
+<!--        }-->
+<!--        .message:hover {-->
+<!--            transform: scale(1);-->
+<!--            box-shadow: 0 0 15px rgba(255,215,0,0.2);-->
+<!--        }-->
 
-        .hover-scale {
-            transition: transform 0.3s ease;
-        }
+<!--        .hover-scale {-->
+<!--            transition: transform 0.3s ease;-->
+<!--        }-->
 
-        .hover-scale:hover {
-            transform: scale(1.05);
-        }
+<!--        .hover-scale:hover {-->
+<!--            transform: scale(1.05);-->
+<!--        }-->
 
-        .payment-filter {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--accent-yellow);
-            border-radius: 15px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
+<!--        .payment-filter {-->
+<!--            background: rgba(255, 255, 255, 0.05);-->
+<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
+<!--            border-radius: 15px;-->
+<!--            padding: 1rem;-->
+<!--            margin-bottom: 1rem;-->
+<!--        }-->
 
-        .table-custom {
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 10px;
-        }
+<!--        .table-custom {-->
+<!--            background: rgba(255, 255, 255, 0.02);-->
+<!--            border-radius: 10px;-->
+<!--        }-->
 
-        .status-badge {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.8rem;
-        }
+<!--        .status-badge {-->
+<!--            padding: 5px 15px;-->
+<!--            border-radius: 20px;-->
+<!--            font-size: 0.8rem;-->
+<!--        }-->
 
-        .active-status {
-            background: rgba(0, 255, 0, 0.1);
-            color: var(--accent-green);
-        }
+<!--        .active-status {-->
+<!--            background: rgba(0, 255, 0, 0.1);-->
+<!--            color: var(&#45;&#45;accent-green);-->
+<!--        }-->
 
-        .blocked-status {
-            background: rgba(255, 68, 68, 0.1);
-            color: var(--danger-red);
-        }
+<!--        .blocked-status {-->
+<!--            background: rgba(255, 68, 68, 0.1);-->
+<!--            color: var(&#45;&#45;danger-red);-->
+<!--        }-->
 
-        .btn-admin {
-            padding: 8px 20px;
-            border-radius: 25px;
-            transition: all 0.3s ease;
-        }
+<!--        .btn-admin {-->
+<!--            padding: 8px 20px;-->
+<!--            border-radius: 25px;-->
+<!--            transition: all 0.3s ease;-->
+<!--        }-->
 
-        .btn-edit {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid var(--accent-yellow);
-            color: var(--accent-yellow);
-        }
+<!--        .btn-edit {-->
+<!--            background: rgba(255, 215, 0, 0.1);-->
+<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
+<!--            color: var(&#45;&#45;accent-yellow);-->
+<!--        }-->
 
-        .btn-delete {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid var(--danger-red);
-            color: var(--danger-red);
-        }
-    </style>
+<!--        .btn-delete {-->
+<!--            background: rgba(255, 68, 68, 0.1);-->
+<!--            border: 1px solid var(&#45;&#45;danger-red);-->
+<!--            color: var(&#45;&#45;danger-red);-->
+<!--        }-->
+<!--    </style>-->
 </head>
 <body>
     <!-- Sidebar -->
@@ -386,382 +387,383 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        const API_BASE = 'http://localhost:8080/api/v1/';
-        let currentUserType = '';
-        let currentUserId = '';
+    <script src="../assets/js/coordinator/coordinator.js"></script>
+<!--    <script>-->
+<!--        const API_BASE = 'http://localhost:8080/api/v1/';-->
+<!--        let currentUserType = '';-->
+<!--        let currentUserId = '';-->
 
-        // Debug setup
-        console.debug = function() {
-            if (window.console) {
-                console.log.apply(console, arguments);
-            }
-        };
+<!--        // Debug setup-->
+<!--        console.debug = function() {-->
+<!--            if (window.console) {-->
+<!--                console.log.apply(console, arguments);-->
+<!--            }-->
+<!--        };-->
 
-        // Authentication Check
-        function checkAuthStatus() {
-            const jwtToken = localStorage.getItem('jwtToken');
-            if (!jwtToken) redirectToLogin();
+<!--        // Authentication Check-->
+<!--        function checkAuthStatus() {-->
+<!--            const jwtToken = localStorage.getItem('jwtToken');-->
+<!--            if (!jwtToken) redirectToLogin();-->
 
-            try {
-                const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
-                if (tokenPayload.exp * 1000 < Date.now()) logout();
-            } catch (e) {
-                logout();
-            }
-        }
+<!--            try {-->
+<!--                const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));-->
+<!--                if (tokenPayload.exp * 1000 < Date.now()) logout();-->
+<!--            } catch (e) {-->
+<!--                logout();-->
+<!--            }-->
+<!--        }-->
 
-        function redirectToLogin() {
-            window.location.href = '../index.html';
-        }
+<!--        function redirectToLogin() {-->
+<!--            window.location.href = '../index.html';-->
+<!--        }-->
 
-        function logout() {
-            localStorage.removeItem('jwtToken');
-            redirectToLogin();
-        }
+<!--        function logout() {-->
+<!--            localStorage.removeItem('jwtToken');-->
+<!--            redirectToLogin();-->
+<!--        }-->
 
-        // AJAX Setup
-        $.ajaxSetup({
-            headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-            },
-            error: function(xhr) {
-                if (xhr.status === 401) logout();
-            }
-        });
-
-
-        function loadCustomers() {
-            $.ajax({
-                url: API_BASE + 'admin/users?type=CUSTOMER',
-                method: 'GET',
-                success: (response) => {
-                    console.debug('Raw API response:', response);
-                    if (response.status === 200) {
-                        // Use email as unique identifier since IDs are missing
-                        const customersArray = response.data
-                            .filter(user => user.type === 'CUSTOMER')
-                            .map(user => ({
-                                id: user.email, // Use email as temporary ID
-                                name: user.name,
-                                email: user.email,
-                                active: user.isActive || false,
-                                type: user.type
-                            }));
-
-                        console.log("Filtered Customers:", customersArray);
-                        renderCustomers(customersArray);
-
-                        if (customersArray.length === 0) {
-                            $('#customersTable').html(
-                                `<tr><td colspan="5" class="text-center">
-                            No customers found
-                        </td></tr>`
-                            );
-                        }
-                    } else {
-                        showErrorToast(response.message || 'Failed to load customers');
-                    }
-                },
-                error: (xhr) => {
-                    showErrorToast('Failed to load customers: ' +
-                        (xhr.responseJSON?.message || xhr.statusText));
-                }
-            });
-        }
-        function renderCustomers(customers) {
-            try {
-                const rows = customers.map(customer => `
-            <tr class="hover-scale">
-                <td>${customer.id}</td>
-                <td>${customer.name || 'N/A'}</td>
-                <td>${customer.email || 'N/A'}</td>
-                <td>${getStatusBadge(customer.active)}</td>
-                <td>
-                    <button class="btn btn-admin btn-edit me-2"
-                        onclick="openChat('${customer.id}',
-                        '${customer.name.replace(/'/g, "\\'")}', 'customer')">
-                        <i class="fas fa-comment me-2"></i>Chat
-                    </button>
-                    <button class="btn btn-admin btn-edit me-2"
-                        onclick="openCustomerModal('${customer.id}')">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-admin btn-delete"
-                        onclick="toggleUserStatus('${customer.id}', 'customer')">
-                        <i class="fas fa-ban"></i>
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-                $('#customersTable').html(rows);
-            } catch (error) {
-                console.error('Rendering error:', error);
-                $('#customersTable').html(`
-            <tr><td colspan="5" class="text-danger">
-                Error loading customer data
-            </td></tr>
-        `);
-            }
-        }
-        // Seller Management
-        function loadSellers() {
-            $.ajax({
-                url: API_BASE + 'admin/users?type=SELLER',
-                method: 'GET',
-                success: (response) => {
-                    console.debug('Sellers response:', response);
-                    if (response.status === 200) {
-                        // Use email as unique key since IDs might be missing
-                        const sellersArray = response.data
-                            .filter(seller => seller.type === 'SELLER')
-                            .map(seller => ({
-                                id: seller.email,  // Use email as temporary ID
-                                name: seller.name,
-                                email: seller.email,
-                                storeName: seller.storeName || seller.name,
-                                active: seller.isActive || false  // Match customer's isActive field
-                            }));
-
-                        console.log("Processed Sellers:", sellersArray);
-                        renderSellers(sellersArray);
-
-                        if (sellersArray.length === 0) {
-                            $('#sellersTable').html(
-                                `<tr><td colspan="5" class="text-center">
-                            No sellers found
-                        </td></tr>`
-                            );
-                        }
-                    } else {
-                        showErrorToast(response.message || 'Failed to load sellers');
-                    }
-                },
-                error: (xhr) => {
-                    showErrorToast('Failed to load sellers: ' +
-                        (xhr.responseJSON?.message || xhr.statusText));
-                }
-            });
-        }
-        // function loadSellers() {
-        //     $.ajax({
-        //         url: API_BASE + 'admin/users?type=SELLER',
-        //         method: 'GET',
-        //         success: (response) => {
-        //             console.debug('Sellers response:', response);
-        //             if (response.status === 200) {
-        //                 // Create a seller map to ensure unique entries
-        //                 const sellerMap = response.data.reduce((map, seller) => {
-        //                     map[seller.id] = {
-        //                         id: seller.id,
-        //                         name: seller.name,
-        //                         email: seller.email,
-        //                         storeName: seller.storeName || seller.name,
-        //                         active: seller.active
-        //                     };
-        //                     return map;
-        //                 }, {});
-        //
-        //                 // Convert map back to array for rendering
-        //                 const sellersArray = Object.values(sellerMap);
-        //                 renderSellers(sellersArray);
-        //             } else {
-        //                 showErrorToast(response.message || 'Failed to load sellers');
-        //             }
-        //         },
-        //         error: (xhr) => {
-        //             showErrorToast('Failed to load sellers: ' + (xhr.responseJSON?.message || xhr.statusText));
-        //         }
-        //     });
-        // }
+<!--        // AJAX Setup-->
+<!--        $.ajaxSetup({-->
+<!--            headers: {-->
+<!--                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')-->
+<!--            },-->
+<!--            error: function(xhr) {-->
+<!--                if (xhr.status === 401) logout();-->
+<!--            }-->
+<!--        });-->
 
 
-        function renderSellers(sellers) {
-            try {
-                if (!sellers || sellers.length === 0) {
-                    $('#sellersTable').html(`<tr><td colspan="5" class="text-center">No sellers found</td></tr>`);
-                    return;
-                }
+<!--        function loadCustomers() {-->
+<!--            $.ajax({-->
+<!--                url: API_BASE + 'admin/users?type=CUSTOMER',-->
+<!--                method: 'GET',-->
+<!--                success: (response) => {-->
+<!--                    console.debug('Raw API response:', response);-->
+<!--                    if (response.status === 200) {-->
+<!--                        // Use email as unique identifier since IDs are missing-->
+<!--                        const customersArray = response.data-->
+<!--                            .filter(user => user.type === 'CUSTOMER')-->
+<!--                            .map(user => ({-->
+<!--                                id: user.email, // Use email as temporary ID-->
+<!--                                name: user.name,-->
+<!--                                email: user.email,-->
+<!--                                active: user.isActive || false,-->
+<!--                                type: user.type-->
+<!--                            }));-->
 
-                const rows = sellers.map(seller => `
-                <tr class="hover-scale">
-                    <td>${seller.id}</td>
-                    <td>${(seller.storeName || seller.name).replace(/'/g, "\\'")}</td>
-                    <td>${seller.email}</td>
-                    <td>${getStatusBadge(seller.active)}</td>
-                    <td>
-                        <button class="btn btn-admin btn-edit me-2"
-                            onclick="openChat(${seller.id}, '${(seller.storeName || seller.name).replace(/'/g, "\\'")}', 'seller')">
-                            <i class="fas fa-comment me-2"></i>Chat
-                        </button>
-                        <button class="btn btn-admin btn-edit me-2"
-                            onclick="openSellerModal(${seller.id})">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-admin btn-delete"
-                            onclick="toggleUserStatus(${seller.id}, 'seller')">
-                            <i class="fas fa-ban"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-                $('#sellersTable').html(rows);
-            } catch (error) {
-                console.error('Error rendering sellers:', error);
-                $('#sellersTable').html(`<tr><td colspan="5" class="text-danger">Error loading data</td></tr>`);
-            }
-        }
-        // Status Management
-        function toggleUserStatus(userId, userType) {
-            if (!confirm(`Are you sure you want to toggle status for this ${userType}?`)) return;
+<!--                        console.log("Filtered Customers:", customersArray);-->
+<!--                        renderCustomers(customersArray);-->
 
-            $.ajax({
-                url: API_BASE + `admin/users/${userId}/status`,
-                method: 'PATCH',
-                success: () => {
-                    showSuccessToast('Status updated successfully');
-                    userType === 'customer' ? loadCustomers() : loadSellers();
-                },
-                error: (xhr) => {
-                    showErrorToast('Error: ' + xhr.responseJSON?.message);
-                }
-            });
-        }
+<!--                        if (customersArray.length === 0) {-->
+<!--                            $('#customersTable').html(-->
+<!--                                `<tr><td colspan="5" class="text-center">-->
+<!--                            No customers found-->
+<!--                        </td></tr>`-->
+<!--                            );-->
+<!--                        }-->
+<!--                    } else {-->
+<!--                        showErrorToast(response.message || 'Failed to load customers');-->
+<!--                    }-->
+<!--                },-->
+<!--                error: (xhr) => {-->
+<!--                    showErrorToast('Failed to load customers: ' +-->
+<!--                        (xhr.responseJSON?.message || xhr.statusText));-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--        function renderCustomers(customers) {-->
+<!--            try {-->
+<!--                const rows = customers.map(customer => `-->
+<!--            <tr class="hover-scale">-->
+<!--                <td>${customer.id}</td>-->
+<!--                <td>${customer.name || 'N/A'}</td>-->
+<!--                <td>${customer.email || 'N/A'}</td>-->
+<!--                <td>${getStatusBadge(customer.active)}</td>-->
+<!--                <td>-->
+<!--                    <button class="btn btn-admin btn-edit me-2"-->
+<!--                        onclick="openChat('${customer.id}',-->
+<!--                        '${customer.name.replace(/'/g, "\\'")}', 'customer')">-->
+<!--                        <i class="fas fa-comment me-2"></i>Chat-->
+<!--                    </button>-->
+<!--                    <button class="btn btn-admin btn-edit me-2"-->
+<!--                        onclick="openCustomerModal('${customer.id}')">-->
+<!--                        <i class="fas fa-edit"></i>-->
+<!--                    </button>-->
+<!--                    <button class="btn btn-admin btn-delete"-->
+<!--                        onclick="toggleUserStatus('${customer.id}', 'customer')">-->
+<!--                        <i class="fas fa-ban"></i>-->
+<!--                    </button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        `).join('');-->
+<!--                $('#customersTable').html(rows);-->
+<!--            } catch (error) {-->
+<!--                console.error('Rendering error:', error);-->
+<!--                $('#customersTable').html(`-->
+<!--            <tr><td colspan="5" class="text-danger">-->
+<!--                Error loading customer data-->
+<!--            </td></tr>-->
+<!--        `);-->
+<!--            }-->
+<!--        }-->
+<!--        // Seller Management-->
+<!--        function loadSellers() {-->
+<!--            $.ajax({-->
+<!--                url: API_BASE + 'admin/users?type=SELLER',-->
+<!--                method: 'GET',-->
+<!--                success: (response) => {-->
+<!--                    console.debug('Sellers response:', response);-->
+<!--                    if (response.status === 200) {-->
+<!--                        // Use email as unique key since IDs might be missing-->
+<!--                        const sellersArray = response.data-->
+<!--                            .filter(seller => seller.type === 'SELLER')-->
+<!--                            .map(seller => ({-->
+<!--                                id: seller.email,  // Use email as temporary ID-->
+<!--                                name: seller.name,-->
+<!--                                email: seller.email,-->
+<!--                                storeName: seller.storeName || seller.name,-->
+<!--                                active: seller.isActive || false  // Match customer's isActive field-->
+<!--                            }));-->
 
-        // Chat Management
-        function openChat(userId, userName, userType) {
-            currentUserId = userId;
-            currentUserType = userType;
-            $('#chatUserName').text(userName);
-            loadChatHistory();
-            new bootstrap.Modal('#chatModal').show();
-        }
+<!--                        console.log("Processed Sellers:", sellersArray);-->
+<!--                        renderSellers(sellersArray);-->
 
-        function loadChatHistory() {
-            $.ajax({
-                url: API_BASE + `chats/${currentUserId}?userType=${currentUserType}`,
-                method: 'GET',
-                success: (response) => {
-                    if (response.code === 200) renderChatMessages(response.data);
-                },
-                error: (xhr) => {
-                    showErrorToast('Failed to load chat history');
-                }
-            });
-        }
+<!--                        if (sellersArray.length === 0) {-->
+<!--                            $('#sellersTable').html(-->
+<!--                                `<tr><td colspan="5" class="text-center">-->
+<!--                            No sellers found-->
+<!--                        </td></tr>`-->
+<!--                            );-->
+<!--                        }-->
+<!--                    } else {-->
+<!--                        showErrorToast(response.message || 'Failed to load sellers');-->
+<!--                    }-->
+<!--                },-->
+<!--                error: (xhr) => {-->
+<!--                    showErrorToast('Failed to load sellers: ' +-->
+<!--                        (xhr.responseJSON?.message || xhr.statusText));-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
+<!--        // function loadSellers() {-->
+<!--        //     $.ajax({-->
+<!--        //         url: API_BASE + 'admin/users?type=SELLER',-->
+<!--        //         method: 'GET',-->
+<!--        //         success: (response) => {-->
+<!--        //             console.debug('Sellers response:', response);-->
+<!--        //             if (response.status === 200) {-->
+<!--        //                 // Create a seller map to ensure unique entries-->
+<!--        //                 const sellerMap = response.data.reduce((map, seller) => {-->
+<!--        //                     map[seller.id] = {-->
+<!--        //                         id: seller.id,-->
+<!--        //                         name: seller.name,-->
+<!--        //                         email: seller.email,-->
+<!--        //                         storeName: seller.storeName || seller.name,-->
+<!--        //                         active: seller.active-->
+<!--        //                     };-->
+<!--        //                     return map;-->
+<!--        //                 }, {});-->
+<!--        //-->
+<!--        //                 // Convert map back to array for rendering-->
+<!--        //                 const sellersArray = Object.values(sellerMap);-->
+<!--        //                 renderSellers(sellersArray);-->
+<!--        //             } else {-->
+<!--        //                 showErrorToast(response.message || 'Failed to load sellers');-->
+<!--        //             }-->
+<!--        //         },-->
+<!--        //         error: (xhr) => {-->
+<!--        //             showErrorToast('Failed to load sellers: ' + (xhr.responseJSON?.message || xhr.statusText));-->
+<!--        //         }-->
+<!--        //     });-->
+<!--        // }-->
 
-        function renderChatMessages(messages) {
-            const chatHtml = messages.map(msg => `
-            <div class="message ${msg.senderType === 'CUSTOMER' ? 'customer-message' : 'seller-message'}">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="message-sender">${msg.senderName}</div>
-                    <div class="text-muted small">${new Date(msg.timestamp).toLocaleString()}</div>
-                </div>
-                <div class="message-text">${msg.content}</div>
-            </div>
-        `).join('');
-            $('#modalChatMessages').html(chatHtml);
-            scrollChatBottom();
-        }
 
-        function scrollChatBottom() {
-            const container = document.querySelector('#modalChatMessages');
-            container.scrollTop = container.scrollHeight;
-        }
+<!--        function renderSellers(sellers) {-->
+<!--            try {-->
+<!--                if (!sellers || sellers.length === 0) {-->
+<!--                    $('#sellersTable').html(`<tr><td colspan="5" class="text-center">No sellers found</td></tr>`);-->
+<!--                    return;-->
+<!--                }-->
 
-        // Payment Management
-        function loadPayments() {
-            $.ajax({
-                url: API_BASE + 'payments',
-                method: 'GET',
-                success: (response) => {
-                    if (response.code === 200) renderPayments(response.data);
-                },
-                error: (xhr) => {
-                    showErrorToast('Failed to load payments');
-                }
-            });
-        }
+<!--                const rows = sellers.map(seller => `-->
+<!--                <tr class="hover-scale">-->
+<!--                    <td>${seller.id}</td>-->
+<!--                    <td>${(seller.storeName || seller.name).replace(/'/g, "\\'")}</td>-->
+<!--                    <td>${seller.email}</td>-->
+<!--                    <td>${getStatusBadge(seller.active)}</td>-->
+<!--                    <td>-->
+<!--                        <button class="btn btn-admin btn-edit me-2"-->
+<!--                            onclick="openChat(${seller.id}, '${(seller.storeName || seller.name).replace(/'/g, "\\'")}', 'seller')">-->
+<!--                            <i class="fas fa-comment me-2"></i>Chat-->
+<!--                        </button>-->
+<!--                        <button class="btn btn-admin btn-edit me-2"-->
+<!--                            onclick="openSellerModal(${seller.id})">-->
+<!--                            <i class="fas fa-edit"></i>-->
+<!--                        </button>-->
+<!--                        <button class="btn btn-admin btn-delete"-->
+<!--                            onclick="toggleUserStatus(${seller.id}, 'seller')">-->
+<!--                            <i class="fas fa-ban"></i>-->
+<!--                        </button>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--            `).join('');-->
+<!--                $('#sellersTable').html(rows);-->
+<!--            } catch (error) {-->
+<!--                console.error('Error rendering sellers:', error);-->
+<!--                $('#sellersTable').html(`<tr><td colspan="5" class="text-danger">Error loading data</td></tr>`);-->
+<!--            }-->
+<!--        }-->
+<!--        // Status Management-->
+<!--        function toggleUserStatus(userId, userType) {-->
+<!--            if (!confirm(`Are you sure you want to toggle status for this ${userType}?`)) return;-->
 
-        function renderPayments(payments) {
-            const rows = payments.map(payment => `
-            <tr class="hover-scale">
-                <td>${payment.transactionId}</td>
-                <td>${new Date(payment.timestamp).toLocaleDateString()}</td>
-                <td>$${payment.amount.toFixed(2)}</td>
-                <td>${getPaymentStatusBadge(payment.status)}</td>
-                <td>
-                    <button class="btn btn-admin btn-edit"
-                        onclick="viewReceipt('${payment.id}')">
-                        <i class="fas fa-receipt"></i> View
-                    </button>
-                </td>
-            </tr>
-        `).join('');
-            $('#paymentsTable').html(rows);
-        }
+<!--            $.ajax({-->
+<!--                url: API_BASE + `admin/users/${userId}/status`,-->
+<!--                method: 'PATCH',-->
+<!--                success: () => {-->
+<!--                    showSuccessToast('Status updated successfully');-->
+<!--                    userType === 'customer' ? loadCustomers() : loadSellers();-->
+<!--                },-->
+<!--                error: (xhr) => {-->
+<!--                    showErrorToast('Error: ' + xhr.responseJSON?.message);-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
 
-        // UI Helpers
-        function getStatusBadge(active) {
-            const status = active ? 'active' : 'blocked';
-            return `<span class="status-badge ${status === 'active' ? 'active-status' : 'blocked-status'}">
-            ${status}
-        </span>`;
-        }
+<!--        // Chat Management-->
+<!--        function openChat(userId, userName, userType) {-->
+<!--            currentUserId = userId;-->
+<!--            currentUserType = userType;-->
+<!--            $('#chatUserName').text(userName);-->
+<!--            loadChatHistory();-->
+<!--            new bootstrap.Modal('#chatModal').show();-->
+<!--        }-->
 
-        function getPaymentStatusBadge(status) {
-            const statusMap = {
-                'COMPLETED': 'active-status',
-                'PENDING': 'text-warning',
-                'FAILED': 'blocked-status'
-            };
-            return `<span class="status-badge ${statusMap[status]}">${status.toLowerCase()}</span>`;
-        }
+<!--        function loadChatHistory() {-->
+<!--            $.ajax({-->
+<!--                url: API_BASE + `chats/${currentUserId}?userType=${currentUserType}`,-->
+<!--                method: 'GET',-->
+<!--                success: (response) => {-->
+<!--                    if (response.code === 200) renderChatMessages(response.data);-->
+<!--                },-->
+<!--                error: (xhr) => {-->
+<!--                    showErrorToast('Failed to load chat history');-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
 
-        function showSuccessToast(message) {
-            Toastify({
-                text: message,
-                duration: 3000,
-                style: {
-                    background: "linear-gradient(to right, #00b09b, #96c93d)",
-                    borderRadius: "8px"
-                }
-            }).showToast();
-        }
+<!--        function renderChatMessages(messages) {-->
+<!--            const chatHtml = messages.map(msg => `-->
+<!--            <div class="message ${msg.senderType === 'CUSTOMER' ? 'customer-message' : 'seller-message'}">-->
+<!--                <div class="d-flex justify-content-between align-items-center mb-2">-->
+<!--                    <div class="message-sender">${msg.senderName}</div>-->
+<!--                    <div class="text-muted small">${new Date(msg.timestamp).toLocaleString()}</div>-->
+<!--                </div>-->
+<!--                <div class="message-text">${msg.content}</div>-->
+<!--            </div>-->
+<!--        `).join('');-->
+<!--            $('#modalChatMessages').html(chatHtml);-->
+<!--            scrollChatBottom();-->
+<!--        }-->
 
-        function showErrorToast(message) {
-            Toastify({
-                text: message,
-                duration: 3000,
-                style: {
-                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",
-                    borderRadius: "8px"
-                }
-            }).showToast();
-        }
+<!--        function scrollChatBottom() {-->
+<!--            const container = document.querySelector('#modalChatMessages');-->
+<!--            container.scrollTop = container.scrollHeight;-->
+<!--        }-->
 
-        // Initialization
-        $(document).ready(() => {
-            checkAuthStatus();
-            loadCustomers();
-            loadSellers();
-            loadPayments();
+<!--        // Payment Management-->
+<!--        function loadPayments() {-->
+<!--            $.ajax({-->
+<!--                url: API_BASE + 'payments',-->
+<!--                method: 'GET',-->
+<!--                success: (response) => {-->
+<!--                    if (response.code === 200) renderPayments(response.data);-->
+<!--                },-->
+<!--                error: (xhr) => {-->
+<!--                    showErrorToast('Failed to load payments');-->
+<!--                }-->
+<!--            });-->
+<!--        }-->
 
-            // Event Listeners
-            $('#logoutBtn').click(logout);
+<!--        function renderPayments(payments) {-->
+<!--            const rows = payments.map(payment => `-->
+<!--            <tr class="hover-scale">-->
+<!--                <td>${payment.transactionId}</td>-->
+<!--                <td>${new Date(payment.timestamp).toLocaleDateString()}</td>-->
+<!--                <td>$${payment.amount.toFixed(2)}</td>-->
+<!--                <td>${getPaymentStatusBadge(payment.status)}</td>-->
+<!--                <td>-->
+<!--                    <button class="btn btn-admin btn-edit"-->
+<!--                        onclick="viewReceipt('${payment.id}')">-->
+<!--                        <i class="fas fa-receipt"></i> View-->
+<!--                    </button>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--        `).join('');-->
+<!--            $('#paymentsTable').html(rows);-->
+<!--        }-->
 
-            document.querySelectorAll('.admin-sidebar a').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelectorAll('.admin-section').forEach(section => {
-                        section.classList.add('d-none');
-                    });
-                    document.querySelector(this.getAttribute('href')).classList.remove('d-none');
-                });
-            });
-        });
+<!--        // UI Helpers-->
+<!--        function getStatusBadge(active) {-->
+<!--            const status = active ? 'active' : 'blocked';-->
+<!--            return `<span class="status-badge ${status === 'active' ? 'active-status' : 'blocked-status'}">-->
+<!--            ${status}-->
+<!--        </span>`;-->
+<!--        }-->
 
-    </script>
+<!--        function getPaymentStatusBadge(status) {-->
+<!--            const statusMap = {-->
+<!--                'COMPLETED': 'active-status',-->
+<!--                'PENDING': 'text-warning',-->
+<!--                'FAILED': 'blocked-status'-->
+<!--            };-->
+<!--            return `<span class="status-badge ${statusMap[status]}">${status.toLowerCase()}</span>`;-->
+<!--        }-->
+
+<!--        function showSuccessToast(message) {-->
+<!--            Toastify({-->
+<!--                text: message,-->
+<!--                duration: 3000,-->
+<!--                style: {-->
+<!--                    background: "linear-gradient(to right, #00b09b, #96c93d)",-->
+<!--                    borderRadius: "8px"-->
+<!--                }-->
+<!--            }).showToast();-->
+<!--        }-->
+
+<!--        function showErrorToast(message) {-->
+<!--            Toastify({-->
+<!--                text: message,-->
+<!--                duration: 3000,-->
+<!--                style: {-->
+<!--                    background: "linear-gradient(to right, #ff5f6d, #ffc371)",-->
+<!--                    borderRadius: "8px"-->
+<!--                }-->
+<!--            }).showToast();-->
+<!--        }-->
+
+<!--        // Initialization-->
+<!--        $(document).ready(() => {-->
+<!--            checkAuthStatus();-->
+<!--            loadCustomers();-->
+<!--            loadSellers();-->
+<!--            loadPayments();-->
+
+<!--            // Event Listeners-->
+<!--            $('#logoutBtn').click(logout);-->
+
+<!--            document.querySelectorAll('.admin-sidebar a').forEach(link => {-->
+<!--                link.addEventListener('click', function(e) {-->
+<!--                    e.preventDefault();-->
+<!--                    document.querySelectorAll('.admin-section').forEach(section => {-->
+<!--                        section.classList.add('d-none');-->
+<!--                    });-->
+<!--                    document.querySelector(this.getAttribute('href')).classList.remove('d-none');-->
+<!--                });-->
+<!--            });-->
+<!--        });-->
+
+<!--    </script>-->
 
 
 </body>

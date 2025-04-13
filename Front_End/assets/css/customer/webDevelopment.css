@@ -1,0 +1,305 @@
+
+:root {
+    --bg-black: #000000;
+    --text-white: #FFFFFF;
+    --accent-yellow: #FFD700;
+    --accent-green: #00FF00;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+}
+
+.navbar-scrolled {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.search-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--text-white);
+    border-radius: 30px;
+    padding: 12px 20px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.btn-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--accent-yellow);
+    cursor: pointer;
+}
+
+.service-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)),
+    url('https://source.unsplash.com/random/1920x1080/?web-design') center/cover;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.service-highlight-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.service-highlight-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+}
+
+.portfolio-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.portfolio-item img {
+    transition: transform 0.3s ease;
+    width: 100%;
+    height: auto;
+}
+
+.portfolio-item:hover img {
+    transform: scale(1.1);
+}
+
+.portfolio-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.7);
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.portfolio-item:hover .portfolio-overlay {
+    opacity: 1;
+}
+
+.design-process-step {
+    position: relative;
+    padding: 2rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    margin: 2rem 0;
+    border: 1px solid var(--accent-yellow);
+}
+
+.process-number {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 40px;
+    height: 40px;
+    background: var(--accent-yellow);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--bg-black);
+}
+
+.btn-accent {
+    background: var(--accent-yellow);
+    color: var(--bg-black);
+    font-weight: 600;
+    border: none;
+}
+
+.btn-accent:hover {
+    background: #ffcc00;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animate-on-scroll.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.sellers-section {
+    padding: 5rem 0;
+}
+
+.filter-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.filter-select {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--text-white);
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    margin: 0 1rem;
+}
+
+
+.price-badge {
+    background: rgba(0,255,0,0.1);
+    color: var(--accent-green);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.exp-badge {
+    background: rgba(255,215,0,0.1);
+    color: var(--accent-yellow);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .seller-table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+/* Add Chat Styles */
+.chat-message {
+    max-width: 80%;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 15px;
+    animation: slideIn 0.3s ease;
+}
+
+.received {
+    background: rgba(255,255,255,0.1);
+    align-self: flex-start;
+}
+
+.sent {
+    background: var(--accent-yellow);
+    color: var(--bg-black);
+    align-self: flex-end;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.typing-indicator {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    font-style: italic;
+}
+
+.typing-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 3px;
+    background: var(--accent-yellow);
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+@keyframes typing {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+
+
+
+.seller-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.seller-table th, .seller-table td {
+    padding: 1rem;
+    text-align: left;
+    vertical-align: middle; /* Aligns content vertically in the middle */
+}
+
+.seller-table th {
+    background: linear-gradient(45deg, var(--accent-yellow), var(--accent-green));
+    color: var(--text-white);
+}
+
+.seller-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.seller-table tr:last-child td {
+    border-bottom: none;
+}
+
+.seller-table tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+.seller-badge {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--accent-yellow);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}

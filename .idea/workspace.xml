@@ -5,8 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/admin/admin.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/coordinator/coordinator.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/contentWriting.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/customerHome.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/graphicDesign.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/mobileAppDev.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/seoOptimization.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/videoEdit.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/webDevelopment.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/index.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/seller/home.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/seller/sellerPortfolio.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/admin/admin.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/coordinator/coordinator.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/contentWriting.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/customerHome.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/graphicDesign.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/mobileAppDev.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/seoOptimization.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/videoEdit.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/webDevelopment.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/index.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/seller/home.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/seller/sellerPortfolio.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/adminController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/adminController.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/home.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/portfolio.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/portfolio.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +218,10 @@
       <workItem from="1744168078935" duration="327000" />
       <workItem from="1744430096525" duration="7563000" />
       <workItem from="1744521837925" duration="74000" />
-      <workItem from="1744521926695" duration="4939000" />
+      <workItem from="1744521926695" duration="14980000" />
+      <workItem from="1744562913150" duration="13746000" />
+      <workItem from="1744625577654" duration="3406000" />
+      <workItem from="1744692161852" duration="3192000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -393,7 +431,23 @@
       <option name="project" value="LOCAL" />
       <updated>1744432314322</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1744528692985</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1744528692985</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1744575415284</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1744575415284</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

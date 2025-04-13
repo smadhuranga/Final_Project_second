@@ -2,6 +2,7 @@ package lk.ijse.back_end.adviser;
 
 import io.jsonwebtoken.JwtException;
 import lk.ijse.back_end.dto.ResponseDTO;
+import lk.ijse.back_end.util.EmailException;
 import lk.ijse.back_end.util.VarList;
 import org.hibernate.ResourceClosedException;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,14 @@ public class GlobalExceptionHandler {
     }
 
 
-
+    @ExceptionHandler(EmailException.class)
+    public ResponseEntity<ResponseDTO> handleEmailException(EmailException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ResponseDTO(
+                        500,
+                        "Email service error: " + ex.getMessage(),
+                        null
+                ));
+    }
 
 }

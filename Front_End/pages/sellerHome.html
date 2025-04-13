@@ -7,152 +7,154 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    :root {
-      --bg-dark: #0a0a0a;
-      --bg-darker: #050505;
-      --text-primary: #FFFFFF;
-      --accent-blue: #25D3FF;
-      --accent-purple: #A855F7;
-      --success-green: #10B981;
-      --danger-red: #EF4444;
-      --text-secondary: rgba(255,255,255,0.7);
-      --hover-primary: rgba(37, 211, 255, 0.1);
-    }
+  <link href="../assets/css/seller/home.css" rel="stylesheet">
 
-    body {
-      background-color: var(--bg-dark);
-      color: var(--text-primary);
-      font-family: 'Poppins', sans-serif;
-      min-height: 100vh;
-    }
+<!--  <style>-->
+<!--    :root {-->
+<!--      &#45;&#45;bg-dark: #0a0a0a;-->
+<!--      &#45;&#45;bg-darker: #050505;-->
+<!--      &#45;&#45;text-primary: #FFFFFF;-->
+<!--      &#45;&#45;accent-blue: #25D3FF;-->
+<!--      &#45;&#45;accent-purple: #A855F7;-->
+<!--      &#45;&#45;success-green: #10B981;-->
+<!--      &#45;&#45;danger-red: #EF4444;-->
+<!--      &#45;&#45;text-secondary: rgba(255,255,255,0.7);-->
+<!--      &#45;&#45;hover-primary: rgba(37, 211, 255, 0.1);-->
+<!--    }-->
 
-    .dashboard-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 15px;
-      padding: 1.5rem;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      backdrop-filter: blur(10px);
-    }
+<!--    body {-->
+<!--      background-color: var(&#45;&#45;bg-dark);-->
+<!--      color: var(&#45;&#45;text-primary);-->
+<!--      font-family: 'Poppins', sans-serif;-->
+<!--      min-height: 100vh;-->
+<!--    }-->
 
-    .dashboard-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(37, 211, 255, 0.1);
-    }
+<!--    .dashboard-card {-->
+<!--      background: rgba(255,255,255,0.05);-->
+<!--      border: 1px solid rgba(255,255,255,0.1);-->
+<!--      border-radius: 15px;-->
+<!--      padding: 1.5rem;-->
+<!--      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);-->
+<!--      backdrop-filter: blur(10px);-->
+<!--    }-->
 
-    .nav-gradient {
-      background: linear-gradient(90deg,
-      rgba(40,40,40,0.95),
-      rgba(20,20,20,0.95));
-      backdrop-filter: blur(10px);
-    }
+<!--    .dashboard-card:hover {-->
+<!--      transform: translateY(-5px);-->
+<!--      box-shadow: 0 10px 20px rgba(37, 211, 255, 0.1);-->
+<!--    }-->
 
-    .orders-table {
-      background: rgba(255,255,255,0.03);
-      border-radius: 15px;
-      overflow: hidden;
-    }
+<!--    .nav-gradient {-->
+<!--      background: linear-gradient(90deg,-->
+<!--      rgba(40,40,40,0.95),-->
+<!--      rgba(20,20,20,0.95));-->
+<!--      backdrop-filter: blur(10px);-->
+<!--    }-->
 
-    .status-badge {
-      padding: 0.3rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
-    }
+<!--    .orders-table {-->
+<!--      background: rgba(255,255,255,0.03);-->
+<!--      border-radius: 15px;-->
+<!--      overflow: hidden;-->
+<!--    }-->
 
-    .status-pending { background: rgba(239, 68, 68, 0.1); color: var(--danger-red); }
-    .status-completed { background: rgba(16, 185, 129, 0.1); color: var(--success-green); }
-    .status-progress { background: rgba(37, 211, 255, 0.1); color: var(--accent-blue); }
+<!--    .status-badge {-->
+<!--      padding: 0.3rem 0.8rem;-->
+<!--      border-radius: 20px;-->
+<!--      font-size: 0.85rem;-->
+<!--    }-->
 
-    .chat-box {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 350px;
-      background: var(--bg-darker);
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
+<!--    .status-pending { background: rgba(239, 68, 68, 0.1); color: var(&#45;&#45;danger-red); }-->
+<!--    .status-completed { background: rgba(16, 185, 129, 0.1); color: var(&#45;&#45;success-green); }-->
+<!--    .status-progress { background: rgba(37, 211, 255, 0.1); color: var(&#45;&#45;accent-blue); }-->
 
-    .chat-box.active {
-      transform: translateY(0);
-      opacity: 1;
-    }
+<!--    .chat-box {-->
+<!--      position: fixed;-->
+<!--      bottom: 2rem;-->
+<!--      right: 2rem;-->
+<!--      width: 350px;-->
+<!--      background: var(&#45;&#45;bg-darker);-->
+<!--      border-radius: 15px;-->
+<!--      box-shadow: 0 10px 30px rgba(0,0,0,0.3);-->
+<!--      transform: translateY(20px);-->
+<!--      opacity: 0;-->
+<!--      transition: all 0.3s ease;-->
+<!--      z-index: 1000;-->
+<!--    }-->
 
-    .chat-toggle {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: var(--accent-purple);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);
-      transition: all 0.3s ease;
-      z-index: 1000;
-    }
+<!--    .chat-box.active {-->
+<!--      transform: translateY(0);-->
+<!--      opacity: 1;-->
+<!--    }-->
 
-    .chat-toggle:hover {
-      transform: scale(1.1) rotate(15deg);
-    }
+<!--    .chat-toggle {-->
+<!--      position: fixed;-->
+<!--      bottom: 2rem;-->
+<!--      right: 2rem;-->
+<!--      width: 60px;-->
+<!--      height: 60px;-->
+<!--      border-radius: 50%;-->
+<!--      background: var(&#45;&#45;accent-purple);-->
+<!--      display: flex;-->
+<!--      align-items: center;-->
+<!--      justify-content: center;-->
+<!--      cursor: pointer;-->
+<!--      box-shadow: 0 5px 15px rgba(168, 85, 247, 0.3);-->
+<!--      transition: all 0.3s ease;-->
+<!--      z-index: 1000;-->
+<!--    }-->
 
-    @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
-    }
+<!--    .chat-toggle:hover {-->
+<!--      transform: scale(1.1) rotate(15deg);-->
+<!--    }-->
 
-    .message-bubble {
-      background: rgba(255,255,255,0.05);
-      border-radius: 15px;
-      padding: 0.8rem 1rem;
-      margin: 0.5rem 0;
-      max-width: 80%;
-    }
+<!--    @keyframes float {-->
+<!--      0% { transform: translateY(0px); }-->
+<!--      50% { transform: translateY(-10px); }-->
+<!--      100% { transform: translateY(0px); }-->
+<!--    }-->
 
-    .message-right {
-      margin-left: auto;
-      background: var(--accent-purple);
-    }
+<!--    .message-bubble {-->
+<!--      background: rgba(255,255,255,0.05);-->
+<!--      border-radius: 15px;-->
+<!--      padding: 0.8rem 1rem;-->
+<!--      margin: 0.5rem 0;-->
+<!--      max-width: 80%;-->
+<!--    }-->
+
+<!--    .message-right {-->
+<!--      margin-left: auto;-->
+<!--      background: var(&#45;&#45;accent-purple);-->
+<!--    }-->
 
 
-    .nav-link {
-      color: var(--text-secondary) !important;
-      transition: all 0.3s ease;
-    }
+<!--    .nav-link {-->
+<!--      color: var(&#45;&#45;text-secondary) !important;-->
+<!--      transition: all 0.3s ease;-->
+<!--    }-->
 
-    .nav-link:hover {
-      color: var(--accent-blue) !important;
-      background: var(--hover-primary);
-      border-radius: 8px;
-    }
+<!--    .nav-link:hover {-->
+<!--      color: var(&#45;&#45;accent-blue) !important;-->
+<!--      background: var(&#45;&#45;hover-primary);-->
+<!--      border-radius: 8px;-->
+<!--    }-->
 
-    .text-muted {
-      color: var(--text-secondary) !important;
-    }
+<!--    .text-muted {-->
+<!--      color: var(&#45;&#45;text-secondary) !important;-->
+<!--    }-->
 
-    .modal-content {
-      background: var(--bg-darker);
-      border: 1px solid rgba(255,255,255,0.1);
-    }
+<!--    .modal-content {-->
+<!--      background: var(&#45;&#45;bg-darker);-->
+<!--      border: 1px solid rgba(255,255,255,0.1);-->
+<!--    }-->
 
-    #logoutButton {
-      color: var(--danger-red) !important;
-    }
+<!--    #logoutButton {-->
+<!--      color: var(&#45;&#45;danger-red) !important;-->
+<!--    }-->
 
-    #logoutButton:hover {
-      color: var(--text-primary) !important;
-      background: rgba(239, 68, 68, 0.1) !important;
-    }
-  </style>
+<!--    #logoutButton:hover {-->
+<!--      color: var(&#45;&#45;text-primary) !important;-->
+<!--      background: rgba(239, 68, 68, 0.1) !important;-->
+<!--    }-->
+<!--  </style>-->
 </head>
 <body>
 <!-- Navigation -->
@@ -447,336 +449,337 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/js/seller/home.js"></script>
 
-<script>
-  $(document).ready(function() {
-    // JWT Management
-    let jwtToken = localStorage.getItem('jwtToken');
-    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};
+<!--<script>-->
+<!--  $(document).ready(function() {-->
+<!--    // JWT Management-->
+<!--    let jwtToken = localStorage.getItem('jwtToken');-->
+<!--    let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {};-->
 
-    // Set up AJAX defaults with JWT
-    $.ajaxSetup({
-      beforeSend: function(xhr) {
-        if (jwtToken) {
-          xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);
-        }
-      }
-    });
+<!--    // Set up AJAX defaults with JWT-->
+<!--    $.ajaxSetup({-->
+<!--      beforeSend: function(xhr) {-->
+<!--        if (jwtToken) {-->
+<!--          xhr.setRequestHeader('Authorization', 'Bearer ' + jwtToken);-->
+<!--        }-->
+<!--      }-->
+<!--    });-->
 
-    // Initial Load
-    if (jwtToken) {
-      loadDashboardData();
-      loadServices();
-      loadOrders();
-      loadProfileData();
-    } else {
-      window.location.href = '../index.html';
-    }
+<!--    // Initial Load-->
+<!--    if (jwtToken) {-->
+<!--      loadDashboardData();-->
+<!--      loadServices();-->
+<!--      loadOrders();-->
+<!--      loadProfileData();-->
+<!--    } else {-->
+<!--      window.location.href = '../index.html';-->
+<!--    }-->
 
-    // Dashboard Data Load
-    function loadDashboardData() {
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/sellers/dashboard',
-        method: 'GET',
-        success: function(response) {
-          if (response.status === 200) { // Changed from response.code
-            const data = response.data; // Changed from response.data.data
-            $('#totalEarnings').text(`$${data.totalEarnings.toFixed(2)}`);
-            $('#activeOrders').text(data.activeOrders);
-            $('#avgRating').text(data.avgRating.toFixed(1));
-          }
-        },
-        error: handleError
-      });
-    }
+<!--    // Dashboard Data Load-->
+<!--    function loadDashboardData() {-->
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/sellers/dashboard',-->
+<!--        method: 'GET',-->
+<!--        success: function(response) {-->
+<!--          if (response.status === 200) { // Changed from response.code-->
+<!--            const data = response.data; // Changed from response.data.data-->
+<!--            $('#totalEarnings').text(`$${data.totalEarnings.toFixed(2)}`);-->
+<!--            $('#activeOrders').text(data.activeOrders);-->
+<!--            $('#avgRating').text(data.avgRating.toFixed(1));-->
+<!--          }-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    }-->
 
-    // Services Management
-    function loadServices() {
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/services',
-        method: 'GET',
-        success: function(response) {
-          if (response.status === 200) { // Changed from response.code
-            renderServices(response.data); // response.data is the services array
-          }
-        },
-        error: handleError
-      });
-    }
+<!--    // Services Management-->
+<!--    function loadServices() {-->
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/services',-->
+<!--        method: 'GET',-->
+<!--        success: function(response) {-->
+<!--          if (response.status === 200) { // Changed from response.code-->
+<!--            renderServices(response.data); // response.data is the services array-->
+<!--          }-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    }-->
 
-    function renderServices(services) {
-      let html = '';
-      services.forEach(service => {
-        html += `
-          <div class="col-md-4">
-            <div class="dashboard-card">
-              <h5>${service.title}</h5>
-              <p class="text-muted">${service.category}</p>
-              <div class="d-flex justify-content-between">
-                <span>$${service.price}</span>
-                <div>
-                  <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>`;
-      });
-      $('#servicesContainer').html(html);
-    }
+<!--    function renderServices(services) {-->
+<!--      let html = '';-->
+<!--      services.forEach(service => {-->
+<!--        html += `-->
+<!--          <div class="col-md-4">-->
+<!--            <div class="dashboard-card">-->
+<!--              <h5>${service.title}</h5>-->
+<!--              <p class="text-muted">${service.category}</p>-->
+<!--              <div class="d-flex justify-content-between">-->
+<!--                <span>$${service.price}</span>-->
+<!--                <div>-->
+<!--                  <button class="btn btn-sm btn-outline-primary edit-service" data-id="${service.id}">-->
+<!--                    <i class="fas fa-edit"></i>-->
+<!--                  </button>-->
+<!--                  <button class="btn btn-sm btn-outline-danger delete-service" data-id="${service.id}">-->
+<!--                    <i class="fas fa-trash"></i>-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>`;-->
+<!--      });-->
+<!--      $('#servicesContainer').html(html);-->
+<!--    }-->
 
-    // Update in the modal shown event
-    $('#editProfileModal').on('show.bs.modal', function() {
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/sellers/me',
-        method: 'GET',
-        success: function(response) {
-          if (response.status === 200) { // Changed from response.code
-            const profile = response.data; // Changed from response.data
-            $('#editName').val(profile.name);
-            $('#editEmail').val(profile.email);
-            $('#editPhone').val(profile.phone || '');
-            $('#editAddress').val(profile.address || '');
-            $('#editBio').val(profile.bio || '');
-            $('#editSkillIds').val(profile.skillIds?.join(', ') || '');
-          }
-        },
-        error: handleError
-      });
-    });
+<!--    // Update in the modal shown event-->
+<!--    $('#editProfileModal').on('show.bs.modal', function() {-->
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/sellers/me',-->
+<!--        method: 'GET',-->
+<!--        success: function(response) {-->
+<!--          if (response.status === 200) { // Changed from response.code-->
+<!--            const profile = response.data; // Changed from response.data-->
+<!--            $('#editName').val(profile.name);-->
+<!--            $('#editEmail').val(profile.email);-->
+<!--            $('#editPhone').val(profile.phone || '');-->
+<!--            $('#editAddress').val(profile.address || '');-->
+<!--            $('#editBio').val(profile.bio || '');-->
+<!--            $('#editSkillIds').val(profile.skillIds?.join(', ') || '');-->
+<!--          }-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    });-->
 
-// Update in the form submission
-    $('#editProfileForm').submit(function(e) {
-      e.preventDefault();
-      const updatedData = {
-        name: $('#editName').val(),
-        email: $('#editEmail').val(),
-        phone: $('#editPhone').val() || '', // Handle empty phone
-        address: $('#editAddress').val() || '', // Handle empty address
-        bio: $('#editBio').val() || '',
-        skillIds: $('#editSkillIds').val()
-                .split(',')
-                .map(id => parseInt(id.trim()))
-                .filter(id => !isNaN(id))
-      };
+<!--// Update in the form submission-->
+<!--    $('#editProfileForm').submit(function(e) {-->
+<!--      e.preventDefault();-->
+<!--      const updatedData = {-->
+<!--        name: $('#editName').val(),-->
+<!--        email: $('#editEmail').val(),-->
+<!--        phone: $('#editPhone').val() || '', // Handle empty phone-->
+<!--        address: $('#editAddress').val() || '', // Handle empty address-->
+<!--        bio: $('#editBio').val() || '',-->
+<!--        skillIds: $('#editSkillIds').val()-->
+<!--                .split(',')-->
+<!--                .map(id => parseInt(id.trim()))-->
+<!--                .filter(id => !isNaN(id))-->
+<!--      };-->
 
-      // Add validation for skill IDs
-      if (updatedData.skillIds.length === 0) {
-        alert('Please enter valid skill IDs separated by commas');
-        return;
-      }
+<!--      // Add validation for skill IDs-->
+<!--      if (updatedData.skillIds.length === 0) {-->
+<!--        alert('Please enter valid skill IDs separated by commas');-->
+<!--        return;-->
+<!--      }-->
 
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/sellers/me',
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(updatedData),
-        success: function(response) {
-          if (response.code === 200) {
-            loadProfileData();
-            $('#editProfileModal').modal('hide');
-          }
-        },
-        error: handleError
-      });
-    });
-    // Service Form Handling
-    $('#serviceForm').submit(function(e) {
-      e.preventDefault();
-      const serviceData = {
-        title: $('#serviceTitle').val(),
-        category: $('#serviceCategory').val(),
-        price: parseFloat($('#servicePrice').val()),
-        description: $('#serviceDescription').val()
-      };
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/sellers/me',-->
+<!--        method: 'PUT',-->
+<!--        contentType: 'application/json',-->
+<!--        data: JSON.stringify(updatedData),-->
+<!--        success: function(response) {-->
+<!--          if (response.code === 200) {-->
+<!--            loadProfileData();-->
+<!--            $('#editProfileModal').modal('hide');-->
+<!--          }-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    });-->
+<!--    // Service Form Handling-->
+<!--    $('#serviceForm').submit(function(e) {-->
+<!--      e.preventDefault();-->
+<!--      const serviceData = {-->
+<!--        title: $('#serviceTitle').val(),-->
+<!--        category: $('#serviceCategory').val(),-->
+<!--        price: parseFloat($('#servicePrice').val()),-->
+<!--        description: $('#serviceDescription').val()-->
+<!--      };-->
 
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/services',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(serviceData),
-        success: function(response) {
-          if (response.code === 201) {
-            loadServices();
-            $('#addServiceModal').modal('hide');
-            this.reset();
-          }
-        },
-        error: handleError
-      });
-    });
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/services',-->
+<!--        method: 'POST',-->
+<!--        contentType: 'application/json',-->
+<!--        data: JSON.stringify(serviceData),-->
+<!--        success: function(response) {-->
+<!--          if (response.code === 201) {-->
+<!--            loadServices();-->
+<!--            $('#addServiceModal').modal('hide');-->
+<!--            this.reset();-->
+<!--          }-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    });-->
 
-    // Order Management
-    function loadOrders() {
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/orders',
-        method: 'GET',
-        success: function(response) {
-          if (response.status === 200) {
-            renderOrders(response.data);
-          }
-        },
-        error: handleError
-      });
-    }
+<!--    // Order Management-->
+<!--    function loadOrders() {-->
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/orders',-->
+<!--        method: 'GET',-->
+<!--        success: function(response) {-->
+<!--          if (response.status === 200) {-->
+<!--            renderOrders(response.data);-->
+<!--          }-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    }-->
 
-    function renderOrders(orders) {
-      let html = '';
-      orders.forEach(order => {
-        html += `
-          <tr>
-            <td>#${order.id}</td>
-            <td>${order.service}</td>
-            <td>$${order.price}</td>
-            <td>
-              <span class="status-badge ${order.statusClass}">
-                ${order.status}
-              </span>
-            </td>
-            <td>
-              <button class="btn btn-sm btn-outline-success deliver-order" data-id="${order.id}">
-                Deliver
-              </button>
-            </td>
-          </tr>`;
-      });
-      $('#ordersTable').html(html);
-    }
+<!--    function renderOrders(orders) {-->
+<!--      let html = '';-->
+<!--      orders.forEach(order => {-->
+<!--        html += `-->
+<!--          <tr>-->
+<!--            <td>#${order.id}</td>-->
+<!--            <td>${order.service}</td>-->
+<!--            <td>$${order.price}</td>-->
+<!--            <td>-->
+<!--              <span class="status-badge ${order.statusClass}">-->
+<!--                ${order.status}-->
+<!--              </span>-->
+<!--            </td>-->
+<!--            <td>-->
+<!--              <button class="btn btn-sm btn-outline-success deliver-order" data-id="${order.id}">-->
+<!--                Deliver-->
+<!--              </button>-->
+<!--            </td>-->
+<!--          </tr>`;-->
+<!--      });-->
+<!--      $('#ordersTable').html(html);-->
+<!--    }-->
 
-    // Profile Management
-    // Update loadProfileData function
-    function loadProfileData() {
-      $.ajax({
-        url: 'http://localhost:8080/api/v1/sellers/me',
-        method: 'GET',
-        success: function(response) {
-          console.log('API Response:', response);
-          if (response.status === 200) { // Changed from response.code
-            const profile = response.data; // Changed from response.data.data
-            console.log('Profile Data:', profile);
+<!--    // Profile Management-->
+<!--    // Update loadProfileData function-->
+<!--    function loadProfileData() {-->
+<!--      $.ajax({-->
+<!--        url: 'http://localhost:8080/api/v1/sellers/me',-->
+<!--        method: 'GET',-->
+<!--        success: function(response) {-->
+<!--          console.log('API Response:', response);-->
+<!--          if (response.status === 200) { // Changed from response.code-->
+<!--            const profile = response.data; // Changed from response.data.data-->
+<!--            console.log('Profile Data:', profile);-->
 
-            // Update profile fields
+<!--            // Update profile fields-->
 
-            $('#sellerName').text(profile.name || 'Not provided');
-            $('#profileEmail').text(profile.email || 'Not provided');
-            $('#profilePhone').text(profile.phone || 'Not provided');
-            $('#profileNic').text(profile.nic || 'Not provided');
+<!--            $('#sellerName').text(profile.name || 'Not provided');-->
+<!--            $('#profileEmail').text(profile.email || 'Not provided');-->
+<!--            $('#profilePhone').text(profile.phone || 'Not provided');-->
+<!--            $('#profileNic').text(profile.nic || 'Not provided');-->
 
-            // Member Since date formatting
-            const memberSince = profile.createdAt
-                    ? new Date(profile.createdAt).toLocaleDateString()
-                    : 'N/A';
-            $('#memberSince').text(memberSince);
+<!--            // Member Since date formatting-->
+<!--            const memberSince = profile.createdAt-->
+<!--                    ? new Date(profile.createdAt).toLocaleDateString()-->
+<!--                    : 'N/A';-->
+<!--            $('#memberSince').text(memberSince);-->
 
-            // Skills display
-            let skillsHtml = '';
-            if (profile.skillIds && profile.skillIds.length > 0) {
-              profile.skillIds.forEach(skillId => {
-                skillsHtml += `<span class="badge bg-primary me-1">#${skillId}</span>`;
-              });
-            } else {
-              skillsHtml = '<span class="text-muted">No skills listed</span>';
-            }
-            $('#profileSkills').html(skillsHtml);
+<!--            // Skills display-->
+<!--            let skillsHtml = '';-->
+<!--            if (profile.skillIds && profile.skillIds.length > 0) {-->
+<!--              profile.skillIds.forEach(skillId => {-->
+<!--                skillsHtml += `<span class="badge bg-primary me-1">#${skillId}</span>`;-->
+<!--              });-->
+<!--            } else {-->
+<!--              skillsHtml = '<span class="text-muted">No skills listed</span>';-->
+<!--            }-->
+<!--            $('#profileSkills').html(skillsHtml);-->
 
-            // Bio
-            $('#profileBio').text(profile.bio || 'No bio provided');
-          }
-        },
-        error: function(xhr) {
-          console.error('Profile load error:', xhr);
-          handleError(xhr);
-        }
-      });
-    }
-    // Chat Functionality
-    function sendMessage() {
-      const message = $('#chatInput').val().trim();
-      if (message) {
-        $.ajax({
-          url: 'http://localhost:8080/api/v1/chat',
-          method: 'POST',
-          contentType: 'application/json',
-          data: JSON.stringify({ message: message }),
-          success: function() {
-            $('.chat-messages').append(`
-              <div class="message-bubble message-right">${message}</div>
-            `);
-            $('#chatInput').val('');
-            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);
-          },
-          error: handleError
-        });
-      }
-    }
+<!--            // Bio-->
+<!--            $('#profileBio').text(profile.bio || 'No bio provided');-->
+<!--          }-->
+<!--        },-->
+<!--        error: function(xhr) {-->
+<!--          console.error('Profile load error:', xhr);-->
+<!--          handleError(xhr);-->
+<!--        }-->
+<!--      });-->
+<!--    }-->
+<!--    // Chat Functionality-->
+<!--    function sendMessage() {-->
+<!--      const message = $('#chatInput').val().trim();-->
+<!--      if (message) {-->
+<!--        $.ajax({-->
+<!--          url: 'http://localhost:8080/api/v1/chat',-->
+<!--          method: 'POST',-->
+<!--          contentType: 'application/json',-->
+<!--          data: JSON.stringify({ message: message }),-->
+<!--          success: function() {-->
+<!--            $('.chat-messages').append(`-->
+<!--              <div class="message-bubble message-right">${message}</div>-->
+<!--            `);-->
+<!--            $('#chatInput').val('');-->
+<!--            $('.chat-messages').scrollTop($('.chat-messages')[0].scrollHeight);-->
+<!--          },-->
+<!--          error: handleError-->
+<!--        });-->
+<!--      }-->
+<!--    }-->
 
-    // Error Handling
-    function handleError(xhr) {
-      const error = xhr.responseJSON;
-      switch (xhr.status) {
-        case 401:
-          localStorage.clear();
-          window.location.href = '../index.html';
-          break;
-        case 403:
-          alert('You dont have permission for this action');
-          break;
-        default:
-          alert(error?.message || 'An error occurred');
-      }
-    }
+<!--    // Error Handling-->
+<!--    function handleError(xhr) {-->
+<!--      const error = xhr.responseJSON;-->
+<!--      switch (xhr.status) {-->
+<!--        case 401:-->
+<!--          localStorage.clear();-->
+<!--          window.location.href = '../index.html';-->
+<!--          break;-->
+<!--        case 403:-->
+<!--          alert('You dont have permission for this action');-->
+<!--          break;-->
+<!--        default:-->
+<!--          alert(error?.message || 'An error occurred');-->
+<!--      }-->
+<!--    }-->
 
-    // Event Listeners
-    $('.chat-toggle').click(() => $('.chat-box').toggleClass('active'));
-    $('#sendMessage').click(sendMessage);
-    $('#chatInput').keypress(e => e.which === 13 && sendMessage());
+<!--    // Event Listeners-->
+<!--    $('.chat-toggle').click(() => $('.chat-box').toggleClass('active'));-->
+<!--    $('#sendMessage').click(sendMessage);-->
+<!--    $('#chatInput').keypress(e => e.which === 13 && sendMessage());-->
 
-    $(document).on('click', '.deliver-order', function() {
-      const orderId = $(this).data('id');
-      $.ajax({
-        url: `http://localhost:8080/api/v1/orders/${orderId}/deliver`,
-        method: 'PUT',
-        success: function(response) {
-          if (response.code === 200) loadOrders();
-        },
-        error: handleError
-      });
-    });
+<!--    $(document).on('click', '.deliver-order', function() {-->
+<!--      const orderId = $(this).data('id');-->
+<!--      $.ajax({-->
+<!--        url: `http://localhost:8080/api/v1/orders/${orderId}/deliver`,-->
+<!--        method: 'PUT',-->
+<!--        success: function(response) {-->
+<!--          if (response.code === 200) loadOrders();-->
+<!--        },-->
+<!--        error: handleError-->
+<!--      });-->
+<!--    });-->
 
-    $(document).on('click', '.delete-service', function() {
-      const serviceId = $(this).data('id');
-      if (confirm('Are you sure you want to delete this service?')) {
-        $.ajax({
-          url: `http://localhost:8080/api/v1/services/${serviceId}`,
-          method: 'DELETE',
-          success: function(response) {
-            if (response.code === 200) loadServices();
-          },
-          error: handleError
-        });
-      }
-    });
+<!--    $(document).on('click', '.delete-service', function() {-->
+<!--      const serviceId = $(this).data('id');-->
+<!--      if (confirm('Are you sure you want to delete this service?')) {-->
+<!--        $.ajax({-->
+<!--          url: `http://localhost:8080/api/v1/services/${serviceId}`,-->
+<!--          method: 'DELETE',-->
+<!--          success: function(response) {-->
+<!--            if (response.code === 200) loadServices();-->
+<!--          },-->
+<!--          error: handleError-->
+<!--        });-->
+<!--      }-->
+<!--    });-->
 
-    // Logout Functionality
-    $('#logoutButton').click(() => {
-      localStorage.clear();
-      window.location.href = '../index.html';
-    });
-  });
+<!--    // Logout Functionality-->
+<!--    $('#logoutButton').click(() => {-->
+<!--      localStorage.clear();-->
+<!--      window.location.href = '../index.html';-->
+<!--    });-->
+<!--  });-->
 
-  // Logout Functionality
-  $('#logoutButton').click(function() {
-    // Clear local storage
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('currentUser');
+<!--  // Logout Functionality-->
+<!--  $('#logoutButton').click(function() {-->
+<!--    // Clear local storage-->
+<!--    localStorage.removeItem('jwtToken');-->
+<!--    localStorage.removeItem('currentUser');-->
 
-    // Redirect to login page
-    window.location.href = '../index.html';
-  });
-</script>
+<!--    // Redirect to login page-->
+<!--    window.location.href = '../index.html';-->
+<!--  });-->
+<!--</script>-->
 </body>
 </html>

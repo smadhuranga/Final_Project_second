@@ -1,0 +1,278 @@
+
+:root {
+    --bg-black: #000000;
+    --text-white: #FFFFFF;
+    --accent-yellow: #FFD700;
+    --accent-green: #00FF00;
+    --danger-red: #ff4444;
+    --sidebar-bg: rgba(10, 10, 10, 0.95);
+    --sidebar-hover: rgba(255, 215, 0, 0.1);
+}
+
+body {
+    background: linear-gradient(-45deg,
+    rgba(0, 0, 0, 0.95),
+    rgba(20, 20, 20, 0.95),
+    rgba(40, 40, 40, 0.95));
+    color: var(--text-white);
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+
+
+.admin-sidebar {
+    background: var(--sidebar-bg);
+    width: 250px;
+    min-height: 100vh;
+    position: fixed;
+    backdrop-filter: blur(10px);
+    border-right: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+.admin-sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    margin: 4px 0;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.admin-sidebar .nav-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: var(--accent-yellow);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.admin-sidebar .nav-link:hover {
+    background: var(--sidebar-hover);
+    color: var(--accent-yellow);
+    transform: translateX(8px);
+}
+
+.admin-sidebar .nav-link:hover::before {
+    transform: scaleY(1);
+}
+
+.admin-sidebar .nav-link.active {
+    background: rgba(255, 215, 0, 0.15);
+    color: var(--accent-yellow);
+    transform: translateX(8px);
+}
+
+.admin-sidebar .nav-link.active::before {
+    transform: scaleY(1);
+}
+
+
+.admin-main {
+    margin-left: 250px;
+    padding: 2rem;
+}
+
+.admin-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(255, 215, 0, 0.1);
+}
+
+.table-custom {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table-custom th {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--accent-yellow);
+}
+
+.table-custom td, .table-custom th {
+    border-color: rgba(255, 255, 255, 0.1);
+    vertical-align: middle;
+}
+
+.status-badge {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+.active-status {
+    background: rgba(0, 255, 0, 0.1);
+    color: var(--accent-green);
+}
+
+.blocked-status {
+    background: rgba(255, 68, 68, 0.1);
+    color: var(--danger-red);
+}
+
+.btn-admin {
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+}
+
+.btn-edit {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--accent-yellow);
+}
+
+.btn-delete {
+    background: rgba(255, 68, 68, 0.1);
+    border: 1px solid var(--danger-red);
+    color: var(--danger-red);
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 68, 68, 0.3);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: rgba(0, 255, 0, 0.3);
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.modal-content {
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--accent-yellow);
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    color: white;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-yellow);
+    box-shadow: none;
+    color: white;
+}
+
+
+.admin-card canvas {
+    height: 400px;
+    width: 100%;
+}
+
+
+
+
+.chat-container {
+    height: 400px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    max-width: 80%;
+}
+
+.received {
+    background: rgba(255, 215, 0, 0.1);
+    align-self: flex-start;
+}
+
+.sent {
+    background: rgba(0, 255, 0, 0.1);
+    align-self: flex-end;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.search-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-yellow);
+    color: white;
+    border-radius: 20px;
+    padding: 8px 15px;
+}
+
+.status-toggle {
+    cursor: pointer;
+}
+
+
+.is-invalid {
+    border-color: var(--danger-red) !important;
+    box-shadow: 0 0 0 0.25rem rgba(255, 68, 68, 0.25);
+}
+
+.invalid-feedback {
+    color: var(--danger-red);
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+    display: none;
+}
+
+.is-invalid ~ .invalid-feedback {
+    display: block;
+}

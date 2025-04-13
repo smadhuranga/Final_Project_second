@@ -1,0 +1,106 @@
+
+:root {
+    --bg-black: #000000;
+    --text-white: #FFFFFF;
+    --accent-yellow: #FFD700;
+    --accent-green: #00FF00;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: 'Poppins', sans-serif;
+}
+
+.portfolio-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+    padding: 4rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.seller-avatar {
+    width: 200px;
+    height: 200px;
+    border: 3px solid var(--accent-yellow);
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.portfolio-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.portfolio-item img {
+    transition: transform 0.3s ease;
+    height: 300px;
+    object-fit: cover;
+}
+
+.portfolio-item:hover img {
+    transform: scale(1.05);
+}
+
+.skill-badge {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--accent-yellow);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    margin: 0.25rem;
+}
+.seller-avatar {
+    /* Add these new properties */
+    object-position: center;
+    background: var(--bg-black);
+    padding: 0.5rem;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+}
+
+/* Add loading state for avatar */
+.avatar-loading {
+    background: linear-gradient(90deg, #333, #444, #333);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border-color: var(--accent-yellow);
+    border-right-color: transparent;
+}
+
+.stats-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+.avatar-container {
+    position: relative;
+    min-height: 200px; /* Match avatar height */
+}
+
+.seller-avatar {
+    transition: opacity 0.3s ease;
+}
+
+.seller-avatar[style*="opacity: 0"] {
+    visibility: hidden;
+}
+
+.avatar-loading {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}

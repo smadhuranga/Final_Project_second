@@ -1,0 +1,221 @@
+
+:root {
+    --bg-black: #000000;
+    --text-white: #FFFFFF;
+    --accent-yellow: #FFD700;
+    --accent-green: #00FF00;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: 'Poppins', sans-serif;
+    padding-top: 80px;
+}
+
+.navbar {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+}
+
+.search-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--text-white);
+    border-radius: 30px;
+    padding: 12px 20px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.btn-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--accent-yellow);
+    cursor: pointer;
+}
+
+.service-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)),
+    url('https://source.unsplash.com/random/1920x1080/?seo,digital-marketing') center/cover;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+.service-highlight-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-highlight-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+}
+
+/* SEO Specialists Table Styles */
+.specialists-section {
+    padding: 5rem 0;
+}
+
+.filter-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.filter-select {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--text-white);
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+}
+
+.specialists-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.specialists-table thead {
+    background: linear-gradient(45deg, var(--accent-yellow), var(--accent-green));
+}
+
+.specialists-table th {
+    padding: 1.5rem;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.specialists-table td {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.specialists-table tr:hover {
+    background: rgba(255,255,255,0.03);
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+.price-badge {
+    background: rgba(0,255,0,0.1);
+    color: var(--accent-green);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.exp-badge {
+    background: rgba(255,215,0,0.1);
+    color: var(--accent-yellow);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animate-on-scroll.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Chat Modal Styles */
+.chat-modal {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background: rgba(0,0,0,0.95);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 15px;
+    transform: translateY(150%);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+.chat-modal.active {
+    transform: translateY(0);
+    box-shadow: 0 10px 30px rgba(255,215,0,0.2);
+}
+
+.chat-header {
+    background: rgba(255,255,255,0.05);
+    padding: 1rem;
+    border-radius: 15px 15px 0 0;
+}
+
+.chat-body {
+    height: 400px;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.message {
+    background: rgba(255,255,255,0.1);
+    padding: 0.8rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    max-width: 80%;
+}
+
+.message.sent {
+    background: var(--accent-yellow);
+    color: #000;
+    margin-left: auto;
+}
+
+.chat-input {
+    background: rgba(255,255,255,0.05);
+    border: none;
+    color: white;
+    padding: 1rem;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Seller Modal Styles */
+.seller-modal img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--accent-yellow);
+}

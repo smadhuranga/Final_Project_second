@@ -8,10 +8,7 @@ import lk.ijse.back_end.service.OrderService;
 import lk.ijse.back_end.service.RatingService;
 import lk.ijse.back_end.service.ServiceService;
 import lk.ijse.back_end.service.UserService;
-import lk.ijse.back_end.util.JwtUtil;
-import lk.ijse.back_end.util.OrderStatus;
-import lk.ijse.back_end.util.UserType;
-import lk.ijse.back_end.util.VarList;
+import lk.ijse.back_end.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,18 +36,21 @@ public class SellerController {
     private final RatingService ratingService;
     private final OrderService orderService;
     private final ServiceService serviceService;
+    private final EmailUtil emailUtil;
 
     @Autowired
     public SellerController(UserService userService,
                             JwtUtil jwtUtil,
                             RatingService ratingService,
                             OrderService orderService,
-                            ServiceService serviceService) {
+                            ServiceService serviceService,
+                            EmailUtil emailUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
         this.ratingService = ratingService;
         this.orderService = orderService;
         this.serviceService = serviceService;
+        this.emailUtil = emailUtil;
     }
     @PostMapping("/register")
     public ResponseEntity<ResponseDTO> registerSeller(
@@ -242,6 +242,49 @@ public class SellerController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
+        }
+    }
+    // SellerController.java
+    @PostMapping("/notify-chat")
+    public ResponseEntity<ResponseDTO> notifyChatInitiation(
+            @RequestParam String sellerEmail,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        try {
+            // Get customer details
+            String customerEmail = userDetails.getUsername();
+            UserDTO customer = userService.searchUser(customerEmail);
+
+            // Get seller details
+            SellerDTO seller = (SellerDTO) userService.findUserByEmail(sellerEmail);
+
+            // Send notification email
+            emailUtil.sendChatNotification(
+                    seller.getEmail(),
+                    customer.getName(),
+                    customer.getEmail()
+            );
+
+            return ResponseEntity.ok(
+                    new ResponseDTO(VarList.OK, "Seller notified successfully", null)
+            );
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(VarList.Not_Found, "User not found", null));
+        } catch (EmailException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(new ResponseDTO(
+                            VarList.Service_Unavailable,
+                            "Email service temporarily unavailable",
+                            null
+                    ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(
+                            VarList.Internal_Server_Error,
+                            "Error sending notification: " + e.getMessage(),
+                            null
+                    ));
         }
     }
 }

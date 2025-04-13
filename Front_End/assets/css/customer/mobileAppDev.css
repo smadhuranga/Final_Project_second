@@ -1,0 +1,217 @@
+
+:root {
+    --bg-black: #000000;
+    --text-white: #FFFFFF;
+    --accent-yellow: #FFD700;
+    --accent-green: #00FF00;
+}
+
+body {
+    background-color: var(--bg-black);
+    color: var(--text-white);
+    font-family: 'Poppins', sans-serif;
+}
+
+
+.navbar {
+    background-color: rgba(0, 0, 0, 0.95) !important;
+    backdrop-filter: blur(10px);
+    transition: all 0.4s ease;
+}
+
+.search-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent-yellow);
+    color: var(--text-white);
+    border-radius: 30px;
+    padding: 12px 20px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.btn-search {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: var(--accent-yellow);
+    cursor: pointer;
+}
+
+
+.service-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)),
+    url('https://source.unsplash.com/random/1920x1080/?mobile,app') center/cover;
+    height: 70vh;
+    display: flex;
+    align-items: center;
+}
+
+.service-highlight-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--accent-yellow);
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1rem;
+    transition: all 0.4s ease;
+}
+
+.service-highlight-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);
+}
+
+
+.filter-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--accent-yellow);
+    color: white;
+    border-radius: 25px;
+    padding: 0.75rem 1.5rem;
+}
+
+.portfolio-item {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-item:hover {
+    transform: scale(1.05);
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease;
+}
+
+.animate-on-scroll.animated {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+
+/* Chat Modal Styles */
+.chat-body {
+    height: 60vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    max-width: 80%;
+    animation: slideIn 0.3s ease;
+}
+
+.message.received {
+    background: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--accent-yellow);
+    margin-right: auto;
+}
+
+.message.sent {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid var(--accent-green);
+    margin-left: auto;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.5rem;
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Seller Modal Styles */
+.seller-details h5 {
+    border-bottom: 2px solid var(--accent-yellow);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.portfolio-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-item:hover {
+    transform: scale(1.05);
+}
+
+.portfolio-item img {
+    transition: transform 0.3s ease;
+}
+
+.modal-content {
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.1);
+}
+
+
+.seller-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.seller-table th, .seller-table td {
+    padding: 1rem;
+    text-align: left;
+    vertical-align: middle; /* Aligns content vertically in the middle */
+}
+
+.seller-table th {
+    background: linear-gradient(45deg, var(--accent-yellow), var(--accent-green));
+    color: var(--text-white);
+}
+
+.seller-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.seller-table tr:last-child td {
+    border-bottom: none;
+}
+
+.seller-table tr:hover {
+    background: rgba(255, 255, 255, 0.03);
+    transform: scale(1.02);
+    transition: all 0.3s ease;
+}
+
+.seller-badge {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--accent-yellow);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
