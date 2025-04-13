@@ -550,49 +550,50 @@
 
              if (sellers.length === 0) {
                  tbody.html(`
-                <tr>
-                    <td colspan="6" class="text-center py-4">
-                        No sellers found matching your criteria
-                    </td>
-                </tr>
-            `);
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    No sellers found matching your criteria
+                </td>
+            </tr>
+        `);
                  return;
              }
 
              sellers.forEach(seller => {
                  tbody.append(`
-<tr>
-    <td>
-        <div class="d-flex align-items-center">
-            <img src="${seller.avatar}"
-                class="rounded-circle me-3"
-                width="40"
-                height="40"
-                alt="${seller.name}">
-            <div>
-                <h6 class="mb-0">${seller.name}</h6>
-                <small class="text-muted">Email: ${seller.email}</small>
-            </div>
-        </div>
-    </td>
-    <td>${seller.experience} yrs</td>
-    <td>$${seller.hourlyRate}/hr</td>
-    <td>${seller.completedProjects}</td>
-    <td>${seller.skills.slice(0, 3).join(', ')}</td>
-    <td>
-       <button class="btn btn-sm btn-outline-primary view-portfolio"
-         data-seller-email="${seller.email}">
-    <i class="fas fa-eye me-1"></i>Portfolio
-</button>
-        <button class="btn btn-sm btn-outline-success chat-seller ms-2"
-                data-seller-id="${seller.id}">
-            <i class="fas fa-comments me-1"></i>Chat
-        </button>
-    </td>
-</tr>
-`);
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="${seller.avatar}"
+                            class="rounded-circle me-3"
+                            width="40"
+                            height="40"
+                            alt="${seller.name}">
+                        <div>
+                            <h6 class="mb-0">${seller.name}</h6>
+                            <small class="text-muted">Email: ${seller.email}</small>
+                        </div>
+                    </div>
+                </td>
+                <td>${seller.experience} yrs</td>
+                <td>$${seller.hourlyRate}/hr</td>
+                <td>${seller.completedProjects}</td>
+                <td>${seller.skills.slice(0, 3).join(', ')}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary view-portfolio"
+                            data-seller-email="${seller.email}">
+                        <i class="fas fa-eye me-1"></i>Portfolio
+                    </button>
+                    <button class="btn btn-sm btn-outline-success chat-seller ms-2"
+                            data-seller-email="${seller.email}">
+                        <i class="fas fa-comments me-1"></i>Chat
+                    </button>
+                </td>
+            </tr>
+        `);
              });
          }
+
          $(document).on('click', '.view-portfolio', function() {
              const sellerEmail = $(this).data('seller-email');
              viewPortfolio(sellerEmail);
@@ -648,16 +649,37 @@
          }
 
          // Chat Functions
+         // Modified startChatSession function
          async function startChatSession() {
-             currentChat = $(this).data('seller-id');
+             const sellerEmail = $(this).data('seller-email');
+             currentChat = sellerEmail;
+
              try {
-                 const response = await $.ajax({
-                     url: API_BASE + `chat/${currentChat}`
+                 // Send email notification with form data instead of JSON
+                 await $.ajax({
+                     url: API_BASE + 'sellers/notify-chat',
+                     method: 'POST',
+                     data: { sellerEmail: sellerEmail },  // Send as form data
+                     timeout: 5000
                  });
-                 openChatModal(response.messages);
+             } catch (error) {
+                 console.warn('Email notification failed:', error);
+                 showAlert('Could not notify seller, but you can still send messages', 'warning');
+             }
+
+             try {
+                 // Encode email properly for the endpoint
+                 const encodedEmail = encodeURIComponent(sellerEmail);
+                 const response = await $.ajax({
+                     url: API_BASE + `sellers/me/chat/${encodedEmail}`,  // Adjusted endpoint path
+                     method: 'GET'
+                 });
+                 openChatModal(response);
                  startChatPolling();
              } catch (error) {
-                 handleAjaxError(error, 'Failed to start chat');
+                 console.error('Chat error:', error);
+                 showAlert('Failed to load chat history. Starting new conversation.', 'info');
+                 openChatModal([]);  // Start with empty chat history
              }
          }
 

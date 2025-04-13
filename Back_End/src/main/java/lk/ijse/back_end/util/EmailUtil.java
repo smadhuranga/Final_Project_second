@@ -1,10 +1,15 @@
 package lk.ijse.back_end.util;
 
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.mail.MailAuthenticationException;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class EmailUtil {
 
@@ -20,9 +25,34 @@ public class EmailUtil {
         message.setSubject("LearningLab - Your OTP Code");
         message.setText("Your One-Time Password (OTP) for LearningLab " + purpose + " is: " + otp +
                 "\n\nThis code is valid for 10 minutes. Please do not share this code with anyone.");
-        message.setFrom("noreply@fitlifeifms.com");
+        message.setFrom("edusync58@gmail.com");
 
         mailSender.send(message);
+    }
+
+//    // EmailUtil.java
+    public void sendChatNotification(String sellerEmail, String customerName, String customerEmail) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(sellerEmail);
+            message.setSubject("New Chat Request on UNI Freelancers");
+            message.setText(
+                    "Hello Seller,\n\nYou have a new chat request from: " + customerName +
+                            " (" + customerEmail + ")\n\n" +
+                            "Please login to your account to respond.\n\n" +
+                            "Best regards,\nUNI Freelancers Team"
+            );
+            message.setFrom("edusync58@gmail.com"); // Must match authenticated user
+
+            mailSender.send(message);
+            System.out.println( "Email sent to: " + sellerEmail);
+        } catch (MailAuthenticationException ex) {
+            log.error("Error authenticating with email server", ex);
+            throw new EmailException("Email server authentication failed", ex);
+        } catch (MailSendException ex) {
+           log.error("Error sending email to: " + sellerEmail, ex);
+            throw new EmailException("Email server connection failed", ex);
+        }
     }
 
 }

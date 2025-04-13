@@ -590,7 +590,19 @@
                 return;
             }
 
-            $('#sellerName').text(currentSeller.name);
+            try {
+                // Try sending notification
+                await $.ajax({
+                    url: API_BASE + 'sellers/notify-chat',
+                    method: 'POST',
+                    data: { sellerEmail: sellerId },
+                    timeout: 5000 // 5 second timeout
+                });
+            } catch (error) {
+                console.warn('Notification failed, proceeding with chat anyway');
+            }
+
+            // Always open chat regardless of notification status
             try {
                 await loadChatHistory(sellerId);
                 $('#chatModal').modal('show');

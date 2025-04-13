@@ -529,8 +529,10 @@
                         </div>
                     </div>
                     <div class="input-group mt-3">
-                        <input type="text" class="form-control bg-black text-white border-yellow"
-                               placeholder="Type your message..." id="messageInput">
+                        <input type="text"
+                               class="form-control bg-black text-white border-yellow"
+                               placeholder="Type your message..."
+                               id="messageInput">
                         <button class="btn btn-accent" id="sendMessageBtn">
                             <i class="fas fa-paper-plane"></i>
                         </button>
@@ -624,22 +626,71 @@
             }));
         }
 
+        // function renderSellers(sellers) {
+        //     const tbody = $('#sellersBody');
+        //     tbody.empty();
+        //
+        //     if (sellers.length === 0) {
+        //         tbody.html(`<tr><td colspan="6" class="text-center py-4">No sellers found</td></tr>`);
+        //         return;
+        //     }
+        //
+        //     tbody.html(sellers.map(seller => `
+        //     <tr class="glow-on-hover">
+        //         <td>
+        //             <div class="d-flex align-items-center">
+        //                 <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
+        //                 <div>
+        //                     <h5 class="mb-0">${seller.name}</h5>
+        //                     <small class="text-muted">${seller.experience}+ years experience</small>
+        //                 </div>
+        //             </div>
+        //         </td>
+        //         <td>${seller.experience} years</td>
+        //         <td>$${seller.rate}/hr</td>
+        //         <td>${seller.projects}+</td>
+        //         <td>
+        //             ${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}
+        //         </td>
+        //         <td>
+        //              <button class="btn btn-sm btn-outline-primary view-seller"
+        //                             onclick="viewPortfolio('${seller.id}')">
+        //                         <i class="fas fa-eye me-1"></i>Portfolio
+        //                     </button>
+        //             <button class="btn btn-sm btn-outline-success chat-seller ms-2"
+        //                             onclick="openChat('${seller.id}')">
+        //                         <i class="fas fa-comments me-1"></i>Chat
+        //                     </button>
+        //         </td>
+        //     </tr>
+        // `).join(''));
+        //
+        //     initializeEventHandlers();
+        // }
+
+
+
+        // Remove the loadChatHistory function completely
+
+        // Updated renderSellers to prevent template injection
         function renderSellers(sellers) {
             const tbody = $('#sellersBody');
             tbody.empty();
 
-            if (sellers.length === 0) {
-                tbody.html(`<tr><td colspan="6" class="text-center py-4">No sellers found</td></tr>`);
-                return;
-            }
+            const safeHTML = sellers.map(seller => {
+                const safeName = escapeHtml(seller.name);
+                const safeId = escapeHtml(seller.id);
+                const safeSkills = seller.skills.map(skill =>
+                    `<span class="seller-badge">${escapeHtml(skill)}</span>`
+                ).join('');
 
-            tbody.html(sellers.map(seller => `
+                return `
             <tr class="glow-on-hover">
                 <td>
                     <div class="d-flex align-items-center">
                         <i class="fas fa-user-tie fa-2x me-3 text-yellow"></i>
                         <div>
-                            <h5 class="mb-0">${seller.name}</h5>
+                            <h5 class="mb-0">${safeName}</h5>
                             <small class="text-muted">${seller.experience}+ years experience</small>
                         </div>
                     </div>
@@ -647,23 +698,52 @@
                 <td>${seller.experience} years</td>
                 <td>$${seller.rate}/hr</td>
                 <td>${seller.projects}+</td>
+                <td>${safeSkills}</td>
                 <td>
-                    ${seller.skills.map(skill => `<span class="seller-badge">${skill}</span>`).join('')}
-                </td>
-                <td>
-                     <button class="btn btn-sm btn-outline-primary view-seller"
-                                    onclick="viewPortfolio('${seller.id}')">
-                                <i class="fas fa-eye me-1"></i>Portfolio
-                            </button>
+                    <button class="btn btn-sm btn-outline-primary view-seller"
+                            data-seller-id="${safeId}">
+                        <i class="fas fa-eye me-1"></i>Portfolio
+                    </button>
                     <button class="btn btn-sm btn-outline-success chat-seller ms-2"
-                                    onclick="openChat('${seller.id}')">
-                                <i class="fas fa-comments me-1"></i>Chat
-                            </button>
+                            data-seller-id="${safeId}"
+                            data-seller-name="${safeName}">
+                        <i class="fas fa-comments me-1"></i>Chat
+                    </button>
                 </td>
             </tr>
-        `).join(''));
+        `;
+            }).join('');
 
+            tbody.html(safeHTML);
             initializeEventHandlers();
+        }
+
+        // Add HTML escaping utility
+        function escapeHtml(unsafe) {
+            return unsafe?.toString()
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;") || '';
+        }
+
+        // Initialize event handlers safely
+        function initializeEventHandlers() {
+            // Chat button handler
+            $(document).off('click', '.chat-seller').on('click', '.chat-seller', function() {
+                const sellerId = $(this).data('seller-id');
+                const sellerName = $(this).data('seller-name');
+                console.log('Chat initiated with:', sellerId, sellerName);
+                openChat(sellerId, sellerName);
+            });
+
+            // Portfolio button handler
+            $(document).off('click', '.view-seller').on('click', '.view-seller', function() {
+                const sellerId = $(this).data('seller-id');
+                console.log('Viewing portfolio for:', sellerId);
+                viewPortfolio(sellerId);
+            });
         }
 
         // Rest of the code remains the same as previous version
@@ -706,18 +786,7 @@
         }
 
         // Event Handlers
-        function initializeEventHandlers() {
-            $('.btn-chat').off('click').click(function() {
-                const sellerId = $(this).data('seller-id');
-                const sellerName = $(this).data('seller-name');
-                openChat(sellerId, sellerName);
-            });
 
-            $('.view-portfolio').off('click').click(function() {
-                const portfolioUrl = $(this).data('portfolio-url');
-                viewPortfolio(portfolioUrl);
-            });
-        }
 
         // Chat System
         let currentChatSeller = null;
@@ -725,23 +794,42 @@
         async function openChat(sellerId, sellerName) {
             if (!checkAuthStatus()) return;
 
-            currentChatSeller = { id: sellerId, name: sellerName };
-            $('#sellerName').text(sellerName);
-            $('#chatModal').modal('show');
-            await loadChatHistory(sellerId);
-        }
-
-        async function loadChatHistory(sellerId) {
             try {
+                console.log('Sending notification to:', sellerId);
                 const response = await $.ajax({
-                    url: API_BASE + `chat/${sellerId}`,
-                    method: 'GET'
+                    url: API_BASE + 'sellers/notify-chat',
+                    method: 'POST',
+                    data: { sellerEmail: sellerId },
+                    headers: {
+                        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                    }
                 });
-                renderMessages(response.messages);
+
+                console.log('Notification response:', response);
+                showToast('Seller has been notified via email', 'success');
             } catch (error) {
-                showToast('Failed to load chat history: ' + error.responseJSON?.message, 'danger');
+                console.error('Notification failed:', error);
+                showToast('Notification failed: ' + (error.responseJSON?.message || 'Server error'), 'danger');
+            }
+
+            // Open chat modal
+            try {
+                $('#sellerName').text(sellerName);
+                $('#chatModal').modal('show');
+                $('#chatMessages').html(`
+            <div class="text-center text-muted p-3">
+                <i class="fas fa-envelope fa-2x mb-2"></i>
+                <p>Notification sent to ${sellerName}</p>
+                <small>You can start chatting once the seller responds</small>
+            </div>
+        `);
+            } catch (modalError) {
+                console.error('Error opening modal:', modalError);
+                showToast('Error opening chat interface', 'danger');
             }
         }
+
+
 
         // UI Helpers
         function showToast(message, type = 'success') {
@@ -765,12 +853,10 @@
             if (checkAuthStatus()) {
                 fetchSellers();
                 initializeScrollAnimations();
-            }
+                initializeEventHandlers(); // Initialize all event handlers once
 
-            // Navbar Scroll Effect
-            $(window).scroll(() => {
-                $('.navbar').toggleClass('navbar-scrolled', $(window).scrollTop() > 50);
-            });
+
+            }
         });
 
         function initializeScrollAnimations() {

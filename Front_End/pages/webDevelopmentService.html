@@ -630,6 +630,7 @@
         }
 
         // Chat System
+        // Modified openChat function
         async function openChat(sellerId) {
             if (!checkAuthStatus()) return;
 
@@ -639,12 +640,62 @@
                 return;
             }
 
-            $('#sellerName').text(currentSeller.name);
             try {
-                await loadChatHistory(sellerId );
+                // Send email notification to seller
+                await $.ajax({
+                    url: API_BASE + 'sellers/notify-chat',
+                    method: 'POST',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: $.param({ sellerEmail: currentSeller.email }),
+                    timeout: 5000
+                });
+            } catch (error) {
+                console.warn('Email notification failed:', error);
+                showToast('Could not notify seller, but you can still send messages', 'warning');
+            }
+
+            try {
+                await loadChatHistory(sellerId);
+                $('#sellerName').text(currentSeller.name);
                 $('#chatModal').modal('show');
             } catch (error) {
                 showToast('Failed to start chat', 'danger');
+            }
+        }
+
+        // Update your chat button in the renderSellers function:
+        // Change the onclick attribute to:
+        onclick="openChat('${seller.email}')"
+
+        // Add this error handling to your sendMessage function:
+        async function sendMessage() {
+            const message = $('#messageInput').val().trim();
+            if (!message || !currentSeller) return;
+
+            try {
+                await $.ajax({
+                    url: API_BASE + 'chat/send',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        sellerId: currentSeller.id,
+                        message: message
+                    })
+                });
+
+                // Optional: Send another notification if message is urgent
+                if (message.toLowerCase().includes('urgent')) {
+                    await $.ajax({
+                        url: API_BASE + 'sellers/notify-chat',
+                        method: 'POST',
+                        data: { sellerEmail: currentSeller.email }
+                    });
+                }
+
+                $('#messageInput').val('');
+                await loadChatHistory(currentSeller.id);
+            } catch (error) {
+                // ... existing error handling ...
             }
         }
 

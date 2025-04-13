@@ -530,10 +530,11 @@
             <i class="fas fa-eye me-1"></i>Portfolio
         </button>
             <button class="btn btn-sm btn-outline-success chat-seller ms-2"
-                    data-id="${specialist.id}"
-                    data-name="${escapeHTML(specialist.name)}">
-                <i class="fas fa-comment me-1"></i>Chat
-            </button>
+        data-id="${specialist.id}"
+        data-name="${escapeHTML(specialist.name)}"
+        data-email="${specialist.email}">
+    <i class="fas fa-comment me-1"></i>Chat
+</button>
         </td>
     </tr>
 `));
@@ -629,14 +630,30 @@
         }
 
         // Chat System
-        $(document).on('click', '.start-chat', function() {
+        // Replace existing chat click handler with this
+        $(document).on('click', '.chat-seller', async function() {
             if (!checkAuthStatus()) return;
 
             currentSeller = {
                 id: $(this).data('id'),
-                name: $(this).data('name')
+                name: $(this).data('name'),
+                email: $(this).data('email')
             };
 
+            try {
+                // Send email notification to seller
+                await $.ajax({
+                    url: API_BASE + 'sellers/notify-chat',
+                    method: 'POST',
+                    data: { sellerEmail: currentSeller.email },
+                    timeout: 5000
+                });
+            } catch (error) {
+                console.warn('Notification failed:', error);
+                showToast("Couldn't notify seller, but chat is available", 'warning');
+            }
+
+            // Open chat interface
             $('.chat-modal').addClass('active');
             $('#sellerName').text(currentSeller.name);
             loadChatHistory();
@@ -645,19 +662,20 @@
 
         async function loadChatHistory() {
             try {
+                const encodedEmail = encodeURIComponent(currentSeller.email);
                 const response = await $.ajax({
-                    url: API_BASE + `chat/${currentSeller.id}`,
+                    url: API_BASE + `sellers/me/chat/${encodedEmail}`,
                     method: 'GET'
                 });
 
                 $('#chatMessages').html(response.data.map(msg => `
-                <div class="message ${msg.senderType === 'user' ? 'sent' : ''}">
-                    <div class="msg-text">${escapeHTML(msg.content)}</div>
-                    <div class="msg-time">
-                        ${new Date(msg.timestamp).toLocaleTimeString()}
-                    </div>
+            <div class="message ${msg.senderType === 'user' ? 'sent' : ''}">
+                <div class="msg-text">${escapeHTML(msg.content)}</div>
+                <div class="msg-time">
+                    ${new Date(msg.timestamp).toLocaleTimeString()}
                 </div>
-            `).join(''));
+            </div>
+        `).join(''));
                 scrollChatToBottom();
             } catch (error) {
                 showToast('Error loading chat history', 'danger');
@@ -672,17 +690,22 @@
                 await $.ajax({
                     url: API_BASE + 'chat/send',
                     method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        sellerId: currentSeller.id,
+                    data: {
+                        sellerEmail: currentSeller.email,
                         message: message
-                    })
+                    }
                 });
 
                 $('#messageInput').val('');
                 loadChatHistory();
             } catch (error) {
                 showToast('Error sending message', 'danger');
+            }
+        }
+        function handleMessageKey(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
             }
         }
 

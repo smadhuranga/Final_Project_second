@@ -5,8 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/EmailException.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/adminController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/adminController.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/adviser/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/EmailUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/EmailUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +193,8 @@
       <workItem from="1744168078935" duration="327000" />
       <workItem from="1744430096525" duration="7563000" />
       <workItem from="1744521837925" duration="74000" />
-      <workItem from="1744521926695" duration="4939000" />
+      <workItem from="1744521926695" duration="14980000" />
+      <workItem from="1744562913150" duration="9826000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -393,7 +404,15 @@
       <option name="project" value="LOCAL" />
       <updated>1744432314322</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1744528692985</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1744528692985</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
