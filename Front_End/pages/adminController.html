@@ -388,11 +388,11 @@
         <div class="mb-3">
             <div class="btn-group" role="group">
                 <button type="button" class="btn btn-admin btn-edit active"
-                        data-type="customer">Customers</button>
+                        data-type="CUSTOMER">Customers</button>
                 <button type="button" class="btn btn-admin btn-edit"
-                        data-type="seller">Sellers</button>
+                        data-type="SELLER">Sellers</button>
                 <button type="button" class="btn btn-admin btn-edit"
-                        data-type="coordinator">Coordinators</button>
+                        data-type="COORDINATOR">Coordinators</button>
             </div>
         </div>
 
@@ -1028,48 +1028,55 @@
     });
 
     // Enhanced User Management
-    function initializeUserTables() {
+    // User Management Section
+    let usersTable = null;
+    let currentUserType = 'CUSTOMER';
+    let allUsers = []; // Store all users
+
+    // Fetch all users once
+    function fetchAllUsers() {
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/admin/users',
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader('Authorization',
+                    'Bearer ' + localStorage.getItem('jwtToken'));
+            },
+            success: function(response) {
+                allUsers = response.data;
+                initializeUserTables(currentUserType);
+            }
+        });
+    }
+
+    function initializeUserTables(userType) {
+        // Cleanup existing table
         if ($.fn.DataTable.isDataTable('#usersTable')) {
-            $('#usersTable').DataTable().destroy();
+            usersTable.destroy();
+            $('#usersTable').empty();
         }
 
-        $('#usersTable').DataTable({
-            ajax: {
-                url: 'http://localhost:8080/api/v1/admin/users',
-                dataSrc: 'data',
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader('Authorization',
-                        'Bearer ' + localStorage.getItem('jwtToken'));
-                },
-                error: function(xhr) {
-                    if(xhr.status === 403) {
-                        showAlert('Admin privileges required', 'danger');
-                        window.location.href = '/unauthorized.html';
-                    }
-                },
-                createdRow: function(row, data) {
-                    $(row)
-                        .attr('data-id', data.id)
-                        .attr('data-type', data.type.toLowerCase());
-                }
-            },
+        // Filter users by type
+        const filteredUsers = allUsers.filter(user => user.type === userType);
+
+        // Initialize new table
+        usersTable = $('#usersTable').DataTable({
+            data: filteredUsers,
             columns: [
                 {
                     data: 'avatar',
-                    render: (data) => `<img src="${data || '../images/356306451_54b19ada-d53e-4ee9-8882-9dfed1bf1396.jpg'}" class="user-avatar">`
+                    render: (data) => `<img src="${data || '../images/default-avatar.jpg'}"
+                                     class="user-avatar">`
                 },
                 { data: 'name' },
                 { data: 'email' },
                 { data: 'phone' },
                 {
                     data: 'status',
-                    render: (data, type, row) => `
-                        <label class="switch status-toggle">
-                            <input type="checkbox" ${data === 'active' ? 'checked' : ''}
-                                   data-id="${row.id}">
-                            <span class="slider"></span>
-                        </label>
-                    `
+                    render: (data) => `
+                    <label class="switch status-toggle">
+                        <input type="checkbox" ${data === 'ACTIVE' ? 'checked' : ''}>
+                        <span class="slider"></span>
+                    </label>`
                 },
                 {
                     data: 'createdAt',
@@ -1082,22 +1089,37 @@
                 {
                     data: null,
                     render: (data, type, row) => `
-                         <button class="btn btn-admin btn-delete me-2">
-                    <i class="fas fa-trash"></i>
-                </button>
-                <button class="btn btn-admin btn-edit"
-                        onclick="openChat('${row.type}', '${row.email}')">
-                    <i class="fas fa-comment"></i>
-                </button>
-                    `
+                    <button class="btn btn-admin btn-delete me-2"
+                            data-email="${row.email}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="btn btn-admin btn-edit"
+                            onclick="openChat('${row.type}', '${row.email}')">
+                        <i class="fas fa-comment"></i>
+                    </button>`
                 }
             ],
-            error: function(xhr) {
-                console.error('DataTables error:', xhr.responseText);
-            }
-
+            destroy: true // Important for reinitialization
         });
     }
+
+    // Handle type switching
+    $('[data-type]').click(function() {
+        currentUserType = $(this).data('type');
+        $('[data-type]').removeClass('active');
+        $(this).addClass('active');
+        initializeUserTables(currentUserType);
+    });
+
+    // Initial load
+    $(document).ready(function() {
+        fetchAllUsers(); // Fetch all users first
+    });
+
+    // Search functionality
+    $('#userSearch').on('input', function() {
+        usersTable.search(this.value).draw();
+    });
     // Handle status toggle
     $(document).on('change', '.status-toggle input', function() {
         const userId = $(this).data('id');
@@ -1118,22 +1140,7 @@
         table.search(this.value).draw();
     });
 
-    // Filter by user type
-    $('[data-type]').click(function() {
-        const type = $(this).data('type');
-        const table = $('#usersTable').DataTable();
 
-        $('[data-type]').removeClass('active');
-        $(this).addClass('active');
-
-        table.column(3).search(type).draw();
-    });
-
-    // Initialize with some default data
-    $(document).ready(function() {
-        initializeUserTables();
-        // ... rest of your existing initialization code ...
-    });
 
     // Add to the existing JavaScript
 
