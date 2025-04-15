@@ -276,3 +276,7 @@ input:checked + .slider:before {
 .is-invalid ~ .invalid-feedback {
     display: block;
 }
+
+#usersTable{
+    width: 100% !important;
+}

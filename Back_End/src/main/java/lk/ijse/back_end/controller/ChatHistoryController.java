@@ -39,7 +39,7 @@ public class ChatHistoryController {
             @PathVariable Long otherUserId,
             @AuthenticationPrincipal UserDetails userDetails) {
 
-        Long currentUserId = getCurrentUserId(userDetails); // Implement user ID extraction
+        Long currentUserId = getCurrentUserId(userDetails);
         List<ChatMessageDTO> history = chatService.getChatHistory(currentUserId, otherUserId);
 
         return ResponseEntity.ok(new ResponseDTO<>(
@@ -50,10 +50,8 @@ public class ChatHistoryController {
     }
 
     private Long getCurrentUserId(UserDetails userDetails) {
-        // Use your existing service method
         UserDTO user = userService.findUserByEmail(userDetails.getUsername());
 
-        // Get ID through repository using the instance reference
         return userRepository.findByEmail(user.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"))
                 .getId();

@@ -5,43 +5,51 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d50c7602-c32a-48d5-8d25-640c8d00e8b1" name="Changes" comment="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/admin/admin.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/coordinator/coordinator.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/contentWriting.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/customerHome.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/graphicDesign.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/mobileAppDev.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/seoOptimization.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/videoEdit.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/customer/webDevelopment.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/index.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/seller/home.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/css/seller/sellerPortfolio.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/admin/admin.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/coordinator/coordinator.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/contentWriting.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/customerHome.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/graphicDesign.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/mobileAppDev.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/seoOptimization.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/videoEdit.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/webDevelopment.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/seller/home.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Front_End/assets/js/seller/sellerPortfolio.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSocketAuthInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/ModelMapperConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/SecurityBeansConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSocketConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSocketSecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/config/WebSocketSecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/AdminController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ChatController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ChatController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ChatHistoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ChatHistoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ChatWebSocketController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/ChatWebSocketController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/CustomerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/SellerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/OrdersRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/ServiceCategoryRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/ServiceCategoryRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/UserRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/repository/UserRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/CustomerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/FileStorageService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/SellerService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/CustomrServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/OrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/OrderServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/SellerServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/ServiceServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/service/impl/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/AuthChannelInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/AuthChannelInterceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/EmailUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/EmailUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/Back_End/src/main/java/lk/ijse/back_end/util/JwtUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/css/admin/admin.css" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/css/admin/admin.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/admin/admin.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/admin/admin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/coordinator/coordinator.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/coordinator/coordinator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/contentWriting.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/contentWriting.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/customerHome.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/customerHome.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/graphicDesign.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/graphicDesign.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/mobileAppDev.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/mobileAppDev.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/seoOptimization.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/seoOptimization.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/videoEdit.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/videoEdit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Front_End/assets/js/customer/webDevelopment.js" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/assets/js/customer/webDevelopment.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/adminController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/adminController.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/contentWritingService.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/coordinatorController.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/graphicDesignServiceHome.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Front_End/pages/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/home.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/mobileAppDeveleopmentService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/portfolio.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/portfolio.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/sellerHome.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/seoOptimizationService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/videoEditingService.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" beforeDir="false" afterPath="$PROJECT_DIR$/Front_End/pages/webDevelopmentService.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,6 +99,7 @@
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
     &quot;Maven.Back_End [clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.Back_End [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.Back_End [install].executor&quot;: &quot;Run&quot;,
     &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
     &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
     &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
@@ -221,7 +230,10 @@
       <workItem from="1744521926695" duration="14980000" />
       <workItem from="1744562913150" duration="13746000" />
       <workItem from="1744625577654" duration="3406000" />
-      <workItem from="1744692161852" duration="3192000" />
+      <workItem from="1744692161852" duration="8958000" />
+      <workItem from="1744702705651" duration="17728000" />
+      <workItem from="1744777078409" duration="22293000" />
+      <workItem from="1744806051410" duration="7109000" />
     </task>
     <task id="LOCAL-00001" summary="front end 75% completed">
       <option name="closed" value="true" />
@@ -447,7 +459,23 @@
       <option name="project" value="LOCAL" />
       <updated>1744575415284</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1744695616210</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1744695616210</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Merge remote-tracking branch 'origin/main'&#10;&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;Front_End/pages/coordinatorController.html">
+      <option name="closed" value="true" />
+      <created>1744698981439</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1744698981439</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

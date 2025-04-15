@@ -47,12 +47,12 @@ public class OrderServiceImpl implements OrderService {
                 .map(orders -> modelMapper.map(orders, OrderDTO.class))
                 .orElse(null);
     }
-    // OrderServiceImpl.java
+
     @Override
     public List<OrderDTO> getOrdersBySellerAndStatus(Long sellerId, OrderStatus status) {
         List<Orders> orders = orderRepository.findBySeller_IdAndStatus(
                 sellerId,
-                status.toString()  // Convert enum to string
+                status.toString()
         );
         return orders.stream()
                 .map(order -> modelMapper.map(order, OrderDTO.class))

@@ -9,6 +9,8 @@ import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -43,9 +45,9 @@ public class UserController {
         }
     }
     @DeleteMapping("/admin/users/{id}")
-    public ResponseEntity<ResponseDTO> deleteUser(@PathVariable String id) { // Change to String
+    public ResponseEntity<ResponseDTO> deleteUser(@PathVariable String id) {
         try {
-            // Validate ID format
+
             if (!id.matches("\\d+")) {
                 return ResponseEntity.badRequest()
                         .body(new ResponseDTO(VarList.Bad_Request, "Invalid ID format", null));
@@ -111,5 +113,7 @@ public class UserController {
                     .body(new ResponseDTO(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
+
+
 
 }

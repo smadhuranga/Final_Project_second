@@ -1,124 +1,123 @@
+// Configuration
+const API_BASE = 'http://localhost:8080/api/v1/';
+let allSellers = [];
+let currentChat = null;
+let chatInterval = null;
 
-    // Configuration
-    const API_BASE = 'http://localhost:8080/api/v1/';
-    let allSellers = [];
-    let currentChat = null;
-    let chatInterval = null;
-
-    // Global AJAX Setup
-    $.ajaxSetup({
+// Global AJAX Setup
+$.ajaxSetup({
     beforeSend: function (xhr) {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-}
-}
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+        }
+    }
 });
 
-    // Initialization
-    $(document).ready(function () {
+// Initialization
+$(document).ready(function () {
     checkAuthStatus();
     initializeScrollAnimations();
     loadSellers();
     setupEventListeners();
 });
 
-    // Authentication Functions
-    function checkAuthStatus() {
+// Authentication Functions
+function checkAuthStatus() {
     const token = localStorage.getItem('jwtToken');
     if (!token) redirectToLogin();
 
     try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    if (payload.exp * 1000 < Date.now()) logout();
-} catch (error) {
-    redirectToLogin();
-}
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.exp * 1000 < Date.now()) logout();
+    } catch (error) {
+        redirectToLogin();
+    }
 }
 
-    function redirectToLogin() {
+function redirectToLogin() {
     window.location.href = '../index.html';
 }
 
-    function logout() {
+function logout() {
     localStorage.removeItem('jwtToken');
     redirectToLogin();
 }
 
-    // Seller Data Functions
-    async function loadSellers() {
+// Seller Data Functions
+async function loadSellers() {
     try {
-    const response = await $.ajax({
-    url: API_BASE + 'admin/users?type=SELLER',
-    method: 'GET'
-});
+        const response = await $.ajax({
+            url: API_BASE + 'admin/users?type=SELLER',
+            method: 'GET'
+        });
 
-    // Handle API response structure
-    const sellersData = response.data || [];
-    allSellers = processSellerData(sellersData);
-    renderSellers(allSellers);
-} catch (error) {
-    handleAjaxError(error, 'Failed to load sellers');
-}
+        // Handle API response structure
+        const sellersData = response.data || [];
+        allSellers = processSellerData(sellersData);
+        renderSellers(allSellers);
+    } catch (error) {
+        handleAjaxError(error, 'Failed to load sellers');
+    }
 }
 
-    function processSellerData(apiData) {
+function processSellerData(apiData) {
     return apiData.map(seller => ({
-    id: seller.id || 'N/A',
-    name: seller.name || 'Anonymous Seller',
-    email: seller.email || 'no-email', // Add this line
-    avatar: seller.profileImage || 'https://source.unsplash.com/random/200x200/?person',
-    experience: seller.yearsExperience || 0,
-    hourlyRate: seller.hourlyRate || 0,
-    completedProjects: seller.completedProjects || 0,
-    skills: (seller.skills && seller.skills.split(', ')) || ['No skills listed'],
-    bio: seller.bio || 'No bio available',
-    portfolio: tryParsePortfolio(seller.portfolio),
-    type: seller.type || 'CUSTOMER'
-})).filter(seller => seller.type === 'SELLER');
+        id: seller.id || 'N/A',
+        name: seller.name || 'Anonymous Seller',
+        email: seller.email || 'no-email', // Add this line
+        avatar: seller.profileImage || 'https://source.unsplash.com/random/200x200/?person',
+        experience: seller.yearsExperience || 0,
+        hourlyRate: seller.hourlyRate || 0,
+        completedProjects: seller.completedProjects || 0,
+        skills: (seller.skills && seller.skills.split(', ')) || ['No skills listed'],
+        bio: seller.bio || 'No bio available',
+        portfolio: tryParsePortfolio(seller.portfolio),
+        type: seller.type || 'CUSTOMER'
+    })).filter(seller => seller.type === 'SELLER');
 }
 
-    function filterSellers() {
+function filterSellers() {
     const filters = {
-    minExp: parseInt($('#minExp').val()) || 0,
-    maxRate: parseInt($('#maxRate').val()) || Infinity,
-    minProjects: parseInt($('#minProjects').val()) || 0
-};
+        minExp: parseInt($('#minExp').val()) || 0,
+        maxRate: parseInt($('#maxRate').val()) || Infinity,
+        minProjects: parseInt($('#minProjects').val()) || 0
+    };
 
     const filtered = allSellers.filter(seller =>
-    seller.experience >= filters.minExp &&
-    seller.hourlyRate <= filters.maxRate &&
-    seller.completedProjects >= filters.minProjects
+        seller.experience >= filters.minExp &&
+        seller.hourlyRate <= filters.maxRate &&
+        seller.completedProjects >= filters.minProjects
     );
 
     renderSellers(filtered);
 }
 
-    function tryParsePortfolio(portfolio) {
+function tryParsePortfolio(portfolio) {
     try {
-    return portfolio ? JSON.parse(portfolio) : [];
-} catch (e) {
-    return [];
-}
+        return portfolio ? JSON.parse(portfolio) : [];
+    } catch (e) {
+        return [];
+    }
 }
 
-    function renderSellers(sellers) {
+function renderSellers(sellers) {
     const tbody = $('#sellersBody');
     tbody.empty();
 
     if (sellers.length === 0) {
-    tbody.html(`
+        tbody.html(`
             <tr>
                 <td colspan="6" class="text-center py-4">
                     No sellers found matching your criteria
                 </td>
             </tr>
         `);
-    return;
-}
+        return;
+    }
 
     sellers.forEach(seller => {
-    tbody.append(`
+        tbody.append(`
             <tr>
                 <td>
                     <div class="d-flex align-items-center">
@@ -149,40 +148,40 @@
                 </td>
             </tr>
         `);
-});
+    });
 }
 
-    $(document).on('click', '.view-portfolio', function() {
+$(document).on('click', '.view-portfolio', function () {
     const sellerEmail = $(this).data('seller-email');
     viewPortfolio(sellerEmail);
 });
-    $(document).on('click', '.view-seller', showSellerDetails);
-    function viewPortfolio(sellerEmail) {
+$(document).on('click', '.view-seller', showSellerDetails);
+
+function viewPortfolio(sellerEmail) {
     if (!sellerEmail || sellerEmail === 'no-email') {
-    showAlert('Seller email not available', 'danger');
-    return;
-}
+        showAlert('Seller email not available', 'danger');
+        return;
+    }
     const encodedEmail = encodeURIComponent(sellerEmail);
     window.location.href = `portfolio.html?id=${encodedEmail}`;
 }
 
 
-
-    // Seller Details Functions
-    async function showSellerDetails() {
+// Seller Details Functions
+async function showSellerDetails() {
     const sellerId = $(this).data('seller-id');
     try {
-    const response = await $.ajax({
-    url: API_BASE + `sellers/${sellerId}`
-});
-    populateSellerModal(response.data);
-    $('#sellerModal').modal('show');
-} catch (error) {
-    handleAjaxError(error, 'Failed to load seller details');
-}
+        const response = await $.ajax({
+            url: API_BASE + `sellers/${sellerId}`
+        });
+        populateSellerModal(response.data);
+        $('#sellerModal').modal('show');
+    } catch (error) {
+        handleAjaxError(error, 'Failed to load seller details');
+    }
 }
 
-    function populateSellerModal(seller) {
+function populateSellerModal(seller) {
     $('.seller-name').text(seller.name);
     $('.seller-avatar').attr('src', seller.avatar);
     $('.seller-bio').text(seller.bio);
@@ -194,7 +193,7 @@
     const portfolioContainer = $('.seller-portfolio');
     portfolioContainer.empty();
     seller.portfolio.forEach(item => {
-    portfolioContainer.append(`
+        portfolioContainer.append(`
                 <div class="col-md-4 mb-3">
                     <div class="portfolio-item">
                         <img src="${item.image}"
@@ -203,50 +202,49 @@
                     </div>
                 </div>
             `);
-});
+    });
 }
 
-    // Chat Functions
-    // Modified startChatSession function
-    async function startChatSession() {
+
+// Modified startChatSession function
+async function startChatSession() {
     const sellerEmail = $(this).data('seller-email');
     currentChat = sellerEmail;
 
     try {
-    // Send email notification with form data instead of JSON
-    await $.ajax({
-    url: API_BASE + 'sellers/notify-chat',
-    method: 'POST',
-    data: { sellerEmail: sellerEmail },  // Send as form data
-    timeout: 5000
-});
-} catch (error) {
-    console.warn('Email notification failed:', error);
-    showAlert('Could not notify seller, but you can still send messages', 'warning');
-}
+
+        await $.ajax({
+            url: API_BASE + 'sellers/notify-chat',
+            method: 'POST',
+            data: {sellerEmail: sellerEmail},
+            timeout: 5000
+        });
+    } catch (error) {
+        console.warn('Email notification failed:', error);
+        showAlert('Could not notify seller, but you can still send messages', 'warning');
+    }
 
     try {
-    // Encode email properly for the endpoint
-    const encodedEmail = encodeURIComponent(sellerEmail);
-    const response = await $.ajax({
-    url: API_BASE + `sellers/me/chat/${encodedEmail}`,  // Adjusted endpoint path
-    method: 'GET'
-});
-    openChatModal(response);
-    startChatPolling();
-} catch (error) {
-    console.error('Chat error:', error);
-    showAlert('Failed to load chat history. Starting new conversation.', 'info');
-    openChatModal([]);  // Start with empty chat history
-}
+        const encodedEmail = encodeURIComponent(sellerEmail);
+        const response = await $.ajax({
+            url: API_BASE + `sellers/me/chat/${encodedEmail}`,
+            method: 'GET'
+        });
+        openChatModal(response);
+        startChatPolling();
+    } catch (error) {
+        console.error('Chat error:', error);
+        showAlert('Failed to load chat history. Starting new conversation.', 'info');
+        openChatModal([]);
+    }
 }
 
-    function openChatModal(messages) {
+function openChatModal(messages) {
     const chatMessages = $('.chat-messages');
     chatMessages.empty();
 
     messages.forEach(msg => {
-    chatMessages.append(`
+        chatMessages.append(`
                 <div class="message ${msg.sender === 'buyer' ? 'sent' : 'received'}">
                     <div class="message-content">${msg.content}</div>
                     <div class="message-time">
@@ -254,45 +252,45 @@
                     </div>
                 </div>
             `);
-});
+    });
 
     $('#chatModal').modal('show');
     scrollToBottom();
 }
 
-    async function sendChatMessage() {
+async function sendChatMessage() {
     const message = $('#chatModal textarea').val().trim();
     if (!message) return;
 
     try {
-    await $.ajax({
-    url: API_BASE + `chat/${currentChat}`,
-    method: 'POST',
-    contentType: 'application/json',
-    data: JSON.stringify({message})
-});
+        await $.ajax({
+            url: API_BASE + `chat/${currentChat}`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({message})
+        });
 
-    $('#chatModal textarea').val('');
-    appendMessage(message, 'sent');
-} catch (error) {
-    handleAjaxError(error, 'Failed to send message');
-}
+        $('#chatModal textarea').val('');
+        appendMessage(message, 'sent');
+    } catch (error) {
+        handleAjaxError(error, 'Failed to send message');
+    }
 }
 
-    // Helper Functions
-    function generateStars(rating) {
+// Helper Functions
+function generateStars(rating) {
     return [...Array(5)].map((_, i) => `
             <i class="fas fa-star ${i < rating ? 'text-warning' : 'text-secondary'}"></i>
         `).join('');
 }
 
-    function handleAjaxError(error, defaultMsg) {
+function handleAjaxError(error, defaultMsg) {
     console.error(error);
     if (error.status === 401) logout();
     showAlert(error.responseJSON?.message || defaultMsg, 'danger');
 }
 
-    function showAlert(message, type) {
+function showAlert(message, type) {
     const alert = $(`
             <div class="alert alert-${type} alert-dismissible fade show position-fixed top-0 end-0 m-3">
                 ${message}
@@ -303,49 +301,46 @@
     setTimeout(() => alert.alert('close'), 3000);
 }
 
-    function initializeScrollAnimations() {
+function initializeScrollAnimations() {
     const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-    if (entry.isIntersecting) {
-    entry.target.classList.add('animated');
-}
-});
-}, {threshold: 0.1});
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+            }
+        });
+    }, {threshold: 0.1});
 
     document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
 }
 
-    function setupEventListeners() {
-    // Filter Inputs
+function setupEventListeners() {
+
     $('#minExp, #maxRate, #minProjects').on('input', filterSellers);
 
-    // Portfolio button
-    $(document).on('click', '.view-portfolio', function() {
-    const sellerEmail = $(this).data('seller-email');
-    viewPortfolio(sellerEmail);
-});
-    // Profile modal button
+    $(document).on('click', '.view-portfolio', function () {
+        const sellerEmail = $(this).data('seller-email');
+        viewPortfolio(sellerEmail);
+    });
+
     $(document).on('click', '.view-seller', showSellerDetails);
 
-    // Chat button
     $(document).on('click', '.chat-seller', startChatSession);
 
-    // Chat message sending
     $(document).on('click', '.send-message', sendChatMessage);
     $('#chatModal').on('hidden.bs.modal', stopChatPolling);
 }
 
-    function stopChatPolling() {
+function stopChatPolling() {
     if (chatInterval) clearInterval(chatInterval);
     currentChat = null;
 }
 
-    function scrollToBottom() {
+function scrollToBottom() {
     const container = $('.chat-messages');
     container.scrollTop(container[0].scrollHeight);
 }
 
-    function appendMessage(content, direction) {
+function appendMessage(content, direction) {
     const msgElement = `
             <div class="message ${direction}">
                 <div class="message-content">${content}</div>

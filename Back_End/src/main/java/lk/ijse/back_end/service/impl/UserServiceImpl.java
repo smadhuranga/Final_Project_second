@@ -87,21 +87,21 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public int saveUser(UserDTO userDTO) {
         try {
-            // Check if email already exists
+
             if (userRepository.existsByEmail(userDTO.getEmail())) {
                 return VarList.Conflict;
             }
 
-            // Validate required fields
+
             if (userDTO.getPassword() == null || userDTO.getPassword().isEmpty()) {
                 return VarList.Bad_Request;
             }
 
-            // Encode password
+
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
             userDTO.setPassword(encodedPassword);
 
-            // Ensure all required fields are set
+
             if (userDTO.getCreatedAt() == null) {
                 userDTO.setCreatedAt(LocalDateTime.now());
             }
@@ -165,7 +165,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private SellerDTO convertSeller(Seller seller) {
         SellerDTO dto = modelMapper.map(seller, SellerDTO.class);
-        dto.setId(seller.getId()); // Add this line to set the ID
+        dto.setId(seller.getId());
         dto.setNic(seller.getNic());
         dto.setBio(seller.getBio());
         dto.setQualifications(seller.getQualifications());
@@ -228,10 +228,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                             .gravity("face")
             );
 
-            // Upload the image
+
             Map<?, ?> uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);
             System.out.println("Upload result: " + uploadResult.get("secure_url"));
-            // Return the secure URL of the uploaded image
+
             return String.valueOf(uploadResult.get("secure_url"));
         } catch (IOException e) {
             try {
@@ -329,16 +329,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Seller seller = (Seller) userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // Update basic fields
+
         seller.setName(sellerDTO.getName());
         seller.setEmail(sellerDTO.getEmail());
         seller.setPhone(sellerDTO.getPhone());
         seller.setAddress(sellerDTO.getAddress());
         seller.setBio(sellerDTO.getBio());
 
-        // Update skill IDs - convert list of IDs to comma-separated string for storage
+
         if (sellerDTO.getSkillIds() != null && !sellerDTO.getSkillIds().isEmpty()) {
-            // Validate skill IDs exist in database
+
             List<Skill> existingSkills = skillRepository.findAllById(sellerDTO.getSkillIds());
             if (existingSkills.size() != sellerDTO.getSkillIds().size()) {
                 throw new IllegalArgumentException("One or more skill IDs are invalid");
@@ -364,5 +364,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             e.printStackTrace();
             return VarList.Internal_Server_Error;
         }
+    }
+
+    // In UserServiceImpl.java
+    @Override
+    public boolean userExists(Long userId) {
+        return userRepository.existsById(userId);
     }
 }

@@ -3,11 +3,10 @@ package lk.ijse.back_end.controller;
 
 import jakarta.validation.Valid;
 import jdk.jfr.ContentType;
-import lk.ijse.back_end.dto.AuthResponseDTO;
-import lk.ijse.back_end.dto.CustomerDTO;
-import lk.ijse.back_end.dto.ResponseDTO;
-import lk.ijse.back_end.dto.UserDTO;
+import lk.ijse.back_end.dto.*;
 import lk.ijse.back_end.service.UserService;
+import lk.ijse.back_end.util.EmailException;
+import lk.ijse.back_end.util.EmailUtil;
 import lk.ijse.back_end.util.JwtUtil;
 import lk.ijse.back_end.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,11 +35,13 @@ public class CustomerController {
 
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final EmailUtil emailUtil;
 
     @Autowired
-    public CustomerController(@Qualifier("userServiceImpl") UserService userService, JwtUtil jwtUtil) {
+    public CustomerController(@Qualifier("userServiceImpl") UserService userService, JwtUtil jwtUtil, EmailUtil emailUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
+        this.emailUtil = emailUtil;
     }
 
     @PostMapping( path = "/register",
@@ -61,7 +63,6 @@ public class CustomerController {
             customerDTO.setCreatedAt(LocalDateTime.now());
             customerDTO.setOrderIds(Collections.emptyList());
 
-            // Save user and get result
             int result = userService.saveUser(customerDTO);
             switch (result) {
                 case VarList.Created -> {
@@ -74,7 +75,7 @@ public class CustomerController {
                     AuthResponseDTO authDTO = new AuthResponseDTO();
                     authDTO.setEmail(customerDTO.getEmail());
                     authDTO.setToken(token);
-                    authDTO.setUserType(customerDTO.getType()); // Assuming CustomerDTO has type
+                    authDTO.setUserType(customerDTO.getType());
                     authDTO.setExpiresAt(
                             jwtUtil.getExpirationDateFromToken(token)
                                     .toInstant()
@@ -153,13 +154,13 @@ public class CustomerController {
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            // Validate file
+
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest()
                         .body(new ResponseDTO(VarList.Bad_Request, "File cannot be empty", null));
             }
 
-            // Check file type
+
             String contentType = file.getContentType();
             if (contentType == null || !contentType.startsWith("image/")) {
                 return ResponseEntity.badRequest()
@@ -170,7 +171,7 @@ public class CustomerController {
             String imageUrl = userService.storeProfileImage(email, file);
             System.out.println("image url is "+imageUrl);
 
-            // Update user's profile image URL in database
+
             CustomerDTO customer = (CustomerDTO) userService.findUserByEmail(email);
             customer.setProfileImage(userService.storeProfileImage(email, file));
             userService.updateUser(customer);
@@ -213,6 +214,42 @@ public class CustomerController {
         public void setCurrentPassword(String currentPassword) { this.currentPassword = currentPassword; }
         public String getNewPassword() { return newPassword; }
         public void setNewPassword(String newPassword) { this.newPassword = newPassword; }
+    }
+
+    @PostMapping("/notify-chat")
+    public ResponseEntity<ResponseDTO> notifyCustomerChat(
+            @RequestParam String customerEmail,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        try {
+
+            String senderEmail = userDetails.getUsername();
+            UserDTO sender = userService.searchUser(senderEmail);
+
+
+            CustomerDTO customer = (CustomerDTO) userService.findUserByEmail(customerEmail);
+
+
+            emailUtil.sendCustomerChatNotification(
+                    customer.getEmail(),
+                    sender.getName(),
+                    sender.getEmail()
+            );
+
+            return ResponseEntity.ok(
+                    new ResponseDTO(VarList.OK, "Customer notified successfully", null)
+            );
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(VarList.Not_Found, "User not found", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(
+                            VarList.Internal_Server_Error,
+                            "Error sending notification: " + e.getMessage(),
+                            null
+                    ));
+        }
     }
 
 

@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface ServiceCategoryRepo extends JpaRepository<ServiceCategory ,Long> {
-    boolean existsByName(String name);  // Add this method
+    boolean existsByName(String name);
     Optional<ServiceCategory> findByName(String name);
 }

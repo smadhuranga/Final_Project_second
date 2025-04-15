@@ -436,6 +436,9 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!--    <script src="../assets/js/customer/contentWriting.js"></script>-->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@6.1.0/dist/bundles/stomp.umd.min.js"></script>
 
     <script>
         // Configuration
@@ -509,11 +512,47 @@
             });
         }
 
+        let stompClient = null;
+
+        function connectToChat() {
+            const token = localStorage.getItem('jwtToken');
+            const socket = new SockJS('http://localhost:8080/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect(
+                { 'Authorization': 'Bearer ' + token },
+                () => {
+                    stompClient.subscribe('/user/queue/messages', (message) => {
+                        const msg = JSON.parse(message.body);
+                        appendMessage(msg, false);
+                    });
+
+                    // Subscribe to error channel
+                    stompClient.subscribe('/user/queue/errors', (error) => {
+                        showToast('Chat error: ' + error.body, 'danger');
+                    });
+                },
+                (error) => {
+                    showToast('WebSocket connection error', 'danger');
+                    console.error('WebSocket error:', error);
+                }
+            );
+        }
+
+        function sendMessageViaWebSocket(message) {
+            if (stompClient && stompClient.connected) {
+                stompClient.send("/app/chat", {}, JSON.stringify({
+                    receiverId: currentSeller.id,
+                    content: message
+                }));
+            }
+        }
+
         function processSellerData(apiData) {
             return apiData
                 .filter(seller => seller.type === 'SELLER')
                 .map(seller => ({
-                    id: seller.email,
+                    id: seller.id, // Use backend-generated ID
                     name: seller.name,
                     email: seller.email,
                     experience: seller.yearsExperience || 0,
@@ -591,20 +630,9 @@
             }
 
             try {
-                // Try sending notification
-                await $.ajax({
-                    url: API_BASE + 'sellers/notify-chat',
-                    method: 'POST',
-                    data: { sellerEmail: sellerId },
-                    timeout: 5000 // 5 second timeout
-                });
-            } catch (error) {
-                console.warn('Notification failed, proceeding with chat anyway');
-            }
-
-            // Always open chat regardless of notification status
-            try {
-                await loadChatHistory(sellerId);
+                connectToChat();
+                await loadChatHistory(currentSeller.id);
+                $('#sellerName').text(currentSeller.name);
                 $('#chatModal').modal('show');
             } catch (error) {
                 showToast('Failed to start chat', 'danger');
@@ -614,19 +642,32 @@
         async function loadChatHistory(sellerId) {
             try {
                 const response = await $.ajax({
-                    url: API_BASE + `chat/${sellerId}`,
+                    url: API_BASE + `chat/history/${sellerId}`,
                     method: 'GET'
                 });
                 renderChatMessages(response.data || []);
             } catch (error) {
-                if (error.status === 401) {
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/login';
-                } else {
-                    showToast('Failed to load chat history', 'danger');
-                }
+                handleChatError(error);
             }
         }
+
+        function appendMessage(message, isUser) {
+            const $messages = $('#chatMessages');
+            const timestamp = new Date(message.timestamp).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            $messages.append(`
+        <div class="message ${isUser ? 'user-message' : 'seller-message'}">
+            <div class="message-content">${message.content}</div>
+            <small class="message-time">${timestamp}</small>
+        </div>
+    `);
+            $messages.scrollTop($messages[0].scrollHeight);
+        }
+
+
 
         function renderChatMessages(messages) {
             const $chatMessages = $('#chatMessages');
@@ -655,24 +696,15 @@
             if (!message || !currentSeller) return;
 
             try {
-                await $.ajax({
-                    url: API_BASE + 'chat/send',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        sellerId: currentSeller.id,
-                        message: message
-                    })
-                });
+                sendMessageViaWebSocket(message);
+                appendMessage({
+                    content: message,
+                    senderType: 'user',
+                    timestamp: new Date().toISOString()
+                }, true);
                 $('#messageInput').val('');
-                await loadChatHistory(currentSeller.id);
             } catch (error) {
-                if (error.status === 401) {
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/login';
-                } else {
-                    showToast('Failed to send message', 'danger');
-                }
+                showToast('Failed to send message', 'danger');
             }
         }
 

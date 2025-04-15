@@ -32,15 +32,12 @@ public class ChatWebSocketController {
     public void sendMessage(@Payload ChatMessageDTO chatMessageDTO,
                             Principal principal) {
 
-        // Set sender from authenticated user
         Long senderId = getUserIdFromPrincipal(principal);
         chatMessageDTO.setSenderId(senderId);
         chatMessageDTO.setTimestamp(LocalDateTime.now());
 
-        // Save to database
         chatService.saveMessage(chatMessageDTO);
 
-        // Send to receiver
         messagingTemplate.convertAndSendToUser(
                 chatMessageDTO.getReceiverId().toString(),
                 "/queue/messages",
@@ -48,7 +45,6 @@ public class ChatWebSocketController {
         );
     }
     private Long getUserIdFromPrincipal(Principal principal) {
-        // Use the new method
         return userService.getUserIdByEmail(principal.getName());
     }
 }

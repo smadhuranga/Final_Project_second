@@ -26,7 +26,7 @@ public class JwtUtil {
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.expiration}") long expiration
     ) {
-        // Convert secret string to a secure Key
+
         byte[] keyBytes = Base64.getDecoder().decode(secret.trim());
         if (keyBytes.length < 64) {
             throw new IllegalArgumentException("Key must be 512 bits (64 bytes)");
@@ -40,7 +40,7 @@ public class JwtUtil {
         claims.put("roles", userDTO.getType().name());
         return Jwts.builder()
                 .setHeaderParam("typ", "JWT")
-                .setSubject(userDTO.getEmail())  // Use unique identifier
+                .setSubject(userDTO.getEmail())
                 .claim("type", userDTO.getType())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
@@ -90,7 +90,7 @@ public class JwtUtil {
 
     public Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
-                .setSigningKey(secretKey) // Match signing key
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
     }

@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 
-public class AuthChannelInterceptor implements ChannelInterceptor { // Changed to interface
+public class AuthChannelInterceptor implements ChannelInterceptor {
 
     private final JwtUtil jwtUtil;
 

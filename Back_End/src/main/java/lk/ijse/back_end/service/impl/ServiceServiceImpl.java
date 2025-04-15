@@ -60,7 +60,7 @@ public class ServiceServiceImpl implements ServiceService {
     }
     @Override
     public List<ServiceDTO> getServicesByCategoryId(Long categoryId) {
-        // Call via instance, not static class
+
         List<lk.ijse.back_end.entity.Service> services = serviceRepository.findByCategoryId(categoryId);
         return services.stream()
                 .map(service -> modelMapper.map(service, ServiceDTO.class))

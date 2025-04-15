@@ -165,7 +165,8 @@
     // Update the delete handler
     $(document).on('click', '.btn-delete', function() {
     const $row = $(this).closest('tr');
-    const userEmail = $row.find('td:eq(2)').text().trim(); // Email is in 3rd column (index 2)
+    const userEmail = $row.find('td:eq(2)').text().trim();
+    const table = $('#usersTable').DataTable();
 
     if (!userEmail) {
     showAlert('Invalid user email', 'danger');
@@ -180,11 +181,16 @@
     xhr.setRequestHeader('Authorization',
     'Bearer ' + localStorage.getItem('jwtToken'));
 },
-    success: function() {
-    $('#usersTable').DataTable().ajax.reload();
+    success: function(response) {
+    // Remove the row from DataTables
+    table.row($row).remove().draw();
     showAlert('User deleted successfully', 'success');
+
+    // Update the allUsers array
+    allUsers = allUsers.filter(user => user.email !== userEmail);
 },
     error: function(xhr) {
+    console.error('Delete error:', xhr.responseText);
     const errorMsg = xhr.responseJSON?.message || 'Error deleting user';
     showAlert(errorMsg, 'danger');
 }
@@ -329,8 +335,14 @@
                 'Bearer ' + localStorage.getItem('jwtToken'));
         },
         success: function(response) {
-            allUsers = response.data;
-            initializeUserTables(currentUserType);
+            if (response && Array.isArray(response.data)) {
+                allUsers = response.data;
+                initializeUserTables(currentUserType);
+            }
+        },
+        error: function(xhr) {
+            console.error('Users fetch error:', xhr.responseText);
+            showAlert('Failed to load users', 'danger');
         }
     });
 }
@@ -341,7 +353,6 @@
     usersTable.destroy();
     $('#usersTable').empty();
 }
-
     // Filter users by type
     const filteredUsers = allUsers.filter(user => user.type === userType);
 
@@ -386,6 +397,8 @@
                     </button>`
 }
     ],
+    searching: true,
+    paging: true,
     destroy: true // Important for reinitialization
 });
 }
@@ -468,8 +481,12 @@
             ajax: {
                 url: 'http://localhost:8080/api/v1/admin/services',
                 dataSrc: 'data',
+                error: function (xhr){
+                    showAlert('Failed to load services', 'danger');
+                },
                 beforeSend: function(xhr) {
                     xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
+
                 }
             },
             columns: [
@@ -603,8 +620,9 @@
     xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('jwtToken'));
 },
     success: function() {
+    if (servicesTable) {
     servicesTable.ajax.reload();
-    showAlert('Service deleted successfully', 'success');
+}
 }
 });
 }

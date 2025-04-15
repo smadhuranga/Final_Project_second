@@ -63,7 +63,7 @@ public class SellerController {
                 sellerDTO.setProfileImage(imageUrl);
             }
 
-            // Set server-side values
+
             sellerDTO.setCreatedAt(LocalDateTime.now());
             sellerDTO.setType(UserType.SELLER);
             sellerDTO.setSkillIds(Collections.emptyList());
@@ -156,7 +156,7 @@ public class SellerController {
             @RequestParam Long categoryId) {
 
         try {
-            // 2. Call via autowired instance
+
             List<ServiceDTO> services = serviceService.getServicesByCategoryId(categoryId);
             return ResponseEntity.ok(
                     new ResponseDTO<>(VarList.OK, "Services fetched successfully", services)
@@ -244,21 +244,21 @@ public class SellerController {
                     .body(new ResponseDTO<>(VarList.Internal_Server_Error, e.getMessage(), null));
         }
     }
-    // SellerController.java
+
     @PostMapping("/notify-chat")
     public ResponseEntity<ResponseDTO> notifyChatInitiation(
             @RequestParam String sellerEmail,
             @AuthenticationPrincipal UserDetails userDetails) {
 
         try {
-            // Get customer details
+
             String customerEmail = userDetails.getUsername();
             UserDTO customer = userService.searchUser(customerEmail);
 
-            // Get seller details
+
             SellerDTO seller = (SellerDTO) userService.findUserByEmail(sellerEmail);
 
-            // Send notification email
+
             emailUtil.sendChatNotification(
                     seller.getEmail(),
                     customer.getName(),

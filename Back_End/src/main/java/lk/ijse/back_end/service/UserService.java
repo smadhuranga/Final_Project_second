@@ -23,6 +23,8 @@ public interface UserService extends UserDetailsService {
     SellerDTO updateSellerProfile(String email, SellerDTO sellerDTO);
 
     int deleteUserByEmail(String email);
+    // In UserService.java
+    boolean userExists(Long userId);
 }
 
 

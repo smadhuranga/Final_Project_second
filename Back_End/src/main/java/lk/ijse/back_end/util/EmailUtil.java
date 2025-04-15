@@ -30,7 +30,7 @@ public class EmailUtil {
         mailSender.send(message);
     }
 
-//    // EmailUtil.java
+
     public void sendChatNotification(String sellerEmail, String customerName, String customerEmail) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -42,7 +42,7 @@ public class EmailUtil {
                             "Please login to your account to respond.\n\n" +
                             "Best regards,\nUNI Freelancers Team"
             );
-            message.setFrom("edusync58@gmail.com"); // Must match authenticated user
+            message.setFrom("edusync58@gmail.com");
 
             mailSender.send(message);
             System.out.println( "Email sent to: " + sellerEmail);
@@ -52,6 +52,27 @@ public class EmailUtil {
         } catch (MailSendException ex) {
            log.error("Error sending email to: " + sellerEmail, ex);
             throw new EmailException("Email server connection failed", ex);
+        }
+    }
+
+    public void sendCustomerChatNotification(String customerEmail, String senderName, String senderEmail) {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(customerEmail);
+            message.setSubject("New Chat Request from UNI Freelancers");
+            message.setText(
+                    "Hello Customer,\n\nYou have a new chat request from: " + senderName +
+                            " (" + senderEmail + ")\n\n" +
+                            "Please login to your account to respond.\n\n" +
+                            "Best regards,\nUNI Freelancers Team"
+            );
+            message.setFrom("edusync58@gmail.com");
+
+            mailSender.send(message);
+            System.out.println("Customer notification sent to: " + customerEmail);
+        } catch (MailException ex) {
+            log.error("Error sending customer notification", ex);
+            throw new EmailException("Failed to send customer notification", ex);
         }
     }
 
