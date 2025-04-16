@@ -7,7 +7,8 @@
 **A Freelance Platform for University Talent Collaboration**  
 Connect students, freelancers, and businesses in a unified ecosystem for project collaboration and skill monetization.
 
-![UNIFreelancers Preview](https://via.placeholder.com/800x400?text=UNIFreelancers+Platform+Showcase) *Add your screenshots here*
+![Uploading Screenshot 2025-04-16 at 6.53.34 PM.png…]()
+
 
 ## 🌟 Features
 - **Student Freelancer Profiles**  
