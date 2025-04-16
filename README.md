@@ -25,6 +25,9 @@ Connect students, freelancers, and businesses in a unified ecosystem for project
 - **Rating System**  
   Build reputation through client feedback
 
+  
+  Video Link - https://youtu.be/e8g5SUppUfI
+
 ## 🛠 Tech Stack
 **Backend**  
 ![Java](https://img.shields.io/badge/Java-17-ED8B00?logo=java)
