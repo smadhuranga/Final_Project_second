@@ -7,886 +7,162 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="assets/css/index.css" rel="stylesheet">
-<!--    <style>-->
-<!--        :root {-->
-<!--            &#45;&#45;primary: #6366f1;-->
-<!--            &#45;&#45;primary-hover:  #19aa19;-->
-<!--            &#45;&#45;background: #000000;-->
-<!--            &#45;&#45;surface: #1e293b;-->
-<!--            &#45;&#45;text: #f8fafc;-->
-<!--            &#45;&#45;border: #334155;-->
-<!--        }-->
 
-<!--        * {-->
-<!--            margin: 0;-->
-<!--            padding: 0;-->
-<!--            box-sizing: border-box;-->
-<!--            font-family: 'Inter', sans-serif;-->
-<!--        }-->
-
-<!--        body {-->
-<!--            background: var(&#45;&#45;background);-->
-<!--            min-height: 100vh;-->
-<!--            display: flex;-->
-<!--            justify-content: center;-->
-<!--            align-items: center;-->
-<!--            color: var(&#45;&#45;text);-->
-<!--        }-->
-
-<!--        .container {-->
-<!--            /* background: var(&#45;&#45;surface); */-->
-<!--            padding: 2.5rem;-->
-<!--            border-radius: 1.5rem;-->
-<!--            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);-->
-<!--            width: 90%;-->
-<!--            max-width: 500px;-->
-<!--            transition: transform 0.3s ease, opacity 0.3s ease;-->
-<!--            position: absolute;-->
-<!--        }-->
-
-<!--        .container.hidden {-->
-<!--            opacity: 0;-->
-<!--            transform: translateY(20px);-->
-<!--            pointer-events: none;-->
-<!--        }-->
-
-<!--        h2 {-->
-<!--            font-size: 1.8rem;-->
-<!--            margin-bottom: 2rem;-->
-<!--            position: relative;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            gap: 0.75rem;-->
-<!--        }-->
-
-<!--        h2 i {-->
-<!--            color: var(&#45;&#45;primary);-->
-<!--        }-->
-
-<!--        .form-group {-->
-<!--            margin-bottom: 1.5rem;-->
-<!--            position: relative;-->
-<!--        }-->
-
-
-
-<!--        input, select, textarea {-->
-<!--            width: 100%;-->
-<!--            padding: 1rem;-->
-<!--            padding-left: 3rem;-->
-<!--            background: var(&#45;&#45;background);-->
-<!--            border: 2px solid var(&#45;&#45;border);-->
-<!--            border-radius: 0.75rem;-->
-<!--            color: var(&#45;&#45;text);-->
-<!--            font-size: 1rem;-->
-<!--            transition: all 0.3s ease;-->
-<!--        }-->
-
-<!--        input:focus, select:focus, textarea:focus {-->
-<!--            border-color: var(&#45;&#45;primary);-->
-<!--            outline: none;-->
-<!--            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);-->
-<!--        }-->
-
-<!--        input:focus ~ .form-label,-->
-<!--        input:valid ~ .form-label {-->
-<!--            top: -10px;-->
-<!--            left: 0.8rem;-->
-<!--            font-size: 0.8rem;-->
-<!--            background: var(&#45;&#45;surface);-->
-<!--            padding: 0 0.5rem;-->
-<!--            color: var(&#45;&#45;primary);-->
-<!--        }-->
-
-<!--        .input-icon {-->
-<!--            position: absolute;-->
-<!--            left: 1rem;-->
-<!--            top: 50%;-->
-<!--            transform: translateY(-50%);-->
-<!--            color: #64748b;-->
-<!--            transition: 0.3s ease;-->
-<!--        }-->
-
-<!--        input:focus ~ .input-icon {-->
-<!--            color: var(&#45;&#45;primary);-->
-<!--        }-->
-
-<!--        .btn {-->
-<!--            width: 100%;-->
-<!--            padding: 1rem;-->
-<!--            border: none;-->
-<!--            border-radius: 0.75rem;-->
-<!--            cursor: pointer;-->
-<!--            font-weight: 600;-->
-<!--            transition: all 0.3s ease;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            justify-content: center;-->
-<!--            gap: 0.5rem;-->
-<!--        }-->
-
-<!--        .btn-primary {-->
-<!--            background: var(&#45;&#45;primary);-->
-<!--            color: white;-->
-<!--        }-->
-
-<!--        .btn-primary:hover {-->
-<!--            background: var(&#45;&#45;primary-hover);-->
-<!--            transform: translateY(-2px);-->
-<!--        }-->
-
-<!--        .social-login {-->
-<!--            display: flex;-->
-<!--            gap: 1rem;-->
-<!--            margin: 2rem 0;-->
-<!--        }-->
-
-<!--        .social-btn {-->
-<!--            flex: 1;-->
-<!--            background: var(&#45;&#45;background);-->
-<!--            border: 2px solid var(&#45;&#45;border);-->
-<!--            color: var(&#45;&#45;text);-->
-<!--        }-->
-
-<!--        .social-btn:hover {-->
-<!--            border-color: var(&#45;&#45;primary);-->
-<!--            color: var(&#45;&#45;primary);-->
-<!--        }-->
-
-<!--        .toggle-forms {-->
-<!--            text-align: center;-->
-<!--            margin-top: 1.5rem;-->
-<!--            color: #64748b;-->
-<!--        }-->
-
-<!--        .toggle-link {-->
-<!--            color: var(&#45;&#45;primary);-->
-<!--            cursor: pointer;-->
-<!--            font-weight: 600;-->
-<!--            transition: 0.3s ease;-->
-<!--        }-->
-
-<!--        .toggle-link:hover {-->
-<!--            color: var(&#45;&#45;primary-hover);-->
-<!--        }-->
-
-<!--        .file-upload {-->
-<!--            border: 2px dashed var(&#45;&#45;border);-->
-<!--            border-radius: 0.75rem;-->
-<!--            padding: 1.5rem;-->
-<!--            text-align: center;-->
-<!--            cursor: pointer;-->
-<!--            transition: 0.3s ease;-->
-<!--            display: block;-->
-
-<!--        }-->
-
-<!--        .file-upload:hover {-->
-<!--            border-color: var(&#45;&#45;primary);-->
-<!--            background: rgba(99, 102, 241, 0.05);-->
-<!--        }-->
-
-<!--        .user-type-selector {-->
-<!--            display: grid;-->
-<!--            grid-template-columns: repeat(2, 1fr);-->
-<!--            gap: 1rem;-->
-<!--            margin: 1rem 0;-->
-<!--        }-->
-
-<!--        .user-type-btn {-->
-<!--            padding: 1rem;-->
-<!--            border: 2px solid var(&#45;&#45;border);-->
-<!--            border-radius: 0.75rem;-->
-<!--            cursor: pointer;-->
-<!--            transition: 0.3s ease;-->
-<!--            text-align: center;-->
-<!--        }-->
-
-<!--        .user-type-btn.active {-->
-<!--            border-color:  #FFD700;-->
-<!--            background: rgba(99, 241, 120, 0.1);-->
-<!--        }-->
-
-<!--        .seller-fields {-->
-<!--            display: none;-->
-<!--            animation: slideDown 0.3s ease;-->
-<!--        }-->
-
-<!--        @keyframes slideDown {-->
-<!--            from { opacity: 0; transform: translateY(-10px); }-->
-<!--            to { opacity: 1; transform: translateY(0); }-->
-<!--        }-->
-
-
-<!--        .error-toast {-->
-<!--            position: fixed;-->
-<!--            bottom: 20px;-->
-<!--            left: 50%;-->
-<!--            transform: translateX(-50%);-->
-<!--            background: #ef4444;-->
-<!--            color: white;-->
-<!--            padding: 1rem 2rem;-->
-<!--            border-radius: 8px;-->
-<!--            opacity: 0;-->
-<!--            transition: opacity 0.3s;-->
-<!--        }-->
-
-<!--        .error-toast.show {-->
-<!--            opacity: 1;-->
-<!--        }-->
-
-<!--        /* Add this to your style section */-->
-<!--        /* Add this to ensure smooth transitions */-->
-<!--        #step1, #step2 {-->
-<!--            transition: opacity 0.3s ease, transform 0.3s ease;-->
-<!--        }-->
-
-<!--        .step {-->
-<!--            display: block !important; /* Override any inline styles */-->
-<!--            opacity: 1;-->
-<!--            transform: translateY(0);-->
-<!--        }-->
-
-<!--        .step.hidden {-->
-<!--            opacity: 0;-->
-<!--            transform: translateY(20px);-->
-<!--            pointer-events: none;-->
-<!--            display: none !important;-->
-<!--        }-->
-
-
-<!--        .loading-overlay {-->
-<!--            position: fixed;-->
-<!--            top: 0;-->
-<!--            left: 0;-->
-<!--            width: 100%;-->
-<!--            height: 100%;-->
-<!--            background: rgba(0, 0, 0, 0.9);-->
-<!--            display: flex;-->
-<!--            justify-content: center;-->
-<!--            align-items: center;-->
-<!--            z-index: 9999;-->
-<!--            transition: opacity 0.3s ease;-->
-<!--            backdrop-filter: blur(5px);-->
-<!--        }-->
-
-<!--        .loading-overlay.hidden {-->
-<!--            opacity: 0;-->
-<!--            pointer-events: none;-->
-<!--        }-->
-
-<!--        .loading-spinner {-->
-<!--            width: 50px;-->
-<!--            height: 50px;-->
-<!--            border: 4px solid rgba(255, 255, 255, 0.1);-->
-<!--            border-top: 4px solid #6366f1;-->
-<!--            border-radius: 50%;-->
-<!--            animation: spin 1s linear infinite;-->
-<!--            position: relative;-->
-<!--        }-->
-
-<!--        .loading-spinner::after {-->
-<!--            content: '';-->
-<!--            position: absolute;-->
-<!--            top: -2px;-->
-<!--            left: -2px;-->
-<!--            right: -2px;-->
-<!--            bottom: -2px;-->
-<!--            border-radius: 50%;-->
-<!--            border: 2px solid transparent;-->
-<!--            border-top-color: #19aa19;-->
-<!--            animation: spin 0.5s linear infinite;-->
-<!--        }-->
-
-<!--        @keyframes spin {-->
-<!--            0% { transform: rotate(0deg); }-->
-<!--            100% { transform: rotate(360deg); }-->
-<!--        }-->
-<!--    </style>-->
 </head>
 <body>
 <div class="loading-overlay">
     <div class="loading-spinner"></div>
 </div>
-    <!-- Login Form -->
-    <div class="container" id="loginForm">
-        <img src="images/LOg.png" alt= "logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
-<br>
-        <h2><i class="fas fa-sign-in-alt"></i>Welcome Back</h2>
-        <form>
+<!-- Login Form -->
+<div class="container" id="loginForm">
+    <img src="images/LOg.png" alt="logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
+    <br>
+    <h2><i class="fas fa-sign-in-alt"></i>Welcome Back</h2>
+    <form>
+        <div class="form-group">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="loginEmail" placeholder="Email Address" required>
+
+        </div>
+        <div class="form-group">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="loginPassword" placeholder="Password" required>
+
+        </div>
+        <button class="btn btn-primary">Sign In</button>
+
+        <div class="social-login">
+            <button class="btn social-btn" type="button">
+                <i class="fab fa-google"></i>
+            </button>
+            <button class="btn social-btn" type="button">
+                <i class="fab fa-github"></i>
+            </button>
+            <button class="btn social-btn" type="button">
+                <i class="fab fa-apple"></i>
+            </button>
+        </div>
+
+        <div class="toggle-forms">
+            <span>Don't have an account? </span>
+            <span class="toggle-link" onclick="showForm('registerForm')">Create Account</span>
+            <br>
+            <span class="toggle-link" onclick="showForm('forgotForm')">Forgot Password?</span>
+        </div>
+    </form>
+</div>
+
+<!-- Registration Form Section -->
+<div class="container hidden" id="registerForm">
+    <img src="./images/LOg.png" alt="logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
+    <br>
+    <h2><i class="fas fa-user-plus"></i>Create Account</h2>
+    <form>
+        <div class="user-type-selector">
+            <div class="user-type-btn" onclick="toggleUserType(this)">
+                <i class="fas fa-user-tie"></i>
+                <p>Seller</p>
+            </div>
+            <div class="user-type-btn active" onclick="toggleUserType(this)">
+                <i class="fas fa-user"></i>
+                <p>Customer</p>
+            </div>
+        </div>
+
+        <!-- Common Fields -->
+        <div class="form-group">
+            <i class="fas fa-user input-icon"></i>
+            <input type="text" id="regName" placeholder="Full Name" required>
+        </div>
+        <div class="form-group">
+            <i class="fas fa-envelope input-icon"></i>
+            <input type="email" id="regEmail" placeholder="Email Address" required>
+        </div>
+        <div class="form-group">
+            <i class="fas fa-lock input-icon"></i>
+            <input type="password" id="regPassword" placeholder="Password" required minlength="6">
+        </div>
+        <div class="form-group">
+            <i class="fas fa-phone input-icon"></i>
+            <input type="tel" id="regPhone" placeholder="Phone (optional)">
+        </div>
+        <div class="form-group">
+            <i class="fas fa-map-marker-alt input-icon"></i>
+            <input type="text" id="regAddress" placeholder="Address (optional)">
+        </div>
+
+        <!-- Profile Image Upload (Common) -->
+        <div class="file-upload">
+            <label for="profileImage" class="file-upload-label">
+                <i class="fas fa-image"></i>
+                <p>Upload Profile Image</p>
+            </label>
+            <input type="file" id="profileImage" accept="image/*" hidden>
+        </div>
+
+        <!-- Seller Specific Fields -->
+        <div class="seller-fields">
             <div class="form-group">
-                <i class="fas fa-user input-icon"></i>
-                <input type="text" id="loginEmail" placeholder="Email Address" required>
-
+                <i class="fas fa-id-card input-icon"></i>
+                <input type="text" id="nic" placeholder="NIC Number*">
             </div>
             <div class="form-group">
-                <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="loginPassword" placeholder="Password" required>
-
+                <i class="fas fa-comment input-icon"></i>
+                <textarea id="bio" placeholder="Bio (optional, max 500 characters)" maxlength="500"></textarea>
             </div>
-            <button class="btn btn-primary">Sign In</button>
-
-            <div class="social-login">
-                <button class="btn social-btn" type="button">
-                    <i class="fab fa-google"></i>
-                </button>
-                <button class="btn social-btn" type="button">
-                    <i class="fab fa-github"></i>
-                </button>
-                <button class="btn social-btn" type="button">
-                    <i class="fab fa-apple"></i>
-                </button>
-            </div>
-
-            <div class="toggle-forms">
-                <span>Don't have an account? </span>
-                <span class="toggle-link" onclick="showForm('registerForm')">Create Account</span>
-                <br>
-                <span class="toggle-link" onclick="showForm('forgotForm')">Forgot Password?</span>
-            </div>
-        </form>
-    </div>
-
-    <!-- Registration Form Section -->
-    <div class="container hidden" id="registerForm">
-        <img src="./images/LOg.png" alt="logo" style="width: 11rem; height: 11rem; margin:auto; display:block;">
-        <br>
-        <h2><i class="fas fa-user-plus"></i>Create Account</h2>
-        <form>
-            <div class="user-type-selector">
-                <div class="user-type-btn" onclick="toggleUserType(this)">
-                    <i class="fas fa-user-tie"></i>
-                    <p>Seller</p>
-                </div>
-                <div class="user-type-btn active" onclick="toggleUserType(this)">
-                    <i class="fas fa-user"></i>
-                    <p>Customer</p>
-                </div>
-            </div>
-
-            <!-- Common Fields -->
             <div class="form-group">
-                <i class="fas fa-user input-icon"></i>
-                <input type="text" id="regName" placeholder="Full Name" required>
+                <i class="fas fa-certificate input-icon"></i>
+                <textarea id="qualifications"
+                          placeholder="Professional Qualifications (one per line, optional)"></textarea>
             </div>
+        </div>
+
+        <button class="btn btn-primary">Create Account</button>
+        <div class="toggle-forms">
+            <span>Already have an account? </span>
+            <span class="toggle-link" onclick="showForm('loginForm')">Sign In</span>
+        </div>
+    </form>
+</div>
+
+
+<!-- Forgot Password Form -->
+<!-- Update the Forgot Password Form in HTML -->
+<div class="container hidden" id="forgotForm">
+    <h2><i class="fas fa-key"></i>Reset Password</h2>
+    <form>
+        <!-- Step 1: Email Input -->
+        <div class="step" id="step1">
             <div class="form-group">
                 <i class="fas fa-envelope input-icon"></i>
-                <input type="email" id="regEmail" placeholder="Email Address" required>
+                <input type="email" id="forgotEmail" placeholder="Email Address" required>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="sendPasswordResetOtp()">Send OTP</button>
+        </div>
+
+        <!-- Step 2: OTP and New Password -->
+        <div class="step" id="step2" style="display: none;">
+            <div class="form-group">
+                <i class="fas fa-shield-alt input-icon"></i>
+                <input type="text" id="resetOtp" placeholder="Enter OTP" required>
             </div>
             <div class="form-group">
                 <i class="fas fa-lock input-icon"></i>
-                <input type="password" id="regPassword" placeholder="Password" required minlength="6">
+                <input type="password" id="resetPassword" placeholder="New Password" required minlength="6">
             </div>
-            <div class="form-group">
-                <i class="fas fa-phone input-icon"></i>
-                <input type="tel" id="regPhone" placeholder="Phone (optional)">
-            </div>
-            <div class="form-group">
-                <i class="fas fa-map-marker-alt input-icon"></i>
-                <input type="text" id="regAddress" placeholder="Address (optional)">
-            </div>
+            <button type="button" class="btn btn-primary" onclick="handlePasswordReset()">Reset Password</button>
+        </div>
 
-            <!-- Profile Image Upload (Common) -->
-            <div class="file-upload">
-                <label for="profileImage" class="file-upload-label">
-                    <i class="fas fa-image"></i>
-                    <p>Upload Profile Image</p>
-                </label>
-                <input type="file" id="profileImage" accept="image/*" hidden>
-            </div>
-
-            <!-- Seller Specific Fields -->
-            <div class="seller-fields">
-                <div class="form-group">
-                    <i class="fas fa-id-card input-icon"></i>
-                    <input type="text" id="nic" placeholder="NIC Number*">
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-comment input-icon"></i>
-                    <textarea id="bio" placeholder="Bio (optional, max 500 characters)" maxlength="500"></textarea>
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-certificate input-icon"></i>
-                    <textarea id="qualifications" placeholder="Professional Qualifications (one per line, optional)"></textarea>
-                </div>
-            </div>
-
-            <button class="btn btn-primary">Create Account</button>
-            <div class="toggle-forms">
-                <span>Already have an account? </span>
-                <span class="toggle-link" onclick="showForm('loginForm')">Sign In</span>
-            </div>
-        </form>
-    </div>
-
-
-    <!-- Forgot Password Form -->
-    <!-- Update the Forgot Password Form in HTML -->
-    <div class="container hidden" id="forgotForm">
-        <h2><i class="fas fa-key"></i>Reset Password</h2>
-        <form>
-            <!-- Step 1: Email Input -->
-            <div class="step" id="step1">
-                <div class="form-group">
-                    <i class="fas fa-envelope input-icon"></i>
-                    <input type="email" id="forgotEmail" placeholder="Email Address" required>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="sendPasswordResetOtp()">Send OTP</button>
-            </div>
-
-            <!-- Step 2: OTP and New Password -->
-            <div class="step" id="step2" style="display: none;">
-                <div class="form-group">
-                    <i class="fas fa-shield-alt input-icon"></i>
-                    <input type="text" id="resetOtp" placeholder="Enter OTP" required>
-                </div>
-                <div class="form-group">
-                    <i class="fas fa-lock input-icon"></i>
-                    <input type="password" id="resetPassword" placeholder="New Password" required minlength="6">
-                </div>
-                <button type="button" class="btn btn-primary" onclick="handlePasswordReset()">Reset Password</button>
-            </div>
-
-            <div class="toggle-forms">
+        <div class="toggle-forms">
             <span class="toggle-link" onclick="showForm('loginForm')">
                 <i class="fas fa-arrow-left"></i> Back to Login
             </span>
-            </div>
-        </form>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        </div>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="assets/js/index.js"></script>
-<!--    <script>-->
 
 
-<!--        window.addEventListener('load', () => {-->
-<!--            document.querySelector('.loading-overlay').classList.add('hidden');-->
-<!--        });-->
-
-<!--        // Handle AJAX loading states-->
-<!--        $(document).ajaxStart(function() {-->
-<!--            document.querySelector('.loading-overlay').classList.remove('hidden');-->
-<!--        });-->
-
-<!--        $(document).ajaxStop(function() {-->
-<!--            document.querySelector('.loading-overlay').classList.add('hidden');-->
-<!--        });-->
-
-<!--        // Handle page transitions-->
-<!--        function navigateTo(url) {-->
-<!--            document.querySelector('.loading-overlay').classList.remove('hidden');-->
-<!--            window.location.href = url;-->
-<!--        }-->
-
-<!--        // Initialize on DOM ready-->
-<!--        $(document).ready(function() {-->
-<!--            // Check for existing JWT token-->
-<!--            const jwtToken = localStorage.getItem('jwtToken');-->
-<!--            if(jwtToken) {-->
-<!--                // window.location.href = 'index.html';-->
-<!--            }-->
-
-<!--            // Show login form by default-->
-<!--            showForm('loginForm');-->
-<!--            $('.seller-fields').hide();-->
-
-<!--            // Configure AJAX to include JWT token in headers-->
-<!--            $.ajaxSetup({-->
-<!--                beforeSend: function(xhr) {-->
-<!--                    const token = localStorage.getItem('jwtToken');-->
-<!--                    if (token) {-->
-<!--                        xhr.setRequestHeader('Authorization', 'Bearer ' + token);-->
-<!--                    }-->
-<!--                }-->
-
-<!--            });-->
-
-<!--            // Handle global AJAX errors-->
-<!--            $(document).ajaxError(function(event, jqXHR) {-->
-<!--                if (jqXHR.status === 401) { // Unauthorized-->
-<!--                    localStorage.removeItem('jwtToken');-->
-<!--                    showForm('loginForm');-->
-<!--                    alert('Session expired. Please login again.');-->
-<!--                }-->
-<!--            });-->
-<!--// Login handler - add error clearing-->
-<!--            $('#loginEmail, #loginPassword').on('input', function() {-->
-<!--                $(this).removeClass('error-input');-->
-<!--            });-->
-
-
-<!--//-->
-<!--//             // Update login handler-->
-<!--            $('#loginForm form').submit(function(e) {-->
-<!--                e.preventDefault();-->
-<!--                const $form = $(this);-->
-<!--                const $btn = $form.find('button').prop('disabled', true);-->
-
-<!--                // Clear previous errors-->
-<!--                $form.find('.error-text').remove();-->
-
-<!--                $.ajax({-->
-<!--                    type: "POST",-->
-<!--                    url: "http://localhost:8080/api/v1/auth/login",-->
-<!--                    contentType: "application/json",-->
-<!--                    data: JSON.stringify({-->
-<!--                        email: $('#loginEmail').val().trim(),-->
-<!--                        password: $('#loginPassword').val()-->
-<!--                    }),-->
-<!--                    success: function(response) {-->
-<!--                        // Validate response structure-->
-<!--                        if (!response?.data?.token) {-->
-<!--                            throw new Error('Invalid server response');-->
-<!--                        }-->
-
-<!--                        // Store authentication data-->
-<!--                        localStorage.setItem('jwtToken', response.data.token);-->
-<!--                        localStorage.setItem('user', JSON.stringify({-->
-<!--                            email: response.data.email,-->
-<!--                            type: response.data.userType,-->
-<!--                            profileImage: response.data.profileImage-->
-<!--                        }));-->
-
-
-<!--                        // Redirect with token verification-->
-
-<!--                        // Verify token before redirect-->
-<!--                            validateTokenAfterLogin();-->
-<!--                            switch (response.data.userType.toUpperCase()) {-->
-<!--                                case 'CUSTOMER':-->
-<!--                                    window.location.href = './pages/home.html';-->
-<!--                                    break;-->
-<!--                                case 'SELLER':-->
-<!--                                    window.location.href = './pages/sellerHome.html';-->
-<!--                                    break;-->
-<!--                                case 'ADMIN':-->
-<!--                                    window.location.href = './pages/adminController.html';-->
-<!--                                    break;-->
-<!--                                case 'COORDINATOR':-->
-<!--                                    window.location.href = './pages/coordinatorController.html';-->
-<!--                                    break;-->
-<!--                                default:-->
-<!--                                    logout();-->
-<!--                                    showErrorToast('Unknown user type - contact support');-->
-<!--                            }-->
-
-<!--                    },-->
-<!--                    error: function(xhr) {-->
-<!--                        $('#loginPassword').val('');-->
-<!--                        let errorMsg = xhr.responseJSON?.message || 'Login failed';-->
-<!--                        showErrorToast(errorMsg);-->
-<!--                    },-->
-<!--                    complete: function() {-->
-<!--                        $btn.prop('disabled', false);-->
-<!--                    }-->
-<!--                });-->
-<!--            });-->
-
-
-
-
-<!--// Add this function to your login page script-->
-<!--            function validateTokenAfterLogin() {-->
-<!--                const token = localStorage.getItem('jwtToken');-->
-<!--                if (!token) {-->
-<!--                    logout();-->
-<!--                    return;-->
-<!--                }-->
-
-<!--                // Split the token into parts-->
-<!--                const tokenParts = token.split('.');-->
-<!--                if (tokenParts.length !== 3) {-->
-<!--                    logout();-->
-<!--                    showErrorToast('Invalid token format');-->
-<!--                    return;-->
-<!--                }-->
-
-<!--                try {-->
-<!--                    // Convert base64url to base64 and handle padding-->
-<!--                    const base64Url = tokenParts[1];-->
-<!--                    const base64 = base64Url-->
-<!--                        .replace(/-/g, '+')-->
-<!--                        .replace(/_/g, '/');-->
-
-<!--                    // Add padding-->
-<!--                    const padded = base64.padEnd(base64.length + (4 - base64.length % 4) % 4, '=');-->
-
-<!--                    const payload = JSON.parse(atob(padded));-->
-
-<!--                    // Check expiration-->
-<!--                    if (Date.now() >= payload.exp * 1000) {-->
-<!--                        logout();-->
-<!--                        showErrorToast('Session expired');-->
-<!--                    }-->
-<!--                } catch (e) {-->
-<!--                    console.error('Token validation failed:', e);-->
-<!--                    logout();-->
-<!--                    showErrorToast('Invalid authentication token');-->
-<!--                }-->
-<!--            }-->
-
-
-
-
-
-<!--            // Registration Form Submission-->
-<!--            $('#registerForm form').submit(function(e) {-->
-<!--                e.preventDefault();-->
-<!--                const isSeller = $('#registerForm .user-type-btn.active').text().includes('Seller');-->
-
-<!--                // Manual validation for seller-->
-<!--                if(isSeller) {-->
-<!--                    if($('#nic').val().trim() === '') {-->
-<!--                        showErrorToast('NIC Number is required for sellers');-->
-<!--                        return;-->
-<!--                    }-->
-<!--                }-->
-
-<!--                if (isSeller) handleSellerRegistration();-->
-<!--                else handleCustomerRegistration();-->
-
-<!--            });-->
-
-
-
-
-
-
-
-<!--            // Forgot Password Form Submission-->
-<!--            // Update the Forgot Password functions-->
-
-<!--// Keep existing code below unchanged-->
-
-
-<!--        });-->
-
-
-
-
-<!--        // Move these OUTSIDE the $(document).ready() block-->
-<!--        let currentResetEmail = null;-->
-
-<!--        function sendPasswordResetOtp() {-->
-<!--            const email = $('#forgotEmail').val().trim();-->
-
-<!--            if (!email || !validateEmail(email)) {-->
-<!--                showErrorToast('Please enter a valid email address');-->
-<!--                return;-->
-<!--            }-->
-
-<!--            $.ajax({-->
-<!--                type: "POST",-->
-<!--                url: "http://localhost:8080/api/v1/auth/forgot-password",-->
-<!--                contentType: "application/json",-->
-<!--                data: JSON.stringify({ email: email }),-->
-<!--                success: function(response) {-->
-<!--                    // Change from response.code to response.status-->
-<!--                    if(response.status === 200) {-->
-<!--                        currentResetEmail = email;-->
-<!--                        $('#step1').hide();-->
-<!--                        $('#step2').show();-->
-<!--                    }-->
-<!--                    showErrorToast(response.message);-->
-<!--                },-->
-<!--                error: function(xhr) {-->
-<!--                    const errorMsg = xhr.responseJSON?.message || 'Error sending OTP';-->
-<!--                    showErrorToast(errorMsg);-->
-<!--                    $('#step1').show();-->
-<!--                    $('#step2').hide();-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        function handlePasswordReset() {-->
-<!--            const otp = $('#resetOtp').val().trim();-->
-<!--            const newPassword = $('#resetPassword').val();-->
-
-<!--            if (!otp || otp.length !== 4) {-->
-<!--                showErrorToast('Please enter a valid 4-digit OTP');-->
-<!--                return;-->
-<!--            }-->
-
-<!--            if (!newPassword || newPassword.length < 6) {-->
-<!--                showErrorToast('Password must be at least 6 characters');-->
-<!--                return;-->
-<!--            }-->
-
-<!--            const requestData = {-->
-<!--                email: currentResetEmail,-->
-<!--                otp: otp,-->
-<!--                newPassword: newPassword-->
-<!--            };-->
-
-<!--            $.ajax({-->
-<!--                type: "POST",-->
-<!--                url: "http://localhost:8080/api/v1/auth/reset-password",-->
-<!--                contentType: "application/json",-->
-<!--                data: JSON.stringify(requestData),-->
-<!--                success: function(response) {-->
-<!--                    if(response.code === 200) {-->
-<!--                        // Clear form fields-->
-<!--                        $('#forgotEmail, #resetOtp, #resetPassword').val('');-->
-<!--                        // Show success message-->
-<!--                        alert('Password reset successfully! Please login with your new password');-->
-<!--                        // Return to login-->
-<!--                        showForm('loginForm');-->
-<!--                    } else {-->
-<!--                        showErrorToast(response.message || 'Password reset failed');-->
-<!--                    }-->
-<!--                },-->
-<!--                error: function(xhr) {-->
-<!--                    const error = xhr.responseJSON || {};-->
-<!--                    let errorMsg = error.message || 'Password reset failed';-->
-
-<!--                    if(xhr.status === 401) {-->
-<!--                        errorMsg = 'Invalid or expired OTP';-->
-<!--                    } else if(xhr.status === 404) {-->
-<!--                        errorMsg = 'User not found';-->
-<!--                    }-->
-
-<!--                    showErrorToast(errorMsg);-->
-<!--                    // Keep step2 visible for corrections-->
-<!--                    $('#step2').show();-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        function validateEmail(email) {-->
-<!--            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;-->
-<!--            return re.test(String(email).toLowerCase());-->
-<!--        }-->
-
-
-<!--        // Form visibility control-->
-<!--        function showForm(formId) {-->
-<!--            $('.container').addClass('hidden');-->
-<!--            $('#' + formId).removeClass('hidden');-->
-<!--        }-->
-
-
-
-
-
-
-
-<!--        // User type toggle-->
-<!--        function toggleUserType(element) {-->
-<!--            $('.user-type-btn').removeClass('active');-->
-<!--            $(element).addClass('active');-->
-<!--            const isSeller = $(element).text().includes('Seller');-->
-
-<!--            // Toggle seller fields and required attributes-->
-<!--            $('.seller-fields').toggle(isSeller);-->
-<!--            $('#nic').prop('required', isSeller); // Dynamic required attribute-->
-
-<!--            // Update name field label-->
-<!--            const nameInput = $('#regName');-->
-<!--            nameInput.attr('placeholder', isSeller ? 'Business Name*' : 'Full Name*');-->
-
-<!--            // Clear NIC field when switching to customer-->
-<!--            if(!isSeller) $('#nic').val('');-->
-<!--        }-->
-
-<!--        // Seller registration handler-->
-<!--        function handleSellerRegistration() {-->
-<!--            const formData = new FormData();-->
-<!--            const sellerData = {-->
-<!--                name: $('#regName').val().trim(),-->
-<!--                email: $('#regEmail').val().trim(),-->
-<!--                password: $('#regPassword').val(),-->
-<!--                nic: $('#nic').val().trim(),-->
-<!--                phone: $('#regPhone').val().trim(),-->
-<!--                address: $('#regAddress').val().trim(),-->
-<!--                bio: $('#bio').val().trim(),-->
-<!--                qualifications: $('#qualifications').val().split('\n').filter(q => q.trim() !== ''),-->
-<!--                type: 'SELLER' // Add this line to include the user type-->
-<!--            };-->
-
-<!--            // Validate required fields-->
-<!--            if (!sellerData.nic) {-->
-<!--                showErrorToast('NIC Number is required for sellers');-->
-<!--                return;-->
-<!--            }-->
-
-<!--            formData.append('data', new Blob([JSON.stringify(sellerData)], { type: "application/json" }));-->
-
-<!--            const profileImage = $('#profileImage')[0].files[0];-->
-<!--            if (profileImage) {-->
-<!--                formData.append('profileImage', profileImage);-->
-<!--            }-->
-
-<!--            $.ajax({-->
-<!--                type: "POST",-->
-<!--                url: "http://localhost:8080/api/v1/sellers/register",-->
-<!--                data: formData,-->
-<!--                processData: false,-->
-<!--                contentType: false,-->
-<!--                success: function(response) {-->
-<!--                    localStorage.setItem('jwtToken', response.accessToken);-->
-<!--                    localStorage.setItem('user', JSON.stringify(response.user));-->
-<!--                    window.location.href = 'index.html';-->
-<!--                },-->
-<!--                error: function(xhr) {-->
-<!--                    const error = xhr.responseJSON || {};-->
-<!--                    showErrorToast(error.message || `Registration failed: ${xhr.statusText}`);-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        // Customer registration handler-->
-<!--        function handleCustomerRegistration() {-->
-<!--            const formData = new FormData();-->
-<!--            const customerData = {-->
-<!--                name: $('#regName').val(),-->
-<!--                email: $('#regEmail').val(),-->
-<!--                password: $('#regPassword').val(),-->
-<!--                phone: $('#regPhone').val(),-->
-<!--                address: $('#regAddress').val(),-->
-<!--                type: 'CUSTOMER'-->
-<!--            };-->
-
-<!--            formData.append('data', new Blob([JSON.stringify(customerData)], {-->
-<!--                type: "application/json"-->
-<!--            }));-->
-
-<!--            const profileImage = $('#profileImage')[0].files[0];-->
-<!--            if (profileImage) {-->
-<!--                formData.append('profileImage', profileImage);-->
-<!--            }-->
-
-<!--            $.ajax({-->
-<!--                type: "POST",-->
-<!--                url: "http://localhost:8080/api/v1/customers/register",-->
-<!--                data: formData,-->
-<!--                processData: false,-->
-<!--                contentType: false,-->
-<!--                success: function(response) {-->
-<!--                    localStorage.setItem('jwtToken', response.accessToken);-->
-<!--                    localStorage.setItem('user', JSON.stringify(response.user));-->
-<!--                    window.location.href = 'index.html';-->
-<!--                },-->
-<!--                error: function(xhr) {-->
-<!--                    const error = xhr.responseJSON || {};-->
-<!--                    showErrorToast(error.message || `Registration failed: ${xhr.statusText}`);-->
-<!--                }-->
-<!--            });-->
-<!--        }-->
-
-<!--        // Add this utility function-->
-<!--        function showErrorToast(message) {-->
-<!--            const toast = $(`<div class="error-toast">${message}</div>`);-->
-<!--            $('body').append(toast);-->
-<!--            setTimeout(() => toast.addClass('show'), 10);-->
-<!--            setTimeout(() => toast.remove(), 5000);-->
-<!--        }-->
-<!--        function logout() {-->
-<!--            // Clear all authentication-related items-->
-<!--            localStorage.removeItem('jwtToken');-->
-<!--            localStorage.removeItem('user');-->
-<!--            // Redirect to login page-->
-<!--            window.location.href = '/index.html';-->
-<!--        }-->
-<!--    </script>-->
 </body>
 </html>

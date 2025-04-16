@@ -7,764 +7,200 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link href="../assets/css/customer/contentWriting.css" rel="stylesheet">
-
-    
-<!--    <style>-->
-<!--        :root {-->
-<!--            &#45;&#45;bg-black: #000000;-->
-<!--            &#45;&#45;text-white: #FFFFFF;-->
-<!--            &#45;&#45;accent-yellow: #FFD700;-->
-<!--            &#45;&#45;accent-green: #00FF00;-->
-<!--        }-->
-
-<!--        body {-->
-<!--            background-color: var(&#45;&#45;bg-black);-->
-<!--            color: var(&#45;&#45;text-white);-->
-<!--            font-family: 'Poppins', sans-serif;-->
-<!--        }-->
-
-<!--       -->
-<!--        .navbar {-->
-<!--            background-color: rgba(0, 0, 0, 0.95) !important;-->
-<!--            backdrop-filter: blur(10px);-->
-<!--            transition: all 0.4s ease;-->
-<!--        }-->
-
-<!--        .search-input {-->
-<!--            background-color: rgba(255, 255, 255, 0.1);-->
-<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
-<!--            color: var(&#45;&#45;text-white);-->
-<!--            border-radius: 30px;-->
-<!--            padding: 12px 20px;-->
-<!--            width: 100%;-->
-<!--            transition: all 0.3s ease;-->
-<!--        }-->
-
-<!--        .search-container {-->
-<!--            position: relative;-->
-<!--            max-width: 600px;-->
-<!--            margin: 0 auto;-->
-<!--        }-->
-
-<!--        .btn-search {-->
-<!--            position: absolute;-->
-<!--            right: 15px;-->
-<!--            top: 50%;-->
-<!--            transform: translateY(-50%);-->
-<!--            background: transparent;-->
-<!--            border: none;-->
-<!--            color: var(&#45;&#45;accent-yellow);-->
-<!--            cursor: pointer;-->
-<!--        }-->
+    <link href="../assets/css/customer/contentWriting.css" rel="stylesheet">
 
 
-<!--        .service-hero {-->
-<!--            background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7)),-->
-<!--                        url('https://source.unsplash.com/random/1920x1080/?content-writing') center/cover;-->
-<!--            height: 70vh;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            position: relative;-->
-<!--            overflow: hidden;-->
-<!--        }-->
-
-<!--        .floating {-->
-<!--            animation: float 3s ease-in-out infinite;-->
-<!--        }-->
-
-<!--        .service-highlight-card {-->
-<!--            background: rgba(255, 255, 255, 0.05);-->
-<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
-<!--            border-radius: 15px;-->
-<!--            padding: 2rem;-->
-<!--            margin: 1rem;-->
-<!--            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);-->
-<!--            position: relative;-->
-<!--            overflow: hidden;-->
-<!--        }-->
-
-<!--        .service-highlight-card:hover {-->
-<!--            transform: translateY(-10px);-->
-<!--            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.1);-->
-<!--        }-->
-
-<!--        .seller-table-section {-->
-<!--            padding: 5rem 0;-->
-<!--        }-->
-
-<!--        .filter-container {-->
-<!--            background: rgba(255, 255, 255, 0.05);-->
-<!--            border-radius: 15px;-->
-<!--            padding: 2rem;-->
-<!--            margin-bottom: 2rem;-->
-<!--            backdrop-filter: blur(10px);-->
-<!--        }-->
-
-<!--        .filter-input {-->
-<!--            background: rgba(255, 255, 255, 0.1);-->
-<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
-<!--            color: white;-->
-<!--            border-radius: 25px;-->
-<!--            padding: 0.75rem 1.5rem;-->
-<!--            transition: all 0.3s ease;-->
-<!--            width: 100%;-->
-<!--        }-->
-
-<!--        .seller-table {-->
-<!--            background: rgba(255, 255, 255, 0.05);-->
-<!--            border-radius: 15px;-->
-<!--            overflow: hidden;-->
-<!--            border-collapse: separate;-->
-<!--            border-spacing: 0;-->
-<!--            width: 100%;-->
-<!--        }-->
-
-<!--        .seller-table thead {-->
-<!--            background: linear-gradient(45deg, var(&#45;&#45;accent-yellow), var(&#45;&#45;accent-green));-->
-<!--        }-->
-
-<!--        .seller-table th {-->
-<!--            padding: 1.5rem;-->
-<!--            font-weight: 600;-->
-<!--            color: var(&#45;&#45;bg-black);-->
-<!--        }-->
-
-<!--        .seller-table td {-->
-<!--            padding: 1.25rem;-->
-<!--            border-bottom: 1px solid rgba(255, 255, 255, 0.1);-->
-<!--            vertical-align: middle;-->
-<!--        }-->
-
-<!--        .seller-table tbody tr {-->
-<!--            transition: all 0.3s ease;-->
-<!--            cursor: pointer;-->
-<!--        }-->
-
-<!--        .seller-table tbody tr:hover {-->
-<!--            background: rgba(255, 215, 0, 0.05);-->
-<!--            transform: translateX(10px);-->
-<!--        }-->
-
-<!--        .seller-badge {-->
-<!--            background: rgba(0, 255, 0, 0.1);-->
-<!--            color: var(&#45;&#45;accent-green);-->
-<!--            padding: 0.25rem 0.75rem;-->
-<!--            border-radius: 20px;-->
-<!--            font-size: 0.85rem;-->
-<!--            margin: 2px;-->
-<!--            display: inline-block;-->
-<!--        }-->
-
-<!--        @keyframes float {-->
-<!-- 0% { transform: translateY(0px); }-->
-<!--            50% { transform: translateY(-20px); }-->
-<!--            100% { transform: translateY(0px); }-->
-<!--        }-->
-
-<!--        .animate-on-scroll {-->
-<!--            opacity: 0;-->
-<!--            transform: translateY(30px);-->
-<!--            transition: all 0.6s ease;-->
-<!--        }-->
-
-<!--        .animate-on-scroll.animated {-->
-<!--            opacity: 1;-->
-<!--            transform: translateY(0);-->
-<!--        }-->
-
-
-<!--        .design-process-step {-->
-<!--            position: relative;-->
-<!--            padding: 2rem;-->
-<!--            background: rgba(255,255,255,0.05);-->
-<!--            border-radius: 15px;-->
-<!--            margin: 2rem 0;-->
-<!--            border: 1px solid var(&#45;&#45;accent-yellow);-->
-<!--        }-->
-
-<!--        .process-number {-->
-<!--            position: absolute;-->
-<!--            top: -20px;-->
-<!--            left: -20px;-->
-<!--            width: 40px;-->
-<!--            height: 40px;-->
-<!--            background: var(&#45;&#45;accent-yellow);-->
-<!--            border-radius: 50%;-->
-<!--            display: flex;-->
-<!--            align-items: center;-->
-<!--            justify-content: center;-->
-<!--            font-weight: bold;-->
-<!--            color: var(&#45;&#45;bg-black);-->
-<!--        }-->
-
-
-<!--        /* Chat Modal Styles */-->
-<!--        .chat-messages {-->
-<!--            height: 400px;-->
-<!--            overflow-y: auto;-->
-<!--            background: rgba(255,255,255,0.05);-->
-<!--            border-radius: 10px;-->
-<!--            padding: 1rem;-->
-<!--        }-->
-
-<!--        .message {-->
-<!--            margin: 10px 0;-->
-<!--            padding: 8px 12px;-->
-<!--            border-radius: 15px;-->
-<!--            max-width: 80%;-->
-<!--            animation: slideIn 0.3s ease;-->
-<!--        }-->
-
-<!--        .user-message {-->
-<!--            background: var(&#45;&#45;accent-yellow);-->
-<!--            color: black;-->
-<!--            margin-left: auto;-->
-<!--        }-->
-
-<!--        .seller-message {-->
-<!--            background: rgba(255,255,255,0.1);-->
-<!--            margin-right: auto;-->
-<!--        }-->
-
-<!--        .message-time {-->
-<!--            opacity: 0.7;-->
-<!--            font-size: 0.75rem;-->
-<!--            display: block;-->
-<!--            text-align: right;-->
-<!--        }-->
-
-<!--        @keyframes slideIn {-->
-<!--            from { transform: translateY(20px); opacity: 0; }-->
-<!--            to { transform: translateY(0); opacity: 1; }-->
-<!--        }-->
-
-<!--        /* Toast Animations */-->
-<!--        .toast {-->
-<!--            animation: toastSlideIn 0.3s ease;-->
-<!--        }-->
-
-<!--        @keyframes toastSlideIn {-->
-<!--            from { transform: translateX(100%); }-->
-<!--            to { transform: translateX(0); }-->
-<!--        }-->
-<!--    </style>-->
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#"><img src="../images/LOg.png" alt="UNI Freelancers" style="height: 4rem;"></a>
-            
-            <div class="d-none d-lg-block flex-grow-1 mx-4">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#"><img src="../images/LOg.png" alt="UNI Freelancers" style="height: 4rem;"></a>
+
+        <div class="d-none d-lg-block flex-grow-1 mx-4">
+            <form class="search-container">
+                <input type="text" class="search-input" placeholder="Search specialists..." id="searchInput">
+                <button type="button" class="btn-search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="d-lg-none my-3">
                 <form class="search-container">
-                    <input type="text" class="search-input" placeholder="Search specialists..." id="searchInput">
+                    <input type="text" class="search-input" placeholder="Search...">
                     <button type="button" class="btn-search">
                         <i class="fas fa-search"></i>
-                    </button>   
+                    </button>
                 </form>
             </div>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="d-lg-none my-3">
-                    <form class="search-container">
-                        <input type="text" class="search-input" placeholder="Search...">
-                        <button type="button" class="btn-search">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                </ul>
-            </div>
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Hero Section -->
-    <section class="service-hero">
-        <div class="container text-center floating">
-            <h1 class="display-3 mb-4 animate-on-scroll">Content Writing Services</h1>
-            <p class="lead animate-on-scroll">Engage Your Audience with Compelling Content</p>
-        </div>
-    </section>
+<!-- Hero Section -->
+<section class="service-hero">
+    <div class="container text-center floating">
+        <h1 class="display-3 mb-4 animate-on-scroll">Content Writing Services</h1>
+        <p class="lead animate-on-scroll">Engage Your Audience with Compelling Content</p>
+    </div>
+</section>
 
-    <!-- Service Highlights -->
-    <section class="py-5">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-md-4 animate-on-scroll">
-                    <div class="service-highlight-card">
-                        <i class="fas fa-file-alt fa-3x mb-3" style="color: var(--accent-yellow);"></i>
-                        <h3>Blog Writing</h3>
-                        <ul class="list-unstyled">
-                            <li>✓ SEO-Optimized Content</li>
-                            <li>✓ Engaging and Informative</li>
-                            <li>✓ Regular Updates</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-4 animate-on-scroll">
-                    <div class="service-highlight-card">
-                        <i class="fas fa-newspaper fa-3x mb-3" style="color: var(--accent-yellow);"></i>
-                        <h3>Article Writing</h3>
-                        <ul class="list-unstyled">
-                            <li>✓ In-Depth Research</li>
-                            <li>✓ Unique Perspectives</li>
-                            <li>✓ Tailored to Your Audience</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-4 animate-on-scroll">
-                    <div class="service-highlight-card">
-                        <i class="fas fa-pen-fancy fa-3x mb-3" style="color: var(--accent-yellow);"></i>
-                        <h3>Copywriting</h3>
-                        <ul class="list-unstyled">
-                            <li>✓ Persuasive and Impactful</li>
-                            <li>✓ Brand Voice Consistency</li>
-                            <li>✓ Call-to-Action Focused</li>
-                        </ul>
-                    </div>
+<!-- Service Highlights -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4 animate-on-scroll">
+                <div class="service-highlight-card">
+                    <i class="fas fa-file-alt fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                    <h3>Blog Writing</h3>
+                    <ul class="list-unstyled">
+                        <li>✓ SEO-Optimized Content</li>
+                        <li>✓ Engaging and Informative</li>
+                        <li>✓ Regular Updates</li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Seller Table Section -->
-    <section class="seller-table-section" id="developers">
-        <div class="container">
-            <h2 class="text-center mb-5 display-4 animate-on-scroll">Top Content Writers</h2>
-            
-            <!-- Filters -->
-            <div class="filter-container animate-on-scroll">
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <input type="number" class="filter-input" placeholder="Min Experience (years)" id="minExp">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="number" class="filter-input" placeholder="Max Hourly Rate ($)" id="maxRate">
-                    </div>
-
-                    <div class="col-md-4">
-                        <input type="number" class="filter-input" placeholder="Min Projects" id="minProjects">
-                    </div>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="service-highlight-card">
+                    <i class="fas fa-newspaper fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                    <h3>Article Writing</h3>
+                    <ul class="list-unstyled">
+                        <li>✓ In-Depth Research</li>
+                        <li>✓ Unique Perspectives</li>
+                        <li>✓ Tailored to Your Audience</li>
+                    </ul>
                 </div>
             </div>
-
-            <!-- Table -->
-            <div class="table-responsive animate-on-scroll">
-                <table class="seller-table">
-                    <thead>
-                        <tr>
-                            <th>Writer</th>
-                            <th>Experience</th>
-                            <th>Rate/Hour</th>
-                            <th>Projects</th>
-                            <th>Skills</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sellersBody">
-                        <!-- Data loaded via JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Writing Process -->
-    <section class="py-5 design-process">
-        <div class="container">
-            <h2 class="text-center mb-5 display-4 animate-on-scroll">Our Writing Process</h2>
-            <div class="row">
-                <div class="col-lg-8 mx-auto">
-                    <div class="design-process-step animate-on-scroll">
-                        <div class="process-number">1</div>
-                        <h4 class="text-yellow">Research & Planning</h4>
-                        <p>Understanding your needs and target audience.</p>
-                    </div>
-                    <div class="design-process-step animate-on-scroll">
-                        <div class="process-number">2</div>
-                        <h4 class="text-yellow">Content Creation</h4>
-                        <p>Writing engaging and informative content.</p>
-                    </div>
-                    <div class="design-process-step animate-on-scroll">
-                        <div class="process-number">3</div>
-                        <h4 class="text-yellow">Editing & Proofreading</h4>
-                        <p>Ensuring quality and clarity in the final draft.</p>
-                    </div>
-                    <div class="design-process-step animate-on-scroll">
-                        <div class="process-number">4</div>
-                        <h4 class="text-yellow">Delivery & Feedback</h4>
-                        <p>Delivering the content and incorporating your feedback.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content bg-dark">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title" id="chatModalLabel">Chat with <span id="sellerName"></span></h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="chatMessages" class="chat-messages mb-3">
-                        <!-- Messages will be loaded here -->
-                    </div>
-                    <div class="input-group">
-                    <textarea id="messageInput" class="form-control bg-black text-white border-secondary"
-                              placeholder="Type your message..." rows="2"></textarea>
-                        <button id="sendMessage" class="btn btn-yellow">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="service-highlight-card">
+                    <i class="fas fa-pen-fancy fa-3x mb-3" style="color: var(--accent-yellow);"></i>
+                    <h3>Copywriting</h3>
+                    <ul class="list-unstyled">
+                        <li>✓ Persuasive and Impactful</li>
+                        <li>✓ Brand Voice Consistency</li>
+                        <li>✓ Call-to-Action Focused</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!--    <script src="../assets/js/customer/contentWriting.js"></script>-->
-    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@6.1.0/dist/bundles/stomp.umd.min.js"></script>
+<!-- Seller Table Section -->
+<section class="seller-table-section" id="developers">
+    <div class="container">
+        <h2 class="text-center mb-5 display-4 animate-on-scroll">Top Content Writers</h2>
 
-    <script>
-        // Configuration
-        const API_BASE = 'http://localhost:8080/api/v1/';
-
-        // Global AJAX Setup
-        $.ajaxSetup({
-            beforeSend: function(xhr) {
-                const token = localStorage.getItem('jwtToken');
-                console.log(token)
-                if (token) {
-                    xhr.setRequestHeader('Authorization', 'Bearer ' + token);
-                }
-            }
-        });
-
-        // Session Management
-        let currentSeller = null;
-        let allSellers = [];
-
-        // Authentication Functions
-        function checkAuthStatus() {
-            const jwtToken = localStorage.getItem('jwtToken');
-            if (!jwtToken) {
-                showToast('Please login to access this feature', 'warning');
-                window.location.href = '/login';
-                return false;
-            }
-
-            try {
-                const tokenPayload = JSON.parse(atob(jwtToken.split('.')[1]));
-                if (tokenPayload.exp * 1000 < Date.now()) {
-                    showToast('Session expired. Please login again.', 'danger');
-                    localStorage.removeItem('jwtToken');
-                    window.location.href = '/login';
-                    return false;
-                }
-                return true;
-            } catch (error) {
-                showToast('Invalid authentication token', 'danger');
-                localStorage.removeItem('jwtToken');
-                window.location.href = '/login';
-                return false;
-            }
-        }
-
-        // Seller Management
-        function fetchSellers() {
-            if (!checkAuthStatus()) return;
-
-            $.ajax({
-                url: API_BASE + 'admin/users?type=SELLER',
-                method: 'GET',
-                success: function(response) {
-                    if (response.status === 200) {
-                        allSellers = processSellerData(response.data);
-                        applyFilters();
-                    } else {
-                        showToast(response.message || 'Failed to load sellers', 'danger');
-                    }
-                },
-                error: function(xhr) {
-                    if (xhr.status === 401) {
-                        localStorage.removeItem('jwtToken');
-                        window.location.href = '/login';
-                    } else {
-                        showToast('Failed to load sellers: ' +
-                            (xhr.responseJSON?.message || xhr.statusText), 'danger');
-                    }
-                }
-            });
-        }
-
-        let stompClient = null;
-
-        function connectToChat() {
-            const token = localStorage.getItem('jwtToken');
-            const socket = new SockJS('http://localhost:8080/ws');
-            stompClient = Stomp.over(socket);
-
-            stompClient.connect(
-                { 'Authorization': 'Bearer ' + token },
-                () => {
-                    stompClient.subscribe('/user/queue/messages', (message) => {
-                        const msg = JSON.parse(message.body);
-                        appendMessage(msg, false);
-                    });
-
-                    // Subscribe to error channel
-                    stompClient.subscribe('/user/queue/errors', (error) => {
-                        showToast('Chat error: ' + error.body, 'danger');
-                    });
-                },
-                (error) => {
-                    showToast('WebSocket connection error', 'danger');
-                    console.error('WebSocket error:', error);
-                }
-            );
-        }
-
-        function sendMessageViaWebSocket(message) {
-            if (stompClient && stompClient.connected) {
-                stompClient.send("/app/chat", {}, JSON.stringify({
-                    receiverId: currentSeller.id,
-                    content: message
-                }));
-            }
-        }
-
-        function processSellerData(apiData) {
-            return apiData
-                .filter(seller => seller.type === 'SELLER')
-                .map(seller => ({
-                    id: seller.id, // Use backend-generated ID
-                    name: seller.name,
-                    email: seller.email,
-                    experience: seller.yearsExperience || 0,
-                    rate: seller.hourlyRate || 0,
-                    projects: seller.completedProjects || 0,
-                    skills: seller.skills || [],
-                    portfolio: seller.portfolioUrl || '#'
-                }));
-        }
-
-        function applyFilters() {
-            const minExp = parseInt($('#minExp').val()) || 0;
-            const maxRate = parseInt($('#maxRate').val()) || Infinity;
-            const minProjects = parseInt($('#minProjects').val()) || 0;
-
-            const filtered = allSellers.filter(seller =>
-                seller.experience >= minExp &&
-                seller.rate <= maxRate &&
-                seller.projects >= minProjects
-            );
-
-            renderSellers(filtered);
-        }
-
-        function renderSellers(sellers) {
-            const $tbody = $('#sellersBody');
-            $tbody.empty();
-
-            if (sellers.length === 0) {
-                $tbody.html(`<tr><td colspan="6" class="text-center py-4">No sellers found</td></tr>`);
-                return;
-            }
-
-            sellers.forEach(seller => {
-                $tbody.append(`
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <i class="fas fa-user-edit fa-lg me-3 text-yellow"></i>
-                                <div>
-                                    <h5 class="mb-0">${seller.name}</h5>
-                                    <small class="text-muted">${seller.skills[0] || 'Content'} Specialist</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td>${seller.experience}+ years</td>
-                        <td>$${seller.rate}/hr</td>
-                        <td>${seller.projects}+</td>
-                        <td>${seller.skills.map(skill =>
-                    `<span class="seller-badge">${skill}</span>`).join('')}
-                        </td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary view-seller"
-                                    onclick="viewPortfolio('${seller.id}')">
-                                <i class="fas fa-eye me-1"></i>Portfolio
-                            </button>
-                            <button class="btn btn-sm btn-outline-success chat-seller ms-2"
-                                    onclick="openChat('${seller.id}')">
-                                <i class="fas fa-comments me-1"></i>Chat
-                            </button>
-                        </td>
-                    </tr>
-                `);
-            });
-        }
-
-        // Chat System
-        async function openChat(sellerId) {
-            if (!checkAuthStatus()) return;
-
-            currentSeller = allSellers.find(s => s.id === sellerId);
-            if (!currentSeller) {
-                showToast('Seller not found', 'danger');
-                return;
-            }
-
-            try {
-                connectToChat();
-                await loadChatHistory(currentSeller.id);
-                $('#sellerName').text(currentSeller.name);
-                $('#chatModal').modal('show');
-            } catch (error) {
-                showToast('Failed to start chat', 'danger');
-            }
-        }
-
-        async function loadChatHistory(sellerId) {
-            try {
-                const response = await $.ajax({
-                    url: API_BASE + `chat/history/${sellerId}`,
-                    method: 'GET'
-                });
-                renderChatMessages(response.data || []);
-            } catch (error) {
-                handleChatError(error);
-            }
-        }
-
-        function appendMessage(message, isUser) {
-            const $messages = $('#chatMessages');
-            const timestamp = new Date(message.timestamp).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-
-            $messages.append(`
-        <div class="message ${isUser ? 'user-message' : 'seller-message'}">
-            <div class="message-content">${message.content}</div>
-            <small class="message-time">${timestamp}</small>
-        </div>
-    `);
-            $messages.scrollTop($messages[0].scrollHeight);
-        }
-
-
-
-        function renderChatMessages(messages) {
-            const $chatMessages = $('#chatMessages');
-            $chatMessages.empty();
-
-            messages.forEach(msg => {
-                const isUser = msg.senderType === 'user';
-                $chatMessages.append(`
-                    <div class="message ${isUser ? 'user-message' : 'seller-message'}">
-                        <div class="message-content">${msg.content}</div>
-                        <small class="message-time">
-                            ${new Date(msg.timestamp).toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })}
-                        </small>
-                    </div>
-                `);
-            });
-
-            $chatMessages.scrollTop($chatMessages[0].scrollHeight);
-        }
-
-        async function sendMessage() {
-            const message = $('#messageInput').val().trim();
-            if (!message || !currentSeller) return;
-
-            try {
-                sendMessageViaWebSocket(message);
-                appendMessage({
-                    content: message,
-                    senderType: 'user',
-                    timestamp: new Date().toISOString()
-                }, true);
-                $('#messageInput').val('');
-            } catch (error) {
-                showToast('Failed to send message', 'danger');
-            }
-        }
-
-        // UI Helpers
-        function showToast(message, type = 'success') {
-            const toast = $(`
-                <div class="toast align-items-center border-0 bg-${type} position-fixed bottom-0 end-0 m-3">
-                    <div class="d-flex">
-                        <div class="toast-body text-white">${message}</div>
-                        <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                                data-bs-dismiss="toast"></button>
-                    </div>
+        <!-- Filters -->
+        <div class="filter-container animate-on-scroll">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="number" class="filter-input" placeholder="Min Experience (years)" id="minExp">
                 </div>
-            `);
-            $('body').append(toast);
-            new bootstrap.Toast(toast[0]).show();
-            setTimeout(() => toast.remove(), 3000);
-        }
+                <div class="col-md-4">
+                    <input type="number" class="filter-input" placeholder="Max Hourly Rate ($)" id="maxRate">
+                </div>
 
-        function viewPortfolio(sellerId) {
-            const encodedEmail = encodeURIComponent(sellerId); // Encode special characters
-            window.open(`portfolio.html?id=${encodedEmail}`, '_blank');
-        }
+                <div class="col-md-4">
+                    <input type="number" class="filter-input" placeholder="Min Projects" id="minProjects">
+                </div>
+            </div>
+        </div>
 
-        // Initialization
-        $(document).ready(function() {
-            // Check auth status first
-            if (!checkAuthStatus()) return;
+        <!-- Table -->
+        <div class="table-responsive animate-on-scroll">
+            <table class="seller-table">
+                <thead>
+                <tr>
+                    <th>Writer</th>
+                    <th>Experience</th>
+                    <th>Rate/Hour</th>
+                    <th>Projects</th>
+                    <th>Skills</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="sellersBody">
+                <!-- Data loaded via JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
 
-            // Initialize components
-            fetchSellers();
-            setupEventHandlers();
-            setupScrollAnimations();
-        });
+<!-- Writing Process -->
+<section class="py-5 design-process">
+    <div class="container">
+        <h2 class="text-center mb-5 display-4 animate-on-scroll">Our Writing Process</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="design-process-step animate-on-scroll">
+                    <div class="process-number">1</div>
+                    <h4 class="text-yellow">Research & Planning</h4>
+                    <p>Understanding your needs and target audience.</p>
+                </div>
+                <div class="design-process-step animate-on-scroll">
+                    <div class="process-number">2</div>
+                    <h4 class="text-yellow">Content Creation</h4>
+                    <p>Writing engaging and informative content.</p>
+                </div>
+                <div class="design-process-step animate-on-scroll">
+                    <div class="process-number">3</div>
+                    <h4 class="text-yellow">Editing & Proofreading</h4>
+                    <p>Ensuring quality and clarity in the final draft.</p>
+                </div>
+                <div class="design-process-step animate-on-scroll">
+                    <div class="process-number">4</div>
+                    <h4 class="text-yellow">Delivery & Feedback</h4>
+                    <p>Delivering the content and incorporating your feedback.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        function setupEventHandlers() {
-            // Filter events
-            $('#minExp, #maxRate, #minProjects').on('input', applyFilters);
+<div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="chatModalLabel">Chat with <span id="sellerName"></span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="chatMessages" class="chat-messages mb-3">
+                    <!-- Messages will be loaded here -->
+                </div>
+                <div class="input-group">
+                    <textarea id="messageInput" class="form-control bg-black text-white border-secondary"
+                              placeholder="Type your message..." rows="2"></textarea>
+                    <button id="sendMessage" class="btn btn-yellow">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // Chat events
-            $('#sendMessage').click(sendMessage);
-            $('#messageInput').keypress(function(e) {
-                if (e.which === 13 && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-        }
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="../assets/js/customer/contentWriting.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.5.0/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@6.1.0/dist/bundles/stomp.umd.min.js"></script>
 
-        function setupScrollAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('animated');
-                    }
-                });
-            }, { threshold: 0.1 });
-            document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-        }
-    </script>
 
 </body>
 </html>
