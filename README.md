@@ -26,7 +26,7 @@ Connect students, freelancers, and businesses in a unified ecosystem for project
   Build reputation through client feedback
 
   
-  Video Link - https://youtu.be/e8g5SUppUfI
+  Video Link - https://youtu.be/v-9c_uEXRFw
 
 ## 🛠 Tech Stack
 **Backend**  
